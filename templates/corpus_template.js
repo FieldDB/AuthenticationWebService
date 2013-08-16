@@ -2,6 +2,10 @@ module.exports = {
   "title": "",
   "titleAsUrl": "",
   "description": "This is your first Corpus, you can use it to play with the app... When you want to make a real corpus, click New : Corpus",
+  "copyright": "Add names of the copyright holders of the corpus",
+  "license": "Add copyright license to your corpus. We recommend using one of Creative Commons licenses. Please see a sample at lingllama's community corpus.",
+  "termsOfUse": "When you decide to make your corpus public, we recommend that you attach Terms of Use to the corpus. Please see a sample at lingllama's community corpus."
+ 
   "team": {
     "gravatar": "user/user_gravatar.png",
     "username": ""
