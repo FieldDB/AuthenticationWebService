@@ -1,110 +1,24 @@
 module.exports = {
   "title": "",
   "titleAsUrl": "",
-  "description": "This is your first Corpus, you can use it to play with the app... When you want to make a real corpus, click New : Corpus",
+  "description": "This is probably your first Corpus, you can use it to play with the app... When you want to make a real corpus, click New : Corpus",
   "team": {
-    "gravatar": "user/user_gravatar.png",
-    "username": ""
+    "gravatar": "",
+    "username": "",
+    "subtitle": "",
+    "description": ""
   },
   "couchConnection": {},
+  "replicatedCouchConnections": [],
+  "OLAC_export_connections": [],
   "pouchname": "",
   "dateOfLastDatumModifiedToCheckForOldSession": "",
   "confidential": {
     "secretkey": ""
   },
-  "publicSelf": {
-    "title": "Private Corpus",
-    "titleAsUrl": "private_corpus",
-    "description": "The details of this corpus are not public.",
-    "couchConnection": {},
-    "pouchname": "",
-    "id": "corpus",
-    "datumFields": [{
-      "label": "judgement",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "",
-      "help": "Use this field to establish your team's gramaticality/acceptablity judgements (*,#,? etc)",
-      "size": "3",
-      "userchooseable": "disabled"
-    }, {
-      "label": "utterance",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "checked",
-      "help": "Use this as Line 1 in your examples for handouts (ie, either Orthography, or phonemic/phonetic representation)",
-      "userchooseable": "disabled"
-    }, {
-      "label": "morphemes",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "checked",
-      "help": "This line is used to determine the morpheme segmentation to generate glosses, it also optionally can show up in your LaTeXed examples if you choose to show morpheme segmentation in addtion ot line 1, gloss and translation.",
-      "userchooseable": "disabled"
-    }, {
-      "label": "gloss",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "checked",
-      "help": "This line appears in the gloss line of your LaTeXed examples, we reccomend Leipzig conventions (. for fusional morphemes, - for morpehem boundaries etc) The system uses this line to partially help you in glossing. ",
-      "userchooseable": "disabled"
-    }, {
-      "label": "translation",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "checked",
-      "help": "Use this as your primary translation. It does not need to be English, simply a language your team is comfortable with. If your consultant often gives you multiple languages for translation you can also add addtional translations in the customized fields. For example, your Quechua informants use Spanish for translations, then you can make all Translations in Spanish, and add an additional field for English if you want to generate a handout containing the datum. ",
-      "userchooseable": "disabled"
-    }],
-    "sessionFields": [{
-      "label": "dialect",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "",
-      "help": "You can use this field to be as precise as you would like about the dialect of this session.",
-      "userchooseable": "disabled"
-    }, {
-      "label": "language",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "",
-      "help": "This is the langauge (or language family) if you would like to use it.",
-      "userchooseable": "disabled"
-    }, {
-      "label": "dateElicited",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "",
-      "help": "This is the date in which the session took place.",
-      "userchooseable": "disabled"
-    }, {
-      "label": "user",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "",
-      "help": "Put your team's data entry conventions here (if any)...",
-      "userchooseable": "disabled"
-    }, {
-      "label": "dateSEntered",
-      "value": "",
-      "mask": "",
-      "encrypted": "",
-      "shouldBeEncrypted": "",
-      "help": "This is the date in which the session was entered.",
-      "userchooseable": "disabled"
-    }],
-    "comments": []
-  },
   "publicCorpus": "Private",
+  "collection": "private_corpuses",
+  "comments": [],
   "datumFields": [{
     "label": "judgement",
     "value": "",
@@ -189,12 +103,12 @@ module.exports = {
     "userchooseable": "disabled"
   }],
   "conversationFields": [{
-    "label": "speakers",
+    "label": "participants",
     "value": "",
     "mask": "",
     "encrypted": "",
     "shouldBeEncrypted": "checked",
-    "help": "Use this field to keep track of who your speaker is. You can use names, initials, or whatever your consultants prefer.",
+    "help": "Use this field to keep track of who your speaker/participants are. You can use names, initials, or whatever your consultants prefer.",
     "userchooseable": "disabled"
   }, {
     "label": "modality",
@@ -211,15 +125,16 @@ module.exports = {
     "mask": "",
     "encrypted": "",
     "shouldBeEncrypted": "",
-    "help": "The goals of the session.",
+    "help": "The goals of the elicitation session, it could be why you set up the meeting, or some of the core contexts you were trying to elicit. Sample: collect some anti-passives",
     "userchooseable": "disabled"
   }, {
     "label": "consultants",
     "value": "",
     "mask": "",
     "encrypted": "",
+    "consultantMasks": [],
     "shouldBeEncrypted": "",
-    "help": "Put your team's data entry conventions here (if any)...",
+    "help": "This is a comma seperated field of all the consultants who were present for this elicitation session. This field also contains a (hidden) array of consultant masks with more details about the consultants if they are not anonymous or are actual users of the system. ",
     "userchooseable": "disabled"
   }, {
     "label": "dialect",
@@ -251,7 +166,16 @@ module.exports = {
     "mask": "",
     "encrypted": "",
     "shouldBeEncrypted": "",
-    "help": "Put your team's data entry conventions here (if any)...",
+    "help": "This is the username of who created this elicitation session. There are other fields contains an array of participants and consultants. ",
+    "userchooseable": "disabled"
+  }, {
+    "label": "participants",
+    "value": "",
+    "mask": "",
+    "encrypted": "",
+    "participantMasks": [],
+    "shouldBeEncrypted": "",
+    "help": "This is a comma seperated field of all the people who were present for this elicitation session. This field also contains a (hidden) array of user masks with more details about the people present, if they are not anonymous or are actual users of the system. ",
     "userchooseable": "disabled"
   }, {
     "label": "dateSEntered",
@@ -259,9 +183,105 @@ module.exports = {
     "mask": "",
     "encrypted": "",
     "shouldBeEncrypted": "",
-    "help": "The date when the session data was entered.",
+    "help": "This field is deprecated, it was replaced by DateSessionEntered",
+    "userchooseable": "disabled"
+  }, {
+    "label": "DateSessionEntered",
+    "value": "",
+    "mask": "",
+    "encrypted": "",
+    "shouldBeEncrypted": "",
+    "help": "This is the date in which the session was entered.",
     "userchooseable": "disabled"
   }],
-  "comments": [],
-  "collection": "private_corpuses"
+  "publicSelf": {
+    "title": "Private Corpus",
+    "titleAsUrl": "private_corpus",
+    "description": "The details of this corpus are not public.",
+    "couchConnection": {},
+    "pouchname": "",
+    "id": "corpus",
+    "datumFields": [{
+      "label": "judgement",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "",
+      "help": "Grammaticality/acceptability judgement of this data.",
+      "size": "3",
+      "showToUserTypes": "linguist",
+      "userchooseable": "disabled"
+    }, {
+      "label": "gloss",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "checked",
+      "help": "Metalanguage glosses of each individual morpheme (morphemes are pieces ofprefix, suffix) Sample entry: friend-fem-pl",
+      "showToUserTypes": "linguist",
+      "userchooseable": "disabled"
+    }, {
+      "label": "syntacticCategory",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "checked",
+      "help": "This optional field is used by the machine to help with search.",
+      "showToUserTypes": "machine",
+      "userchooseable": "disabled"
+    }, {
+      "label": "syntacticTreeLatex",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "checked",
+      "help": "This optional field is used by the machine to make LaTeX trees and help with search and data cleaning, in combination with morphemes and gloss (above). Sample entry: Tree [.S NP VP ]",
+      "showToUserTypes": "machine",
+      "userchooseable": "disabled"
+    }, {
+      "label": "tags",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "",
+      "help": "Tags for constructions or other info that you might want to use to categorize your data.",
+      "showToUserTypes": "all",
+      "userchooseable": "disabled"
+    }, {
+      "label": "validationStatus",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "",
+      "help": "Any number of tags of data validity (replaces DatumStates). For example: ToBeCheckedWithSeberina, CheckedWithRicardo, Deleted etc...",
+      "showToUserTypes": "all",
+      "userchooseable": "disabled"
+    }],
+    "sessionFields": [{
+      "label": "dialect",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "",
+      "help": "You can use this field to be as precise as you would like about the dialect of this session.",
+      "userchooseable": "disabled"
+    }, {
+      "label": "language",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "",
+      "help": "This is the langauge (or language family), if you would like to use it.",
+      "userchooseable": "disabled"
+    }, {
+      "label": "dateElicited",
+      "value": "",
+      "mask": "",
+      "encrypted": "",
+      "shouldBeEncrypted": "",
+      "help": "This is the date in which the session took place.",
+      "userchooseable": "disabled"
+    }],
+    "comments": []
+  }
 };
