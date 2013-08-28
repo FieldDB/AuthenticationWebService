@@ -300,6 +300,21 @@ app.post('/updateroles', function(req, res, next) {
       console.log(new Date() + " There was an error in the authenticationfunctions.authenticateUser:\n" + util.inspect(err));
       returndata.userFriendlyErrors = [info.message];
     }
+
+    console.log(new Date() + "This method is not supported.");
+    returndata.userFriendlyErrors = ["This method is not supported."];
+
+
+    /* ____  _                _          _                _ _     _ 
+    / ___|| |__   ___  _ __| |_    ___(_)_ __ ___ _   _(_) |_  | |
+    \___ \| '_ \ / _ \| '__| __|  / __| | '__/ __| | | | | __| | |
+     ___) | | | | (_) | |  | |_  | (__| | | | (__| |_| | | |_  |_|
+    |____/|_| |_|\___/|_|   \__|  \___|_|_|  \___|\__,_|_|\__| (_)
+                                                                  */
+
+    /*
+    NOTE: Turning off all following logic as it permits non-admin users (any user, including lingllama) to delete any user from any corpus 
+    */
     if (!user) {
       returndata.userFriendlyErrors = [info.message];
     } else {
