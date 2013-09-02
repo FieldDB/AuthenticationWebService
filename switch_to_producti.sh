@@ -12,6 +12,9 @@ mv output lib/userauthentication.js
 sed 's/mailconfig_[^)]*)/mailconfig_production")/' lib/userauthentication.js  > output
 mv output lib/userauthentication.js
 
+sed 's/couchkeys_[^)]*)/couchkeys_production")/' lib/corpus.js  > output
+mv output lib/corpus.js
+
 sed 's/couchkeys_[^)]*)/couchkeys_production")/' lib/corpusmanagement.js  > output
 mv output lib/corpusmanagement.js
 sed 's/nodeconfig_[^)]*)/nodeconfig_production")/' lib/corpusmanagement.js  > output
