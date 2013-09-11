@@ -108,6 +108,25 @@ module.exports = {
     "help": "Any number of tags of data validity (replaces DatumStates). For example: ToBeCheckedWithSeberina, CheckedWithRicardo, Deleted etc...",
     "showToUserTypes": "all",
     "userchooseable": "disabled"
+  }, {
+    "label": "enteredByUser",
+    "value": "",
+    "mask": "",
+    "encrypted": "",
+    "shouldBeEncrypted": "",
+    "help": "The user who originally entered the datum",
+    "showToUserTypes": "machine",
+    "userchooseable": "disabled"
+  }, {
+    "label": "modifiedByUser",
+    "value": "",
+    "mask": "",
+    "encrypted": "",
+    "shouldBeEncrypted": "",
+    "help": "An array of users who modified the datum",
+    "users": [],
+    "showToUserTypes": "machine",
+    "userchooseable": "disabled"
   }],
   "conversationFields": [{
     "label": "participants",
