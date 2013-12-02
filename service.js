@@ -80,6 +80,7 @@ app.post('/login', function(req, res, next) {
       returndata.userFriendlyErrors = [info.message];
     } else {
       returndata.user = user;
+      delete returndata.user.password;
       delete returndata.user.serverlogs;
       returndata.info = [info.message];
       console.log(new Date() + " Returning the existing user as json:\n" + util.inspect(user));
