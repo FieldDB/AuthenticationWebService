@@ -71,6 +71,8 @@
     "node": ">8.x.x"
   },
   "scripts": {
+    "docker:build": "docker build -t fielddb/auth_service .",
+    "docker:test": "docker run -p 3183:3183 -d fielddb/auth_service && npm run test:deprecated",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test --include-all-sources && nyc check-coverage  --statements 36 --functions 31 --branches 21 --lines 36",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint .",
