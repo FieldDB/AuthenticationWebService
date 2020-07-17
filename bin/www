@@ -10,7 +10,7 @@ service.set('port', config.httpsOptions.port);
 var whenReady = new Promise(function(resolve) {
   if (process.env.NODE_ENV === 'production') {
     server = service.listen(config.httpsOptions.port, function() {
-      debug('Running in production mode behind an Nginx proxy, Listening on http port %d', server.address().port);
+      console.log('Running in production mode behind an Nginx proxy, Listening on http port %d', server.address().port);
       resolve(server);
     });
   } else {
