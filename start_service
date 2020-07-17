@@ -2,10 +2,10 @@
 
 cd $FIELDDB_HOME/AuthenticationWebService
 
-
+export NODE_ENV=production
 BUNYAN_LOG_LEVEL=info forever \
 start \
 -al $FIELDDB_HOME/logs/fielddbauth.log \
 -ao $FIELDDB_HOME/logs/fielddbauthout.log \
 -ae $FIELDDB_HOME/logs/fielddbautherr.log \
-auth_service.js
+./bin/www
