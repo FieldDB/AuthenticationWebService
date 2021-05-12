@@ -36,7 +36,7 @@
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "nano": "^7.1.1",
-    "nodemailer": "^4.7.0",
+    "nodemailer": "^6.4.16",
     "passport": "^0.3.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
