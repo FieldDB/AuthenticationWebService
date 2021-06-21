@@ -3,12 +3,12 @@ FROM node:12
 # Create app directory
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-RUN npm ci
-
 COPY . .
+RUN NODE_ENV=production npm ci
+
 RUN ls -alt
 
+ENV DEBUG="*"
 EXPOSE 3183
 
-CMD [ "node", "auth_service.js" ]
+CMD [ "node", "bin/www" ]
