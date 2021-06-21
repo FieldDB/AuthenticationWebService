@@ -1,5 +1,5 @@
-var swagger = require('swagger-node-express');
-var param = require('swagger-node-express/Common/node/paramTypes.js');
+var swagger = require('@cesine/swagger-node-express');
+var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
 var corpusData = require('./../lib/corpus.js');
 var appVersion = require('../package.json').version;
 exports.getCorpora = {
