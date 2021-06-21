@@ -6,9 +6,12 @@ WORKDIR /usr/src/app
 COPY . .
 RUN NODE_ENV=production npm ci
 
-RUN ls -alt
+RUN ls -alt; \
+  ls config/local.js # required to be able to run the tests against deployed couchdb
 
-ENV DEBUG="*"
+ENV DEBUG="*,-express*"
+ENV NODE_ENV=beta
+
 EXPOSE 3183
 
 CMD [ "node", "bin/www" ]
