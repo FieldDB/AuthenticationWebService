@@ -1,5 +1,5 @@
 /* Load modules provided by $ npm install, see package.json for details */
-var swagger = require('swagger-node-express');
+var swagger = require('@cesine/swagger-node-express');
 var config = require('config');
 
 /* Load modules provided by this codebase */

@@ -1,7 +1,7 @@
 var AsToken = require('../lib/token');
 var debug = require('debug')('authentication');
 var lodash = require('lodash');
-var param = require('swagger-node-express/Common/node/paramTypes.js');
+var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
 var sequelize = require('sequelize');
 var querystring = require('querystring');
 

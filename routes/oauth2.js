@@ -1,5 +1,5 @@
 var debug = require('debug')('oauth:routes');
-var param = require('swagger-node-express/Common/node/paramTypes.js');
+var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
 var querystring = require('querystring');
 
 var errorMiddleware = require('../middleware/error-handler').errorHandler;

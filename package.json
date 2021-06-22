@@ -23,6 +23,7 @@
     "Fieldlinguist <info@fieldlinguist.com>"
   ],
   "dependencies": {
+    "@cesine/swagger-node-express": "2.0.2",
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "config": "^3.0.0",
@@ -32,7 +33,7 @@
     "express": "^4.17.1",
     "express-bunyan-logger": "^1.3.3",
     "express-oauth-server": "^2.0.0",
-    "fielddb": "https://github.com/fielddb/fielddb.git#v5.121.19-rc0",
+    "fielddb": "5.121.19-rc0",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "nano": "^7.1.1",
@@ -44,7 +45,6 @@
     "sequelize": "^3.23.1",
     "serve-favicon": "^2.5.0",
     "sqlite3": "^4.0.4",
-    "swagger-node-express": "https://github.com/cesine/swagger-node-express.git#search",
     "uuid": "^3.3.2"
   },
   "peerDependencies": {},
@@ -72,7 +72,7 @@
   },
   "scripts": {
     "docker:build": "docker build -t fielddb/auth_service .",
-    "docker:test": "docker run -p 3183:3183 -d fielddb/auth_service && npm run test:deprecated",
+    "docker:test": "containerId=$(docker run -p 3183:3183 -d fielddb/auth_service) && echo $containerId; sleep 2; docker logs -n 200 $containerId && curl -kv https://localhost:3183/api && npm run test:deprecated > docker-test.log; tail -n 30 docker-test.log && docker stop $containerId",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test --include-all-sources && nyc check-coverage  --statements 36 --functions 31 --branches 21 --lines 36",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint .",

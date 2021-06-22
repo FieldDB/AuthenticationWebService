@@ -1,6 +1,7 @@
 /* global Promise */
 
 var debug = require('debug')('model:oauth');
+var fs = require('fs');
 var Sequelize = require('sequelize');
 var lodash = require('lodash');
 var AsToken = require('../lib/token');
@@ -13,6 +14,12 @@ var DEBUG = env.DEBUG;
 var NODE_ENV = env.NODE_ENV;
 var YEAR = 1000 * 60 * 60 * 24 * 365;
 var AUTHORIZATION_CODE_TRANSIENT_STORE = {};
+
+try {
+  fs.mkdirSync('db');
+} catch (err) {
+  console.log('err', err);
+}
 var sequelize = new Sequelize('database', 'id', 'password', {
   dialect: 'sqlite',
   logging: /(sql|oauth)/.test(DEBUG) ? console.log : false,

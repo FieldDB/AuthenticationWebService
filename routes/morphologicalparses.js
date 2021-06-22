@@ -1,6 +1,6 @@
 /* Load modules provided by $ npm install, see package.json for details */
-var swagger = require('swagger-node-express');
-var param = require('../node_modules/swagger-node-express/Common/node/paramTypes.js');
+var swagger = require('@cesine/swagger-node-express');
+var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
 var appVersion = require('../package.json').version;
 exports.getMorphologicalParses = {
   spec: {
