@@ -76,6 +76,7 @@
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test --include-all-sources && nyc check-coverage  --statements 36 --functions 31 --branches 21 --lines 36",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint .",
+    "setup": "REPLAY=bloody SOURCE_URL=https://public:none@corpusdev.example.org mocha test/integration/install.js",
     "start": "node ./bin/www",
     "test": "rm db/*test.sqlite; NODE_ENV=test NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test",
     "test:debug": "node-debug _mocha test/integration/oauth.js",
