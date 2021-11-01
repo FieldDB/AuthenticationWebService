@@ -72,11 +72,11 @@
   },
   "scripts": {
     "docker:build": "docker build -t fielddb/auth_service .",
-    "docker:test": "cp -r ../CorpusWebService/etc . && docker-compose up -d && sleep 4; docker-compose logs && curl -kv https://localhost:3183/api && URL=https://localhost:3183 npm run test:deprecated > docker-test.log; tail -n 30 docker-test.log && docker container list",
+    "docker:test": "mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini && docker-compose up -d && docker-compose logs && npm run setup && npm run test:deprecated",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test --include-all-sources && nyc check-coverage  --statements 36 --functions 31 --branches 21 --lines 36",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint .",
-    "setup": "REPLAY=bloody SOURCE_URL=https://public:none@corpusdev.example.org mocha test/integration/install.js",
+    "setup": "REPLAY=bloody SOURCE_URL=${SOURCE_URL:-https://public:none@corpusdev.example.org} mocha test/integration/install.js",
     "start": "node ./bin/www",
     "test": "rm db/*test.sqlite; NODE_ENV=test NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test",
     "test:debug": "node-debug _mocha test/integration/oauth.js",
