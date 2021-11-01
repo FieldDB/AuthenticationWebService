@@ -72,7 +72,7 @@
   },
   "scripts": {
     "docker:build": "docker build -t fielddb/auth_service .",
-    "docker:test": "docker-compose up -d && sleep 4; docker-compose logs && curl -kv https://localhost:3183/api && URL=https://localhost:3183 npm run test:deprecated > docker-test.log; tail -n 30 docker-test.log && docker container list",
+    "docker:test": "cp -r ../CorpusWebService/etc . && docker-compose up -d && sleep 4; docker-compose logs && curl -kv https://localhost:3183/api && URL=https://localhost:3183 npm run test:deprecated > docker-test.log; tail -n 30 docker-test.log && docker container list",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test --include-all-sources && nyc check-coverage  --statements 36 --functions 31 --branches 21 --lines 36",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint .",
