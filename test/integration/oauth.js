@@ -9,7 +9,7 @@ var session = require('express-session');
 var supertest = require('supertest');
 var url = require('url');
 
-var service = require('../../auth_service');
+var service = process.env.URL || require('../../auth_service');
 var OauthClient = require('./../../models/oauth-client');
 var UserModel = require('./../../models/user');
 var fixtures = {
