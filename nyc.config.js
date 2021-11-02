@@ -2,6 +2,7 @@ module.exports = {
   exclude: [
     'coverage',
     'public',
+    'test',
     'db'
   ],
   'check-coverage': true,
