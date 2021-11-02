@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - run: echo 'module.exports = {}' > config/local.js
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: echo 'module.exports = {}' > config/local.js && docker build . --file Dockerfile --tag my-image-name:$(date +%s)
