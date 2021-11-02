@@ -35,10 +35,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - run: mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini
-    - run: docker-compose up -d && docker-compose logs
-
-    - run: npm run setup && npm run test:deprecated
+    - run: npm run docker:test
       env:
         SOURCE_URL: ${{ secrets.SourceUrl }}
-    - run: docker-compose stop

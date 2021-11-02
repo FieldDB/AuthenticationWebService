@@ -11,7 +11,7 @@ services:
   couchdb:
     build:
       context: ./
-      dockerfile: ../CorpusWebService/Dockerfile-couchdb
+      dockerfile: ./Dockerfile-couchdb
     ports:
       - 5984:5984
       - 6984:6984

@@ -8,6 +8,7 @@ compiled_handlebars.js
 config/production.*
 config/local.*
 etc
+Dockerfile-couchdb
 
 # Ignore natural lib
 public/libs/natural/

@@ -6,7 +6,7 @@ var path = require('path');
 var replay = require('replay');
 
 const originalLocalhosts = replay._localhosts;
-console.log('replay', replay._localhosts)
+console.log('replay localhosts', replay._localhosts)
 
 var destination = "http://admin:none@localhost:5984";
 if (!destination) {
@@ -21,9 +21,11 @@ console.log('source', source);
 describe('install', function () {
   before(function() {
     replay._localhosts = new Set();
+    console.log('before replay localhosts', replay._localhosts)
   });
   after(function() {
     replay._localhosts = originalLocalhosts;
+    console.log('after replay localhosts', replay._localhosts)
   });
 
   describe('theuserscouch', function () {
