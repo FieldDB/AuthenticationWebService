@@ -51,7 +51,7 @@ describe('install', function () {
           create_target: true
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body theuserscouch', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
@@ -59,7 +59,7 @@ describe('install', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body after', res.body);
           expect(res.body).includes('theuserscouch');
         });
     });
@@ -89,7 +89,7 @@ describe('install', function () {
           create_target: true
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_corpus', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
@@ -97,7 +97,7 @@ describe('install', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_corpus after', res.body);
           expect(res.body).includes(dbnameToReplicate);
         });
     });
@@ -127,7 +127,7 @@ describe('install', function () {
           create_target: true
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_testing_corpus', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
@@ -135,7 +135,7 @@ describe('install', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_testing_corpus after', res.body);
           expect(res.body).includes(dbnameToReplicate);
         });
     });
@@ -166,7 +166,7 @@ describe('install', function () {
           create_target: true
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_corpus_activity_feed', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
@@ -205,7 +205,7 @@ describe('install', function () {
           create_target: true
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_user_activity_feed', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
@@ -243,7 +243,7 @@ describe('install', function () {
           create_target: true
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_lexicon', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
@@ -251,7 +251,7 @@ describe('install', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_lexicon after', res.body);
           expect(res.body).includes(dbnameToReplicate);
         });
     });
@@ -281,7 +281,7 @@ describe('install', function () {
           create_target: true
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_lexicon', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
@@ -289,7 +289,7 @@ describe('install', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          console.log('res.body new_lexicon after ', res.body);
           expect(res.body).includes(dbnameToReplicate);
         });
     });
