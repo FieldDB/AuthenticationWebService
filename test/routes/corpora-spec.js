@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var supertest = require('supertest');
 
-var authWebService = require('./../../auth_service');
+var authWebService = process.env.URL || require('./../../auth_service');
 
 describe('/corpora', function () {
   describe('DELETE', function () {

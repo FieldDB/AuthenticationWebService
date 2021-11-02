@@ -45,6 +45,13 @@ test/fixtures/
     └── 154417467505825257
 ```
 
+### Running tests against a given URL
+
+To run tests against the local instance:
+
+```
+$ URL=https://localhost:3183 npm test
+```
 
 ## Release History
 * v1.16  mongoose auth & everyauth

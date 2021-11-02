@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 
-var service = require('../auth_service');
+var service = process.env.URL || require('../auth_service');
 
 describe('auth_service', function () {
   it('should load', function () {

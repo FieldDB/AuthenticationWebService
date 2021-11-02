@@ -1,0 +1,27 @@
+############## Commands ##########################
+### docker-compose up -d
+### docker-compose logs -f
+### docker container list
+
+############## Docs ##############################
+# https://hub.docker.com/_/couchdb
+
+version: "3.7"
+services:
+  couchdb:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-couchdb
+    ports:
+      - 5984:5984
+      - 6984:6984
+  app:
+    depends_on:
+      - couchdb
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - 3183:3183
+    environment:
+      - FOO=too

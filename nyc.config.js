@@ -11,4 +11,4 @@ module.exports = {
   lines: 36,
   statements: 36,
   reporter: ['text', 'lcov']
-}
+};
