@@ -36,5 +36,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - run: npm run docker:test
+      with:
+        SOURCE_URL: ${{ secrets.SOURCE_URL }}
       env:
-        SOURCE_URL: ${{ secrets.SourceUrl }}
+        SOURCE_URL: ${{ secrets.SOURCE_URL }}
