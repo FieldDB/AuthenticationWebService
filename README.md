@@ -60,7 +60,7 @@ test/fixtures/
 Licensed under the Apache, 2.0 licenses.
 
 
-[travis-image]: https://travis-ci.org/FieldDB/AuthenticationWebService.svg?branch=main
+[travis-image]: https://travis-ci.org/FieldDB/AuthenticationWebService.svg?branch=master
 [travis-url]: https://travis-ci.org/FieldDB/AuthenticationWebService
 [coverage-image]: https://coveralls.io/repos/github/FieldDB/AuthenticationWebService/badge.svg?branch=main
 [coverage-url]: https://coveralls.io/github/FieldDB/AuthenticationWebService?branch=main
