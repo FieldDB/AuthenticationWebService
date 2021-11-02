@@ -28,6 +28,43 @@ describe('install', function () {
     console.log('after replay localhosts', replay._localhosts)
   });
 
+  describe('_users views', function() {
+    it('should create the _users views', function() {
+      return supertest(destination)
+        .post('/_users')
+        .set('Accept', 'application/json')
+        .send({
+            "_id": "_design/users",
+            "language": "javascript",
+            "views": {
+              "userroles": {
+                "map": "function(doc) {\n  var username = doc._id.replace(/org.couchdb.user:/,\"\");\n  if((doc.password_sha || doc.password_scheme) && username.indexOf(\"test\") == -1 && username.indexOf(\"anonymous\") == -1  && username.indexOf(\"acra\") == -1)\n    emit(username,doc.roles);\n}"
+              },
+              "normalusers": {
+                "map": "function(doc) {\n      if (!doc.roles || doc.roles.length === 0) {\n        return;\n      }\n      var username = doc._id.replace(/org.couchdb.user:/, \"\");\n      if (username.indexOf(\"test\") > -1 || username.indexOf(\"anonymous\") > -1 || username === \"acra\" || username === \"acra_reporter\") {\n        // this is not a beta tester\n      } else {\n        emit(username, doc.roles);\n      }\n    }"
+              },
+              "betatesters": {
+                "map": "function(doc) {\n      if (!doc.roles || doc.roles.length === 0) {\n        return;\n      }\n      var username = doc._id.replace(/org.couchdb.user:/, \"\");\n      if (username.indexOf(\"test\") > -1 || username.indexOf(\"anonymous\") > -1 || username === \"acra\" || username === \"acra_reporter\") {\n        emit(username, doc.roles);\n      } else {\n        // this is not a beta tester\n      }\n    }"
+              }
+            }
+        })
+        .then(function(res) {
+          if (res.body.error !== 'conflict'){
+            expect(res.body.ok).to.equal(true);
+          }
+
+          return supertest(destination)
+            .get('/_users/_design/users/_view/normalusers')
+            .set('Accept', 'application/json');
+        })
+        .then(function(res) {
+          console.log('res.body normalusers', JSON.stringify(res.body));
+          expect(res.body.rows).not.equal(undefined);
+          expect(res.body.total_rows).not.equal(undefined);
+        });
+    });
+  });
+
   describe('theuserscouch', function () {
     before(function () {
       return supertest(destination)

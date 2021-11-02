@@ -7,6 +7,7 @@ if (deploy_target === 'test') {
   deploy_target = 'beta';
 }
 Connection.knownConnections.thisserver = Connection.knownConnections[deploy_target];
+Connection.knownConnections.test = Connection.knownConnections.beta;
 Connection.knownConnections.testing = Connection.knownConnections.beta;
 Connection.knownConnections.dyslexdisorth = Connection.knownConnections.thisserver.clone();
 Connection.knownConnections.dyslexdisorth.userFriendlyServerName = 'DyslexDisorth';
