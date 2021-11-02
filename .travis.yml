@@ -1,18 +1,10 @@
 language: node_js
 node_js:
-- 12
-
-services:
-- docker
+  - 12
 
 script:
-- npm run lint || echo "Lint failed"
-- npm run coverage
-- npm run docker:test
+  - npm run lint || echo "Lint failed"
+  - npm run coverage
 
 after_script:
-- npm run coveralls
-
-env:
-  global:
-    secure: WTzHAP8ySfuSoLADbQnmMDZ8wXjGlLH2RNvuR7wXyrhogRMce8EPQss3hsBhsWvhYw+uBUQJdxxQAt6lMEU8cjPLwJ3p6Zdtsw+t0eU34qc5wzOqZjtSOg3YZltqLxRZhgmN2T9QfoLUCtg7QFaDUfPJjwoXQDC2B8cKtTp1jpM=
+  - npm run coveralls

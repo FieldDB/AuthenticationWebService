@@ -71,7 +71,7 @@
     "node": ">8.x.x"
   },
   "scripts": {
-    "docker:build": "docker build -t fielddb/auth_service .",
+    "docker:build": "docker build -t fielddb-auth .",
     "docker:test": "mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini && docker-compose up -d && docker-compose logs && npm run setup && npm run test:deprecated",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",

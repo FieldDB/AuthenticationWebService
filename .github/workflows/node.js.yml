@@ -34,3 +34,8 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - run: mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini
+    - run: docker-compose up -d && docker-compose logs
+    - run: npm run setup && npm run test:deprecated
+    - run: docker-compose stop
