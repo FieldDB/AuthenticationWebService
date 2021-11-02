@@ -72,7 +72,7 @@
   },
   "scripts": {
     "docker:build": "docker build -t fielddb-auth .",
-    "docker:test": "curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/Dockerfile-couchdb -o Dockerfile-couchdb; mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini && docker-compose up -d && docker-compose logs && npm run setup && npm run test:deprecated",
+    "docker:test": "curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/85f0b5a8351640ddb86059fb3c9519af12222b6c/Dockerfile-couchdb -o Dockerfile-couchdb; mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini && docker-compose up -d && docker-compose logs && npm run setup && npm run test:deprecated",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint .",
