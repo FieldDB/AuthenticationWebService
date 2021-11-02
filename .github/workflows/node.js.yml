@@ -37,6 +37,6 @@ jobs:
 
     - run: npm run docker:test
       with:
-        SOURCE_URL: ${{ secrets.SOURCE_URL }}
+        SOURCE_URL: ${{ secrets.SourceUrl }}
       env:
-        SOURCE_URL: ${{ secrets.SOURCE_URL }}
+        SOURCE_URL: ${{ secrets.SourceUrl }}
