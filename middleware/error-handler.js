@@ -12,7 +12,7 @@ var cleanErrorStatus = function (status) {
 var errorHandler = function (err, req, res, next) {
   var data;
   var NODE_ENV = process.env.NODE_ENV;
-  debug('errorHandler ' + process.env.NODE_ENV + req.url, err);
+  debug('errorHandler ' + NODE_ENV + " " +  req.url, err);
 
   if (res.headersSent) {
     console.warn('This request has already been replied to', err);
@@ -21,7 +21,12 @@ var errorHandler = function (err, req, res, next) {
 
   if (['development', 'test', 'local'].indexOf(NODE_ENV) > -1) {
     // expose stack traces
-    data = err;
+    data = {
+      message: err.message,
+      stack: err.stack,
+      url: err.url,
+      details: err.details,
+    };
     if (data.details && data.details.url) {
       delete data.details.url;
     }
@@ -87,8 +92,9 @@ var errorHandler = function (err, req, res, next) {
   } else {
     data.message = err.message;
   }
-
-  req.log.fields.err = err;
+  req.log.fields.err = {
+    stack: err.stack, message: err.message
+  };
 
   if (req.headers['x-requested-with'] === 'XMLHttpRequest' || /application\/json/.test(req.headers['content-type'])) {
     return res.json(data);
