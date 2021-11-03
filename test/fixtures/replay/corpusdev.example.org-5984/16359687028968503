@@ -1,0 +1,19 @@
+GET /_users/_design/users/_view/normalusers
+x-request-id: deprecated-spec-corpusteam
+content-type: application/json
+accept: application/json
+host: corpusdev.example.org:5984
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "1LTW5V3PCZ0TD69XICF1ZMRT6"
+date: Wed, 03 Nov 2021 19:45:02 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":2,"offset":0,"rows":[
+{"id":"org.couchdb.user:jenkins","key":"jenkins","value":["jenkins-firstcorpus_admin","jenkins-firstcorpus_writer","jenkins-firstcorpus_reader","jenkins-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","lingllama-communitycorpus_writer","lingllama-communitycorpus_reader","lingllama-communitycorpus_commenter"]},
+{"id":"org.couchdb.user:lingllama","key":"lingllama","value":["lingllama-firstcorpus_admin","lingllama-firstcorpus_writer","lingllama-firstcorpus_reader","lingllama-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","lingllama-communitycorpus_writer","lingllama-communitycorpus_reader","lingllama-communitycorpus_commenter"]}
+]}

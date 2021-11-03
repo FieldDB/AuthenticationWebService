@@ -174,6 +174,9 @@ describe('/ deprecated', function () {
 
   describe('/login', function () {
     before(function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
       this.timeout(10000);
 
       return supertest(authWebService)
@@ -355,6 +358,9 @@ describe('/ deprecated', function () {
 
   describe('/changepassword', function () {
     it('should accept changepassword', function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
       return supertest(authWebService)
         .post('/changepassword')
         .set('x-request-id', requestId + '-changepassword')
@@ -448,6 +454,9 @@ describe('/ deprecated', function () {
 
   describe('/addroletouser', function () {
     before(function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
       this.timeout(10000);
 
       return supertest(authWebService)
@@ -1158,6 +1167,9 @@ describe('/ deprecated', function () {
 
   describe('/newcorpus', function () {
     before(function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
       this.timeout(10000);
 
       return supertest(authWebService)
@@ -1283,6 +1295,9 @@ describe('/ deprecated', function () {
 
   describe('syncDetails', function () {
     before(function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
       this.timeout(10000);
       return supertest(authWebService)
         .post('/register')
