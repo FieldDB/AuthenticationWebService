@@ -40,7 +40,7 @@ describe('/ deprecated', function () {
 
           return supertest('http://testingv3_32:test@localhost:5984')
             .get('/testingv3_32-firstcorpus/_design/lexicon/_view/lexiconNodes')
-            .set('x-request-id', requestId + '-register')
+            // .set('x-request-id', requestId + '-register')
             .set('Accept', 'application/json');
         })
         .then(function (res) {
@@ -290,17 +290,17 @@ describe('/ deprecated', function () {
         .post('/login')
         .set('x-request-id', requestId + '-login')
         .send({
-          username: 'lingllama',
-          password: 'phoneme'
+          username: 'testingspreadsheet',
+          password: 'test'
         })
         .then(function (res) {
           expect(res.body.userFriendlyErrors).to.equal(undefined);
-          expect(res.body.user._id).to.equal('lingllama'); // eslint-disable-line no-underscore-dangle
-          expect(res.body.user.username).to.equal('lingllama');
+          expect(res.body.user._id).to.equal('testingspreadsheet'); // eslint-disable-line no-underscore-dangle
+          expect(res.body.user.username).to.equal('testingspreadsheet');
           if (res.body.user.corpora.length === 1) {
             expect(res.body.user.corpora).length(1);
           } else {
-            expect(res.body.user.corpora).length(3);
+            expect(res.body.user.corpora).length(2);
           }
         });
     });
@@ -495,6 +495,18 @@ describe('/ deprecated', function () {
         })
         .then(function (res) {
           console.log('register testuser4', res.body);
+
+          return supertest(authWebService)
+            .post('/register')
+            .set('x-request-id', requestId + '-addroletouser')
+            .send({
+              username: 'testuser41',
+              password: 'test',
+              email: ''
+            });
+        })
+        .then(function (res) {
+          console.log('register testuser41', res.body);
         });
     });
 
@@ -571,10 +583,10 @@ describe('/ deprecated', function () {
         .post('/addroletouser')
         .set('x-request-id', requestId + '-addroletouser')
         .send({
-          username: 'testingprototype',
+          username: 'testuser41',
           password: 'test',
           connection: {
-            dbname: 'testingprototype-firstcorpus'
+            dbname: 'testuser41-firstcorpus'
           },
           users: [{
             username: 'userdoesntexist',
@@ -1212,7 +1224,7 @@ describe('/ deprecated', function () {
 
           return supertest('http://testuser6:test@localhost:5984')
             .get('/testuser6-testing_v3_32_01/_design/lexicon/_view/lexiconNodes')
-            .set('x-request-id', requestId + '-newcorpus')
+            // .set('x-request-id', requestId + '-newcorpus')
             .set('Accept', 'application/json');
         })
         .then(function (res) {
@@ -1311,10 +1323,11 @@ describe('/ deprecated', function () {
 
           return supertest('http://testuser8:test@localhost:5984')
             .get('/testuser8-an_offline_corpus_created_in_the_prototype/_design/deprecated/_view/corpora')
-            .set('x-request-id', requestId + '-syncDetails')
+            // .set('x-request-id', requestId + '-syncDetails')
             .set('Accept', 'application/json');
         })
         .then(function (res) {
+          console.log('syncDetails', JSON.stringify(res.body));
           expect(res.body.total_rows).to.equal(1);
 
           return supertest('http://testuser8:test@localhost:5984')
