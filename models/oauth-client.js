@@ -18,7 +18,9 @@ var AUTHORIZATION_CODE_TRANSIENT_STORE = {};
 try {
   fs.mkdirSync('db');
 } catch (err) {
-  console.log('err', err);
+  if (err.message !== 'EEXIST: file already exists, mkdir \'db\'') {
+    console.log('err', err);
+  }
 }
 var sequelize = new Sequelize('database', 'id', 'password', {
   dialect: 'sqlite',

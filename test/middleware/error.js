@@ -46,7 +46,15 @@ describe('middleware/error-handler', function () {
         error(err, req, res, function () {});
 
         sinon.assert.calledWith(res.status, 500);
-        sinon.assert.calledWith(res.json, err);
+        // console.log('res.json', res.json.getCall(0).args)
+        sinon.assert.calledWith(res.json, {
+          message: 'Internal server error',
+          stack: err.stack,
+          url: undefined,
+          details: undefined,
+          status: err.status,
+          userFriendlyErrors: [ 'Server erred, please report this 816' ]
+        });
       });
     });
 
