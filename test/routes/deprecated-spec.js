@@ -1,13 +1,28 @@
 var expect = require('chai').expect;
+var path = require('path');
+var replay = require('replay');
 var supertest = require('supertest');
-
 var authWebService = process.env.URL || require('./../../auth_service');
 
+var originalLocalhosts = replay._localhosts;
+var requestId = 'deprecated-spec';
+replay.fixtures = path.join(__dirname, '/../fixtures/replay');
+
 describe('/ deprecated', function () {
+  before(function () {
+    replay._localhosts = new Set(['127.0.0.1', '::1']);
+    console.log('before replay localhosts', replay._localhosts);
+  });
+  after(function () {
+    replay._localhosts = originalLocalhosts;
+    console.log('after replay localhosts', replay._localhosts);
+  });
+
   describe('/register', function () {
     it('should register a new user', function () {
       return supertest(authWebService)
         .post('/register')
+        .set('x-request-id', requestId + '-register')
         .send({
           username: 'testingv3_32',
           password: 'test'
@@ -70,6 +85,7 @@ describe('/ deprecated', function () {
     it('should register wordcloud users if not already registered', function () {
       return supertest(authWebService)
         .post('/register')
+        .set('x-request-id', requestId + '-register')
         .send({
           username: 'anonymouswordclouduser1401365327719',
           password: 'testtest',
@@ -94,6 +110,7 @@ describe('/ deprecated', function () {
     it('should register phophlo users if not already registered', function () {
       return supertest(authWebService)
         .post('/register')
+        .set('x-request-id', requestId + '-register')
         .send({
           username: 'testingphophlo',
           password: 'test',
@@ -118,6 +135,7 @@ describe('/ deprecated', function () {
     it('should refuse to register existing names', function () {
       return supertest(authWebService)
         .post('/register')
+        .set('x-request-id', requestId + '-register')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -139,6 +157,7 @@ describe('/ deprecated', function () {
     it('should refuse to register short usernames', function () {
       return supertest(authWebService)
         .post('/register')
+        .set('x-request-id', requestId + '-register')
         .send({
           username: 'ba',
           password: 'phoneme'
@@ -157,6 +176,7 @@ describe('/ deprecated', function () {
 
       return supertest(authWebService)
         .post('/register')
+        .set('x-request-id', requestId + '-login')
         .send({
           username: 'testingdisabledusers',
           password: 'test',
@@ -180,6 +200,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/register')
+            .set('x-request-id', requestId + '-login')
             .send({
               username: 'testingprototype',
               password: 'test',
@@ -191,6 +212,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/register')
+            .set('x-request-id', requestId + '-login')
             .send({
               username: 'testingspreadsheet',
               password: 'test',
@@ -203,6 +225,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/register')
+            .set('x-request-id', requestId + '-login')
             .send({
               username: 'lingllama',
               password: 'phoneme',
@@ -228,6 +251,7 @@ describe('/ deprecated', function () {
     it('should handle invalid username', function () {
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-login')
         .send({
           username: 'testinglogin',
           password: 'test'
@@ -244,6 +268,7 @@ describe('/ deprecated', function () {
 
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-login')
         .send({
           username: 'testingprototype',
           password: 'wrongpassword'
@@ -258,6 +283,7 @@ describe('/ deprecated', function () {
     it('should handle valid password', function () {
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-login')
         .send({
           username: 'lingllama',
           password: 'phoneme'
@@ -277,6 +303,7 @@ describe('/ deprecated', function () {
     it('should tell users why they are disabled', function () {
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-login')
         .send({
           username: 'testingdisabledusers',
           password: 'test'
@@ -291,6 +318,7 @@ describe('/ deprecated', function () {
     it('should suggest a vaid username', function () {
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-login')
         .send({
           username: 'Jênk iлs',
           password: 'phoneme'
@@ -305,6 +333,7 @@ describe('/ deprecated', function () {
     it('should support ქართული usernames', function () {
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-login')
         .send({
           username: 'ნინო ბერიძე',
           password: 'phoneme'
@@ -323,6 +352,7 @@ describe('/ deprecated', function () {
     it('should accept changepassword', function () {
       return supertest(authWebService)
         .post('/changepassword')
+        .set('x-request-id', requestId + '-changepassword')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -339,6 +369,7 @@ describe('/ deprecated', function () {
     it('should refuse to changepassword if the confirm password doesnt match', function () {
       return supertest(authWebService)
         .post('/changepassword')
+        .set('x-request-id', requestId + '-changepassword')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -355,6 +386,7 @@ describe('/ deprecated', function () {
     it('should refuse to changepassword if the new password is missing', function () {
       return supertest(authWebService)
         .post('/changepassword')
+        .set('x-request-id', requestId + '-changepassword')
         .send({
           username: 'jenkins',
           password: 'phoneme'
@@ -371,6 +403,7 @@ describe('/ deprecated', function () {
     it('should refuse forgotpassword if the user hasnt tried to login (ie doesnt know their username)', function () {
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-forgotpassword')
         .send({
           username: 'testinguserwithemail',
           password: 'test'
@@ -382,6 +415,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/forgotpassword')
+            .set('x-request-id', requestId + '-forgotpassword')
             .send({
               email: 'myemail@example.com'
             });
@@ -397,6 +431,7 @@ describe('/ deprecated', function () {
     it('should refuse to send a password reset if neither email nor username was provided', function () {
       return supertest(authWebService)
         .post('/forgotpassword')
+        .set('x-request-id', requestId + '-forgotpassword')
         .send({})
         .then(function (res) {
           expect(res.body.userFriendlyErrors).to.deep.equal([
@@ -410,6 +445,7 @@ describe('/ deprecated', function () {
     it('should refuse to addroletouser if the user doesnt authenticate at the same time', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins'
         })
@@ -423,6 +459,7 @@ describe('/ deprecated', function () {
     it('should refuse to addroletouser if the corpus is missing', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme'
@@ -437,6 +474,7 @@ describe('/ deprecated', function () {
     it('should refuse to addroletouser if the user(s) to modify are missing', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -454,6 +492,7 @@ describe('/ deprecated', function () {
     it('should refuse to addroletouser if the roles to add and/or remove are missing', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -474,6 +513,7 @@ describe('/ deprecated', function () {
     it('should refuse to add non-existant users to the corpus', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -496,6 +536,7 @@ describe('/ deprecated', function () {
     it('should be able to remove all roles from a user', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -513,6 +554,7 @@ describe('/ deprecated', function () {
           ]);
           return supertest(authWebService)
             .post('/login')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               username: 'testingprototype',
               password: 'test'
@@ -528,6 +570,7 @@ describe('/ deprecated', function () {
     it('should be able to add and remove roles in the same request', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -546,6 +589,7 @@ describe('/ deprecated', function () {
           ]);
           return supertest(authWebService)
             .post('/login')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               username: 'testingprototype',
               password: 'test'
@@ -559,6 +603,7 @@ describe('/ deprecated', function () {
 
           return supertest('http://testingprototype:test@localhost:5984')
             .get('/_session')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               name: 'testingprototype',
               password: 'test'
@@ -596,6 +641,7 @@ describe('/ deprecated', function () {
     it('should accept roles to add and remove from one or or more users', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -614,6 +660,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/addroletouser')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -633,6 +680,7 @@ describe('/ deprecated', function () {
           ]);
           return supertest(authWebService)
             .post('/addroletouser')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -657,6 +705,7 @@ describe('/ deprecated', function () {
 
           return supertest('http://testingprototype:test@localhost:5984')
             .post('/_session')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               name: 'testingprototype',
               password: 'test'
@@ -712,6 +761,7 @@ describe('/ deprecated', function () {
     it('should accept addroletouser from the backbone app', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-addroletouser')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -730,6 +780,7 @@ describe('/ deprecated', function () {
           ]);
           return supertest(authWebService)
             .post('/addroletouser')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -747,6 +798,7 @@ describe('/ deprecated', function () {
 
           return supertest('http://testingprototype:test@localhost:5984')
             .post('/_session')
+            .set('x-request-id', requestId + '-addroletouser')
             .send({
               name: 'testingprototype',
               password: 'test'
@@ -777,6 +829,7 @@ describe('/ deprecated', function () {
     it('should accept deprecated updateroles from the spreadsheet app', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-updateroles')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -805,6 +858,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/updateroles')
+            .set('x-request-id', requestId + '-updateroles')
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -840,6 +894,7 @@ describe('/ deprecated', function () {
     it('should accept new updateroles from the spreadsheet app', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-updateroles')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -868,6 +923,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/updateroles')
+            .set('x-request-id', requestId + '-updateroles')
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -913,6 +969,7 @@ describe('/ deprecated', function () {
     it('should refuse to tell a corpusteam details if the username is not a valid user', function () {
       return supertest(authWebService)
         .post('/corpusteam')
+        .set('x-request-id', requestId + '-corpusteam')
         .send({
           username: 'testingspreadshee',
           connection: {
@@ -929,6 +986,7 @@ describe('/ deprecated', function () {
     it('should accept corpusteam requests from the backbone app', function () {
       return supertest(authWebService)
         .post('/corpusteam')
+        .set('x-request-id', requestId + '-corpusteam')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -961,6 +1019,7 @@ describe('/ deprecated', function () {
     it('should refuse to tell a corpusteam details if the username is a valid user but not on that team', function () {
       return supertest(authWebService)
         .post('/addroletouser')
+        .set('x-request-id', requestId + '-corpusteam')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -992,6 +1051,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/corpusteam')
+            .set('x-request-id', requestId + '-corpusteam')
             .send({
               username: 'testingprototype',
               password: 'test',
@@ -1011,6 +1071,7 @@ describe('/ deprecated', function () {
     it('should accept corpusteam requests from the spreadsheet app', function () {
       return supertest(authWebService)
         .post('/corpusteam')
+        .set('x-request-id', requestId + '-corpusteam')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -1045,6 +1106,7 @@ describe('/ deprecated', function () {
     it('should refuse newcorpus if the title is not specified', function () {
       return supertest(authWebService)
         .post('/newcorpus')
+        .set('x-request-id', requestId + '-newcorpus')
         .send({
           username: 'jenkins',
           password: 'phoneme'
@@ -1059,6 +1121,7 @@ describe('/ deprecated', function () {
     it('should create a corpus', function () {
       return supertest(authWebService)
         .post('/newcorpus')
+        .set('x-request-id', requestId + '-newcorpus')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -1084,6 +1147,7 @@ describe('/ deprecated', function () {
 
           return supertest(authWebService)
             .post('/newcorpus')
+            .set('x-request-id', requestId + '-newcorpus')
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -1103,6 +1167,7 @@ describe('/ deprecated', function () {
     it('should create a branded corpus', function () {
       return supertest(authWebService)
         .post('/newcorpus')
+        .set('x-request-id', requestId + '-newcorpus')
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -1121,6 +1186,7 @@ describe('/ deprecated', function () {
     it('should try to create all corpora listed in the user', function () {
       return supertest(authWebService)
         .post('/login')
+        .set('x-request-id', requestId + '-syncDetails')
         .send({
           username: 'jenkins',
           password: 'phoneme',
