@@ -1,0 +1,15 @@
+PUT /testuser8-an_offline_corpus_created_in_the_prototype
+x-request-id: lib-corpus
+content-type: application/json
+accept: application/json
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 412 Precondition Failed
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Wed, 03 Nov 2021 17:54:09 GMT
+content-type: application/json
+content-length: 95
+cache-control: must-revalidate
+
+{"error":"file_exists","reason":"The database could not be created, the file already exists."}

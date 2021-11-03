@@ -1,0 +1,18 @@
+GET /theuserscouch/_design/users/_view/userWhoHaveTroubleLoggingIn?key=%22myemail@example.com%22
+x-request-id: userauthentication
+content-type: application/json
+accept: application/json
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "AFIBQ2BJIWQA9H66E255ZMTXZ"
+date: Wed, 03 Nov 2021 17:54:08 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":0,"offset":0,"rows":[
+
+]}

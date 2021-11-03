@@ -1,0 +1,19 @@
+GET /_users/_design/users/_view/normalusers
+x-request-id: deprecated-spec-corpusteam
+content-type: application/json
+accept: application/json
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "DN78YSFI3VF6WSF9YHDM04PRR"
+date: Wed, 03 Nov 2021 17:54:09 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":2,"offset":0,"rows":[
+{"id":"org.couchdb.user:jenkins","key":"jenkins","value":["jenkins-firstcorpus_admin","jenkins-firstcorpus_writer","jenkins-firstcorpus_reader","jenkins-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","lingllama-communitycorpus_writer","lingllama-communitycorpus_reader","lingllama-communitycorpus_commenter","jenkins-testing_v3_32_01_admin","jenkins-testing_v3_32_01_writer","jenkins-testing_v3_32_01_reader","jenkins-testing_v3_32_01_commenter","jenkins-georgian_admin","jenkins-georgian_writer","jenkins-georgian_reader","jenkins-georgian_commenter","jenkins-an_offline_corpus_created_in_the_prototype_admin","jenkins-an_offline_corpus_created_in_the_prototype_writer","jenkins-an_offline_corpus_created_in_the_prototype_reader","jenkins-an_offline_corpus_created_in_the_prototype_commenter"]},
+{"id":"org.couchdb.user:lingllama","key":"lingllama","value":["lingllama-firstcorpus_admin","lingllama-firstcorpus_writer","lingllama-firstcorpus_reader","lingllama-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","lingllama-communitycorpus_writer","lingllama-communitycorpus_reader","lingllama-communitycorpus_commenter"]}
+]}

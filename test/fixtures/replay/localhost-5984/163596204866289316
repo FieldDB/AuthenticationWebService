@@ -1,0 +1,13 @@
+DELETE /_users/org.couchdb.user%3Ajenkins?rev=1-4763d9b21f354ddb981d70fc724459d6
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "2-5c003b89169c87b927f8a6143c9aa30f"
+date: Wed, 03 Nov 2021 17:54:08 GMT
+content-type: text/plain; charset=utf-8
+content-length: 87
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:jenkins","rev":"2-5c003b89169c87b927f8a6143c9aa30f"}
