@@ -132,6 +132,7 @@ describe('AsToken', function () {
         });
 
         var verified = AsToken.verify(mutated);
+        expect(verified).to.equal('Should not get here');
       } catch (err) {
         expect(err.message).to.deep.equal('invalid signature');
       }

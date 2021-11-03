@@ -1,7 +1,6 @@
 /* Load modules provided by $ npm install, see package.json for details */
 var swagger = require('@cesine/swagger-node-express');
 var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
-var appVersion = require('../package.json').version;
 exports.getData = {
   spec: {
     path: '/corpora/{dbname}/data/{id}',
@@ -14,7 +13,7 @@ exports.getData = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'getData'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has read permissions
     // Return the data
     res.send({});
@@ -32,7 +31,7 @@ exports.postData = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'postData'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has write permissions
     // Create the data
     res.send({});
@@ -50,7 +49,7 @@ exports.putData = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'putData'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has write permissions
     // Update the data
     res.send({});
@@ -68,7 +67,7 @@ exports.deleteData = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'deleteData'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has write permissions
     // Update the data as deleted
     res.send({});

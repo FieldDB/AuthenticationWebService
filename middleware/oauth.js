@@ -1,7 +1,6 @@
 var debug = require('debug')('middleware:oauth');
 var OAuthServer = require('express-oauth-server');
 var OAuthClient = require('./../models/oauth-client');
-var errorMiddleware = require('./error-handler').errorHandler;
 
 var oauth = new OAuthServer({
   debug: /(oauth)/.test(process.env.DEBUG),

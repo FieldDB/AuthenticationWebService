@@ -9,6 +9,7 @@ var cleanErrorStatus = function (status) {
   return '';
 };
 
+// eslint-disable-next-line no-unused-vars
 var errorHandler = function (err, req, res, next) {
   var data;
   var NODE_ENV = process.env.NODE_ENV;

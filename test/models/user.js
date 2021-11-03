@@ -170,7 +170,7 @@ describe('models/user', function () {
           deletedReason: '',
           username: json.username,
           // content wont be sanitized
-          description: '<script src=\"http://haha.com/cleanme\"></script>',
+          description: '<script src="http://haha.com/cleanme"></script>',
           email: 'example@example.com',
           // wont be over written
           gravatar: 'previouslydeterminedstring',
@@ -477,7 +477,7 @@ describe('models/user', function () {
         password: 'nottherightpassword',
         newPassword: 'attempedpassword'
       };
-      User.changePassword(info, function (err, updatedProfile) {
+      User.changePassword(info, function (err) {
         expect(err.message).to.equal('Password doesn\'t match your old password');
 
         done();
@@ -490,7 +490,7 @@ describe('models/user', function () {
         password: 'zKmmfweLj2!h',
         newPassword: 123
       };
-      User.changePassword(info, function (err, updatedProfile) {
+      User.changePassword(info, function (err) {
         expect(err.message).to.equal('data must be a string and salt must either be a salt string or a number of rounds');
 
         done();
