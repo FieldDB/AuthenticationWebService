@@ -83,7 +83,7 @@ describe('/ deprecated', function () {
               }]
             }, 'should replicate the lexicon');
           } else {
-            expect(res.status).to.equal(401); // on a freshly created resource
+            expect(res.status).to.equal(404); // on a freshly created resource
           }
         });
     });
