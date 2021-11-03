@@ -1,3 +1,4 @@
+var debug = require('debug')('test:install');
 var expect = require('chai').expect;
 var path = require('path');
 var replay = require('replay');
@@ -11,11 +12,11 @@ replay.fixtures = path.join(__dirname, '/../fixtures/replay');
 describe('/ deprecated', function () {
   before(function () {
     replay._localhosts = new Set(['127.0.0.1', '::1']);
-    console.log('before replay localhosts', replay._localhosts);
+    debug('before replay localhosts', replay._localhosts);
   });
   after(function () {
     replay._localhosts = originalLocalhosts;
-    console.log('after replay localhosts', replay._localhosts);
+    debug('after replay localhosts', replay._localhosts);
   });
 
   describe('/register', function () {
@@ -33,7 +34,7 @@ describe('/ deprecated', function () {
               'Username testingv3_32 already exists, try a different username.'
             ]);
           } else {
-            console.log(JSON.stringify(res.body));
+            debug(JSON.stringify(res.body));
             expect(res.body.user.username).to.equal('testingv3_32');
             expect(res.body.user.appbrand).to.equal(undefined);
           }
@@ -44,7 +45,7 @@ describe('/ deprecated', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.status).to.equal(200, 'should have roles');
           expect(res.body).to.deep.equal({
             ok: true,
@@ -74,7 +75,7 @@ describe('/ deprecated', function () {
         })
         .then(function (res) {
           if (res.status === 200) {
-            console.log(JSON.stringify(res.body));
+            debug(JSON.stringify(res.body));
             expect(res.status).to.equal(200, 'should replicate the lexicon');
             expect(res.body).to.deep.equal({
               rows: [{
@@ -106,7 +107,7 @@ describe('/ deprecated', function () {
               'Username anonymouswordclouduser1401365327719 already exists, try a different username.'
             ]);
           } else {
-            console.log(JSON.stringify(res.body));
+            debug(JSON.stringify(res.body));
             expect(res.body.user.username).to.equal('anonymouswordclouduser1401365327719');
             expect(res.body.user.appbrand).to.equal('ilanguagecloud');
           }
@@ -131,7 +132,7 @@ describe('/ deprecated', function () {
               'Username testingphophlo already exists, try a different username.'
             ]);
           } else {
-            console.log(JSON.stringify(res.body));
+            debug(JSON.stringify(res.body));
             expect(res.body.user.username).to.equal('testingphophlo');
             expect(res.body.user.appbrand).to.equal('phophlo');
           }
@@ -153,7 +154,7 @@ describe('/ deprecated', function () {
               'Username jenkins already exists, try a different username.'
             ]);
           } else {
-            console.log(JSON.stringify(res.body));
+            debug(JSON.stringify(res.body));
             expect(res.body.user.username).to.equal('jenkins');
             expect(res.body.user.appbrand).to.equal('learnx');
           }
@@ -205,7 +206,7 @@ describe('/ deprecated', function () {
           }
         })
         .then(function (res) {
-          console.log('register testingdisabledusers', res.body);
+          debug('register testingdisabledusers', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -217,7 +218,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testingprototype', res.body);
+          debug('register testingprototype', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -229,7 +230,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testingspreadsheet', res.body);
+          debug('register testingspreadsheet', res.body);
           process.env.INSTALABLE = 'true';
 
           return supertest(authWebService)
@@ -253,7 +254,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register lingllama', res.body);
+          debug('register lingllama', res.body);
         });
     });
 
@@ -436,7 +437,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body.userFriendlyErrors).to.deep.equal([
             'Sorry, there are no users who have failed to login who have the email you provided myemail@example.com. You cannot request a temporary password until you have at least tried to login once with your correct username. If you are not able to guess your username please contact us for assistance.'
           ]);
@@ -471,7 +472,7 @@ describe('/ deprecated', function () {
           password: 'test'
         })
         .then(function (res) {
-          console.log('register testuser1', res.body);
+          debug('register testuser1', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -483,7 +484,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testuser2', res.body);
+          debug('register testuser2', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -495,7 +496,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testuser3', res.body);
+          debug('register testuser3', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -507,7 +508,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testuser4', res.body);
+          debug('register testuser4', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -519,7 +520,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testuser41', res.body);
+          debug('register testuser41', res.body);
         });
     });
 
@@ -684,7 +685,7 @@ describe('/ deprecated', function () {
         })
         .then(function (res) {
           var response = JSON.stringify(res.body);
-          console.log('response', response);
+          debug('response', response);
           expect(response).to.contain('testingprototype-firstcorpus');
           expect(response).to.contain('jenkins-firstcorpus');
 
@@ -698,7 +699,7 @@ describe('/ deprecated', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.status).to.equal(200, 'should have roles');
           expect(res.body).to.deep.equal({
             ok: true,
@@ -764,7 +765,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
             'User testingspreadsheet was removed from the jenkins-firstcorpus team.'
           ]);
@@ -824,7 +825,7 @@ describe('/ deprecated', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
@@ -868,7 +869,7 @@ describe('/ deprecated', function () {
           }]
         })
         .then(function (res) {
-          console.log('res.body', res.body);
+          debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
             'User testingprototype was removed from the jenkins-firstcorpus team.'
           ]);
@@ -971,7 +972,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
@@ -1037,7 +1038,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
@@ -1095,7 +1096,7 @@ describe('/ deprecated', function () {
           }
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body.users.readers).to.deep.equal([{
             username: 'jenkins',
             gravatar: 'ab63a76362c3972ac83d5cb8830fdb51'
@@ -1128,7 +1129,7 @@ describe('/ deprecated', function () {
           }
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body.userFriendlyErrors).to.deep.equal([
             'Unauthorized, you are not a member of this corpus team.'
           ]);
@@ -1146,7 +1147,7 @@ describe('/ deprecated', function () {
           dbname: 'jenkins-firstcorpus'
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
 
           expect(res.body.users.readers).to.deep.equal([{
             username: 'jenkins',
@@ -1184,7 +1185,7 @@ describe('/ deprecated', function () {
           password: 'test'
         })
         .then(function (res) {
-          console.log('register testuser5', res.body);
+          debug('register testuser5', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -1195,7 +1196,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testuser6', res.body);
+          debug('register testuser6', res.body);
 
           return supertest(authWebService)
             .post('/register')
@@ -1206,7 +1207,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log('register testuser7', res.body);
+          debug('register testuser7', res.body);
         });
     });
 
@@ -1235,7 +1236,7 @@ describe('/ deprecated', function () {
           newCorpusName: 'Testing v3.32.01'
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body.corpusadded).to.equal(true);
 
           return supertest('http://testuser6:test@localhost:5984')
@@ -1244,7 +1245,7 @@ describe('/ deprecated', function () {
             .set('Accept', 'application/json');
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           if (res.status === 200) {
             expect(res.status).to.equal(200, 'should replicate the lexicon');
             expect(res.body).to.deep.equal({
@@ -1267,7 +1268,7 @@ describe('/ deprecated', function () {
             });
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           // conflict due to replay
           if (res.status === 409) {
             expect(res.body.userFriendlyErrors).to.deep.equal([
@@ -1294,7 +1295,7 @@ describe('/ deprecated', function () {
           newCorpusName: 'Georgian'
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body.corpusadded).to.equal(true);
           expect(res.body.connection.brandLowerCase).to.equal('georgiantogether');
         });
@@ -1316,7 +1317,7 @@ describe('/ deprecated', function () {
 
         })
         .then(function (res) {
-          console.log('register testuser8', res.body);
+          debug('register testuser8', res.body);
         });
     });
     it('should try to create all corpora listed in the user', function () {
@@ -1340,7 +1341,7 @@ describe('/ deprecated', function () {
           }
         })
         .then(function (res) {
-          console.log(JSON.stringify(res.body));
+          debug(JSON.stringify(res.body));
           expect(res.body.user.corpora.length).to.equal(1);
           expect(res.body.user.newCorpora.length).to.equal(3);
 
@@ -1361,7 +1362,7 @@ describe('/ deprecated', function () {
           if (res.status === 200) {
             expect(res.body.total_rows).to.equal(1);
           } else {
-            console.log('syncDetails', JSON.stringify(res.body));
+            debug('syncDetails', JSON.stringify(res.body));
             expect(res.status).to.equal(401); // when running on a freshly created resources
           }
         });
