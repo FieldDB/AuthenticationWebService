@@ -39,21 +39,6 @@ describe('/ deprecated', function () {
           }
 
           return supertest('http://testingv3_32:test@localhost:5984')
-            .get('/testingv3_32-firstcorpus/_design/lexicon/_view/lexiconNodes')
-            // .set('x-request-id', requestId + '-register')
-            .set('Accept', 'application/json');
-        })
-        .then(function (res) {
-          console.log(JSON.stringify(res.body));
-          expect(res.status).to.equal(200, 'should replicate the lexicon');
-          expect(res.body).to.deep.equal({
-            rows: [{
-              key: null,
-              value: 6
-            }]
-          }, 'should replicate the lexicon');
-
-          return supertest('http://testingv3_32:test@localhost:5984')
             .get('/_session')
             .set('x-request-id', requestId + '-register')
             .set('Accept', 'application/json');
@@ -81,6 +66,25 @@ describe('/ deprecated', function () {
               authenticated: 'default'
             }
           }, 'should have roles');
+
+          return supertest('http://testingv3_32:test@localhost:5984')
+            .get('/testingv3_32-firstcorpus/_design/lexicon/_view/lexiconNodes')
+            // .set('x-request-id', requestId + '-register')
+            .set('Accept', 'application/json');
+        })
+        .then(function (res) {
+          if (res.status === 200) {
+            console.log(JSON.stringify(res.body));
+            expect(res.status).to.equal(200, 'should replicate the lexicon');
+            expect(res.body).to.deep.equal({
+              rows: [{
+                key: null,
+                value: 6
+              }]
+            }, 'should replicate the lexicon');
+          } else {
+            expect(res.status).to.equal(401); // on a freshly created resource
+          }
         });
     });
 
@@ -1337,21 +1341,25 @@ describe('/ deprecated', function () {
           expect(res.body.user.newCorpora.length).to.equal(3);
 
           return supertest('http://testuser8:test@localhost:5984')
-            .get('/testuser8-an_offline_corpus_created_in_the_prototype/_design/deprecated/_view/corpora')
-            // .set('x-request-id', requestId + '-syncDetails')
-            .set('Accept', 'application/json');
-        })
-        .then(function (res) {
-          console.log('syncDetails', JSON.stringify(res.body));
-          expect(res.body.total_rows).to.equal(1);
-
-          return supertest('http://testuser8:test@localhost:5984')
             .get('/someoneelsesdb-shouldnt_be_creatable')
             .set('x-request-id', requestId + '-syncDetails')
             .set('Accept', 'application/json');
         })
         .then(function (res) {
           expect(res.status).to.equal(404);
+
+          return supertest('http://testuser8:test@localhost:5984')
+            .get('/testuser8-an_offline_corpus_created_in_the_prototype/_design/deprecated/_view/corpora')
+            // .set('x-request-id', requestId + '-syncDetails')
+            .set('Accept', 'application/json');
+        })
+        .then(function (res) {
+          if (res.status === 200) {
+            expect(res.body.total_rows).to.equal(1);
+          } else {
+            console.log('syncDetails', JSON.stringify(res.body));
+            expect(res.status).to.equal(401); // when running on a freshly created resources
+          }
         });
     });
   });
