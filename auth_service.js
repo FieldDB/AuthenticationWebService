@@ -74,7 +74,7 @@ authWebService.use(bunyan({
     stream: process.stdout
   }]
 }));
-authWebService.use(function (req, res, next) {
+authWebService.use(function requestIdMiddleware(req, res, next) {
   if (req.headers && req.headers['x-request-id']) {
     req.id = req.headers['x-request-id'];
   }
