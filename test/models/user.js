@@ -494,7 +494,9 @@ describe('models/user', function () {
         newPassword: 123
       };
       User.changePassword(info, function (err) {
-        expect(err.message).to.equal('data must be a string or Buffer and salt must either be a salt string or a number of rounds');
+        // eslint-disable-next-line no-console
+        console.log('err', err);
+        expect(err.message).to.equal('Illegal arguments: number, string');
 
         done();
       });

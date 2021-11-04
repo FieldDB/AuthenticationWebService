@@ -221,7 +221,7 @@ function getClient(clientId, clientSecret) {
       // examples show that that this is required, but when called via oauth.authorize it is missing
       // client_secret: clientSecret,
       deletedAt: null
-    },
+    }
   }).then(function whenClientFound(client) {
     var json;
     if (!client) {
