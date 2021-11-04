@@ -84,7 +84,7 @@ describe('/ deprecated', function () {
               }]
             }, 'should replicate the lexicon');
           } else {
-            expect(res.status).to.equal(404); // on a freshly created resource
+            expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
           }
         });
     });
@@ -1255,7 +1255,7 @@ describe('/ deprecated', function () {
               }]
             }, 'should replicate the lexicon');
           } else {
-            expect(res.status).to.equal(404); // delay in lexicon creation on new resources
+            expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
           }
 
           return supertest(authWebService)
