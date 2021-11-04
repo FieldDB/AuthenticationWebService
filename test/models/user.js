@@ -494,12 +494,10 @@ describe('models/user', function () {
         newPassword: 123
       };
       User.changePassword(info, function (err) {
-        expect(err.message).to.equal('data must be a string and salt must either be a salt string or a number of rounds');
+        expect(err.message).to.equal('data must be a string or Buffer and salt must either be a salt string or a number of rounds');
 
         done();
-      }, function () {
-          done(new Error('should not succeed'));
-        });
+      });
     });
   });
 
