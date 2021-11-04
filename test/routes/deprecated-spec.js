@@ -1363,7 +1363,7 @@ describe('/ deprecated', function () {
             expect(res.body.total_rows).to.equal(1);
           } else {
             debug('syncDetails', JSON.stringify(res.body));
-            expect(res.status).to.equal(401); // when running on a freshly created resources
+            expect(res.status).to.be.oneOf([401, 404]); // delay in views creation on new resources
           }
         });
     });
