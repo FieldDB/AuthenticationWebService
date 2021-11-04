@@ -2,7 +2,6 @@ GET /theuserscouch/_design/users/_view/userWhoHaveTroubleLoggingIn?key=%22myemai
 x-request-id: lib-userauthentication
 content-type: application/json
 accept: application/json
-host: corpusdev.example.org:5984
 authorization: Basic YWRtaW46bm9uZQ==
 
 HTTP/1.1 200 OK

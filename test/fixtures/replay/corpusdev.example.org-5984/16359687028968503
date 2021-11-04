@@ -2,7 +2,6 @@ GET /_users/_design/users/_view/normalusers
 x-request-id: deprecated-spec-corpusteam
 content-type: application/json
 accept: application/json
-host: corpusdev.example.org:5984
 authorization: Basic YWRtaW46bm9uZQ==
 
 HTTP/1.1 200 OK
