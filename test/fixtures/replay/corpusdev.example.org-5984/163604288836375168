@@ -1,13 +1,13 @@
 GET /theuserscouch/testingv3_32
+accept: application/json
+accept-encoding: deflate, gzip
 x-request-id: lib-userauthentication
 content-type: application/json
-accept: application/json
-authorization: Basic YWRtaW46bm9uZQ==
 
 HTTP/1.1 200 OK
 server: CouchDB/1.6.1 (Erlang OTP/17)
 etag: "1-a06b7de69bfd9d35c7dd895ab3ba8e8b"
-date: Wed, 03 Nov 2021 19:45:02 GMT
+date: Thu, 04 Nov 2021 16:21:28 GMT
 content-type: application/json
 content-length: 4381
 cache-control: must-revalidate

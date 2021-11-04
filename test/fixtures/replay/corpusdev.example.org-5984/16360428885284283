@@ -1,0 +1,31 @@
+GET /_users/_design/users/_view/betatesters
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-corpusteam
+content-type: application/json
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "9XEW8VFURKDYJDDZ87ADWZBYJ"
+date: Thu, 04 Nov 2021 16:21:28 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":15,"offset":0,"rows":[
+{"id":"org.couchdb.user:anonymouswordclouduser1401365327719","key":"anonymouswordclouduser1401365327719","value":["anonymouswordclouduser1401365327719-firstcorpus_admin","anonymouswordclouduser1401365327719-firstcorpus_writer","anonymouswordclouduser1401365327719-firstcorpus_reader","anonymouswordclouduser1401365327719-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testingdisabledusers","key":"testingdisabledusers","value":["testingdisabledusers-firstcorpus_admin","testingdisabledusers-firstcorpus_writer","testingdisabledusers-firstcorpus_reader","testingdisabledusers-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testingphophlo","key":"testingphophlo","value":["testingphophlo-phophlo_admin","testingphophlo-phophlo_writer","testingphophlo-phophlo_reader","testingphophlo-phophlo_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testingprototype","key":"testingprototype","value":["jenkins-firstcorpus_reader","jenkins-firstcorpus_commenter","testingprototype-firstcorpus_admin","testingprototype-firstcorpus_writer","testingprototype-firstcorpus_reader","testingprototype-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testingspreadsheet","key":"testingspreadsheet","value":["jenkins-firstcorpus_writer","jenkins-firstcorpus_commenter","jenkins-firstcorpus_reader","testingspreadsheet-firstcorpus_admin","testingspreadsheet-firstcorpus_writer","testingspreadsheet-firstcorpus_reader","testingspreadsheet-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testingv3_32","key":"testingv3_32","value":["testingv3_32-firstcorpus_admin","testingv3_32-firstcorpus_writer","testingv3_32-firstcorpus_reader","testingv3_32-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testuser1","key":"testuser1","value":["testuser1-firstcorpus_admin","testuser1-firstcorpus_writer","testuser1-firstcorpus_reader","testuser1-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testuser2","key":"testuser2","value":["testuser2-firstcorpus_admin","testuser2-firstcorpus_writer","testuser2-firstcorpus_reader","testuser2-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testuser3","key":"testuser3","value":["testuser3-firstcorpus_admin","testuser3-firstcorpus_writer","testuser3-firstcorpus_reader","testuser3-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testuser4","key":"testuser4","value":["testuser4-firstcorpus_admin","testuser4-firstcorpus_writer","testuser4-firstcorpus_reader","testuser4-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testuser41","key":"testuser41","value":["testuser41-firstcorpus_admin","testuser41-firstcorpus_writer","testuser41-firstcorpus_reader","testuser41-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testuser5","key":"testuser5","value":["testuser5-firstcorpus_admin","testuser5-firstcorpus_writer","testuser5-firstcorpus_reader","testuser5-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},
+{"id":"org.couchdb.user:testuser6","key":"testuser6","value":["testuser6-firstcorpus_admin","testuser6-firstcorpus_writer","testuser6-firstcorpus_reader","testuser6-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","testuser6-testing_v3_32_01_admin","testuser6-testing_v3_32_01_writer","testuser6-testing_v3_32_01_reader","testuser6-testing_v3_32_01_commenter"]},
+{"id":"org.couchdb.user:testuser7","key":"testuser7","value":["testuser7-firstcorpus_admin","testuser7-firstcorpus_writer","testuser7-firstcorpus_reader","testuser7-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","testuser7-georgian_admin","testuser7-georgian_writer","testuser7-georgian_reader","testuser7-georgian_commenter"]},
+{"id":"org.couchdb.user:testuser8","key":"testuser8","value":["testuser8-firstcorpus_admin","testuser8-firstcorpus_writer","testuser8-firstcorpus_reader","testuser8-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","testuser8-an_offline_corpus_created_in_the_prototype_admin","testuser8-an_offline_corpus_created_in_the_prototype_writer","testuser8-an_offline_corpus_created_in_the_prototype_reader","testuser8-an_offline_corpus_created_in_the_prototype_commenter"]}
+]}
