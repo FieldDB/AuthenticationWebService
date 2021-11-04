@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var debug = require('debug')('model:user');
 var lodash = require('lodash');
