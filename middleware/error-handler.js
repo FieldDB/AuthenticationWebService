@@ -1,8 +1,8 @@
-var debug = require('debug')('middleware:error');
+const debug = require('debug')('middleware:error');
 
-var BUNYAN_LOG_LEVEL = process.env.BUNYAN_LOG_LEVEL;
+const { BUNYAN_LOG_LEVEL } = process.env;
 
-var cleanErrorStatus = function (status) {
+const cleanErrorStatus = function (status) {
   if (status && status < 600) {
     return status;
   }
@@ -10,10 +10,10 @@ var cleanErrorStatus = function (status) {
 };
 
 // eslint-disable-next-line no-unused-vars
-var errorHandler = function (err, req, res, next) {
-  var data;
-  var NODE_ENV = process.env.NODE_ENV;
-  debug('errorHandler ' + NODE_ENV + ' ' + req.url, err);
+const errorHandler = function (err, req, res, next) {
+  let data;
+  const { NODE_ENV } = process.env;
+  debug(`errorHandler ${NODE_ENV} ${req.url}`, err);
 
   if (res.headersSent) {
     console.warn('This request has already been replied to', err);
@@ -26,7 +26,7 @@ var errorHandler = function (err, req, res, next) {
       message: err.message,
       stack: err.stack,
       url: err.url,
-      details: err.details
+      details: err.details,
     };
     if (data.details && data.details.url) {
       delete data.details.url;
@@ -35,7 +35,7 @@ var errorHandler = function (err, req, res, next) {
     // production error handler
     debug('using production error handler', NODE_ENV);
     data = {
-      message: err.message
+      message: err.message,
     };
   }
   data.status = cleanErrorStatus(err.statusCode || err.status) || 500;
@@ -88,13 +88,13 @@ var errorHandler = function (err, req, res, next) {
     data.stack = data.stack ? data.stack.toString() : undefined;
     data.message = 'Internal server error';
     if (BUNYAN_LOG_LEVEL !== 'FATAL') {
-      console.log(new Date() + 'There was an unexpected error ' + process.env.NODE_ENV + req.url, err);
+      console.log(`${new Date()}There was an unexpected error ${process.env.NODE_ENV}${req.url}`, err);
     }
   } else {
     data.message = err.message;
   }
   req.log.fields.err = {
-    stack: err.stack, message: err.message
+    stack: err.stack, message: err.message,
   };
 
   if (req.headers['x-requested-with'] === 'XMLHttpRequest' || /application\/json/.test(req.headers['content-type'])) {
@@ -103,7 +103,7 @@ var errorHandler = function (err, req, res, next) {
 
   return res.json({
     status: data.status,
-    userFriendlyErrors: data.userFriendlyErrors
+    userFriendlyErrors: data.userFriendlyErrors,
   });
 };
 

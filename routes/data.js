@@ -1,6 +1,7 @@
 /* Load modules provided by $ npm install, see package.json for details */
-var swagger = require('@cesine/swagger-node-express');
-var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
+const swagger = require('@cesine/swagger-node-express');
+const param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
+
 exports.getData = {
   spec: {
     path: '/corpora/{dbname}/data/{id}',
@@ -11,13 +12,13 @@ exports.getData = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'getData'
+    nickname: 'getData',
   },
   action: function action(req, res) {
     // If the user has read permissions
     // Return the data
     res.send({});
-  }
+  },
 };
 exports.postData = {
   spec: {
@@ -29,13 +30,13 @@ exports.postData = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'postData'
+    nickname: 'postData',
   },
   action: function action(req, res) {
     // If the user has write permissions
     // Create the data
     res.send({});
-  }
+  },
 };
 exports.putData = {
   spec: {
@@ -47,13 +48,13 @@ exports.putData = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'putData'
+    nickname: 'putData',
   },
   action: function action(req, res) {
     // If the user has write permissions
     // Update the data
     res.send({});
-  }
+  },
 };
 exports.deleteData = {
   spec: {
@@ -65,11 +66,11 @@ exports.deleteData = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'deleteData'
+    nickname: 'deleteData',
   },
   action: function action(req, res) {
     // If the user has write permissions
     // Update the data as deleted
     res.send({});
-  }
+  },
 };

@@ -1,25 +1,25 @@
-var AsToken = require('../lib/token');
-var debug = require('debug')('middleware:authentication');
-var ExtractJwt = require('passport-jwt').ExtractJwt;
-var JwtStrategy = require('passport-jwt').Strategy;
-var passport = require('passport');
+const AsToken = require('../lib/token');
+const debug = require('debug')('middleware:authentication');
+const { ExtractJwt } = require('passport-jwt');
+const JwtStrategy = require('passport-jwt').Strategy;
+const passport = require('passport');
 
-var config = require('config');
-var user = require('./../models/user');
+const config = require('config');
+const user = require('../models/user');
 
-var opts = {
+const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: AsToken.config.jwt.private,
   issuer: config.url,
-  audience: 'anythings.net'
+  audience: 'anythings.net',
 };
 
-passport.use(new JwtStrategy(opts, function (jwtPayload, done) {
+passport.use(new JwtStrategy(opts, ((jwtPayload, done) => {
   debug(' ', jwtPayload);
 
   user.read({
-    username: jwtPayload.sub
-  }, function (err, userModel) {
+    username: jwtPayload.sub,
+  }, (err, userModel) => {
     if (err) {
       return done(err, false);
     }
@@ -30,10 +30,10 @@ passport.use(new JwtStrategy(opts, function (jwtPayload, done) {
       // or you could create a new account
     }
   });
-}));
+})));
 
 function jwt(req, res, next) {
-  var tokenString;
+  let tokenString;
   if (req && req.headers && req.headers.authorization
     && req.headers.authorization.indexOf('Bearer ') > -1) {
     tokenString = req.headers.authorization;
@@ -41,16 +41,12 @@ function jwt(req, res, next) {
   } else if (req && req.headers && req.headers.cookie
     && req.headers.cookie.indexOf('Authorization=Bearer ') > -1) {
     debug('used cookie', req.headers.cookie);
-    tokenString = req.headers.cookie.split(';').filter(function (cookie) {
-      return cookie.indexOf('Authorization') > -1;
-    }).map(function (cookie) {
-      return cookie.replace('Authorization=', '').trim();
-    }).join('');
+    tokenString = req.headers.cookie.split(';').filter((cookie) => cookie.indexOf('Authorization') > -1).map((cookie) => cookie.replace('Authorization=', '').trim()).join('');
     debug('used cookie', req.headers.cookie);
   }
   if (tokenString) {
     try {
-      var verified = AsToken.verify(tokenString);
+      const verified = AsToken.verify(tokenString);
       res.locals.user = req.user = verified.user;
       res.locals.token = tokenString;
       // Oauth2 is trying to use this token
@@ -72,7 +68,7 @@ function jwt(req, res, next) {
 }
 
 function requireAuthentication(req, res, next) {
-  var err;
+  let err;
   if (!res.locals.user) {
     err = new Error('You must login to access this data');
     err.status = 403;
@@ -93,7 +89,7 @@ function requireAuthentication(req, res, next) {
 function redirectAuthenticatedUser(req, res, next) {
   if (res.locals.user && !res.locals.user.expired) {
     debug('redirectAuthenticatedUser user', res.locals.user);
-    var redirectUri = req.query.redirect || req.query.redirect_uri || '/v1/users/username';
+    let redirectUri = req.query.redirect || req.query.redirect_uri || '/v1/users/username';
     redirectUri = redirectUri.replace('username', res.locals.user.username);
     debug('redirectAuthenticatedUser', req.url, redirectUri);
     return res.redirect(redirectUri);
@@ -107,8 +103,8 @@ function requireAuthenticationPassportJWT(req, res, next) {
   debug('requireAuthentication', res.locals);
   debug('requireAuthentication', req.headers);
 
-  var middleware = passport.authenticate('jwt', {
-    session: false
+  const middleware = passport.authenticate('jwt', {
+    session: false,
   });
 
   middleware(req, res, next);

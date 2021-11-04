@@ -1,32 +1,30 @@
 /* Load modules provided by $ npm install, see package.json for details */
-var swagger = require('@cesine/swagger-node-express');
-var config = require('config');
-var debug = require('debug')('route:routes');
+const swagger = require('@cesine/swagger-node-express');
+const config = require('config');
+const debug = require('debug')('route:routes');
 
 /* Load modules provided by this codebase */
-var userRoutes = require('./user');
-var authenticationRoutes = require('./authentication');
-var oauthRoutes = require('./oauth2');
-var corporaRoutes = require('./corpora');
-var errorHandler = require('../middleware/error-handler').errorHandler;
-var utterancesRoutes = require('./utterances');
-var filesRoutes = require('./files');
-var dataRoutes = require('./data');
-var eLanguagesRoutes = require('./elanguages');
-var morphologicalParsesRoutes = require('./morphologicalparses');
+const userRoutes = require('./user');
+const authenticationRoutes = require('./authentication');
+const oauthRoutes = require('./oauth2');
+const corporaRoutes = require('./corpora');
+const { errorHandler } = require('../middleware/error-handler');
+const utterancesRoutes = require('./utterances');
+const filesRoutes = require('./files');
+const dataRoutes = require('./data');
+const eLanguagesRoutes = require('./elanguages');
+const morphologicalParsesRoutes = require('./morphologicalparses');
 
-var setup = function setup(api, apiVersion) {
+const setup = function setup(api, apiVersion) {
   debug('apiVersion', apiVersion);
   swagger.configureSwaggerPaths('', '/api', '');
-  swagger.setErrorHandler(function (req, res, error) {
-    return errorHandler(error, req, res);
-  });
+  swagger.setErrorHandler((req, res, error) => errorHandler(error, req, res));
   swagger.setAppHandler(api);
   /* Prepare models for the API Schema info using the info the routes provide */
-  var APIModelShema = {};
+  const APIModelShema = {};
   APIModelShema.models = {
     User: userRoutes.UserSchema,
-    Connection: userRoutes.ConnectionSchema
+    Connection: userRoutes.ConnectionSchema,
   };
   swagger.addModels(APIModelShema);
   /* Declare available APIs */
@@ -40,13 +38,13 @@ var setup = function setup(api, apiVersion) {
       parameters: [],
       responseClass: 'User',
       errorResponses: [],
-      nickname: 'getHealthcheck'
+      nickname: 'getHealthcheck',
     },
     action: function getHealthcheck(req, res) {
       res.json({
-        ok: true
+        ok: true,
       });
-    }
+    },
   });
 
   swagger.addPost(authenticationRoutes.postLogin);

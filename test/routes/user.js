@@ -1,9 +1,9 @@
-var expect = require('chai').expect;
+const { expect } = require('chai');
 
-var user = require('./../../routes/user');
+const user = require('../../routes/user');
 
-describe('routes/user', function () {
-  it('should load', function () {
+describe('routes/user', () => {
+  it('should load', () => {
     expect(user).to.be.a('object');
     expect(user.getUser).to.be.a('object');
     expect(user.getList).to.be.a('object');

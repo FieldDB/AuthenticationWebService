@@ -1,6 +1,6 @@
 #!/usr/local/bin/node
-var bodyParser = require('body-parser');
-var bunyan = require('express-bunyan-logger');
+const bodyParser = require('body-parser');
+const bunyan = require('express-bunyan-logger');
 /**
  * You can control aspects of the deployment by using Environment Variables
  *
@@ -11,26 +11,27 @@ var bunyan = require('express-bunyan-logger');
  * $ NODE_ENV=local             # uses config/local.js
  * $ NODE_ENV=yoursecretconfig  # uses config/yoursecretconfig.js
  */
-var config = require('config');
-var crossOriginResourceSharing = require('cors');
-var debug = require('debug')('auth:service');
-var express = require('express');
-var favicon = require('serve-favicon');
-var path = require('path');
+const config = require('config');
+const crossOriginResourceSharing = require('cors');
+const debug = require('debug')('auth:service');
+const express = require('express');
+const favicon = require('serve-favicon');
+const path = require('path');
 
 /* Load modules provided by this codebase */
-var authenticationMiddleware = require('./middleware/authentication');
-var authWebServiceRoutes = require('./routes/routes');
-var errorHandler = require('./middleware/error-handler').errorHandler;
-var deprecatedRoutes = require('./routes/deprecated');
-var apiVersion = 'v1'; // 'v' + parseInt(require('./package.json').version, 10);
-var corsOptions = {
+const authenticationMiddleware = require('./middleware/authentication');
+const authWebServiceRoutes = require('./routes/routes');
+const { errorHandler } = require('./middleware/error-handler');
+const deprecatedRoutes = require('./routes/deprecated');
+
+const apiVersion = 'v1'; // 'v' + parseInt(require('./package.json').version, 10);
+const corsOptions = {
   credentials: true,
   maxAge: 86400,
   methods: 'HEAD, POST, GET, PUT, PATCH, DELETE',
   allowedHeaders: 'Access-Control-Allow-Origin, access-control-request-headers, accept, accept-charset, accept-encoding, accept-language, authorization, content-length, content-type, host, origin, proxy-connection, referer, user-agent, x-requested-with',
   origin: function isOriginWhiteListed(origin, callback) {
-    var originIsWhitelisted = false;
+    let originIsWhitelisted = false;
     if (/* permit curl */ origin === undefined || /* permit android */ origin === 'null' || origin === null || !origin) {
       originIsWhitelisted = true;
     } else if (origin.search(/^https?:\/\/.*\.lingsync.org$/) > -1
@@ -40,14 +41,14 @@ var corsOptions = {
       || origin.search(/^https?:\/\/.*\.jrwdunham.com$/) > -1) {
       originIsWhitelisted = true;
     }
-    debug(new Date() + ' Responding with CORS options for ' + origin + ' accept as whitelisted is: ' + originIsWhitelisted);
+    debug(`${new Date()} Responding with CORS options for ${origin} accept as whitelisted is: ${originIsWhitelisted}`);
     callback(null, originIsWhitelisted);
-  }
+  },
 };
 /**
  * Use Express to create the authWebService see http://expressjs.com/ for more details
  */
-var authWebService = express();
+const authWebService = express();
 authWebService.use(crossOriginResourceSharing(corsOptions));
 // Accept versions
 // authWebService.use(function versionMiddleware(req, res, next) {
@@ -56,7 +57,7 @@ authWebService.use(crossOriginResourceSharing(corsOptions));
 //   }
 //   next();
 // });
-debug('Accepting api version ' + apiVersion);
+debug(`Accepting api version ${apiVersion}`);
 
 /**
  * Middleware
@@ -71,10 +72,10 @@ authWebService.use(bunyan({
   name: 'fielddb-auth',
   streams: [{
     level: process.env.BUNYAN_LOG_LEVEL || 'warn',
-    stream: process.stdout
-  }]
+    stream: process.stdout,
+  }],
 }));
-authWebService.use(function (req, res, next) {
+authWebService.use((req, res, next) => {
   if (req.headers && req.headers['x-request-id']) {
     req.id = req.headers['x-request-id'];
   }
@@ -88,7 +89,7 @@ authWebService.use(function (req, res, next) {
 // }));
 authWebService.use(bodyParser.json());
 authWebService.use(bodyParser.urlencoded({
-  extended: true
+  extended: true,
 }));
 // authWebService.use(methodOverride());
 // authWebService.use(authWebService.router);
@@ -97,7 +98,7 @@ authWebService.use(bodyParser.urlencoded({
  * we are still serving a user interface for the api sandbox in the public folder
  */
 authWebService.use(express.static(path.join(__dirname, 'public')));
-authWebService.options('*', function options(req, res) {
+authWebService.options('*', (req, res) => {
   if (req.method === 'OPTIONS') {
     debug('responding to OPTIONS request');
     res.send(204);
@@ -122,10 +123,10 @@ deprecatedRoutes.addDeprecatedRoutes(authWebService, config);
 /**
  * Not found
  */
-authWebService.use(function notFoundMiddleware(req, res, next) {
+authWebService.use((req, res, next) => {
   // if (apiRegex.test(req.path) || req.method !== 'GET') {
-  var err = new Error('Not Found');
-  debug(req.url + ' was not found/handled');
+  const err = new Error('Not Found');
+  debug(`${req.url} was not found/handled`);
   err.status = 404;
   return next(err, req, res, next);
   // }

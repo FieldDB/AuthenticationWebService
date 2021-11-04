@@ -1,11 +1,11 @@
-var expect = require('chai').expect;
-var sinon = require('sinon');
+const { expect } = require('chai');
+const sinon = require('sinon');
 
-var oauth = require('./../../routes/oauth2');
-var oauthModel = require('./../../models/oauth-client');
+const oauth = require('../../routes/oauth2');
+const oauthModel = require('../../models/oauth-client');
 
-describe('routes/oauth2', function () {
-  it('should load', function () {
+describe('routes/oauth2', () => {
+  it('should load', () => {
     expect(oauth).to.be.a('object');
     expect(oauth.getAuthorize).to.be.a('object');
     expect(oauth.getToken).to.not.be.a('object');
@@ -13,11 +13,11 @@ describe('routes/oauth2', function () {
     expect(oauth.postToken).to.be.a('object');
   });
 
-  it('should postToken', function (done) {
-    var req = {
+  it('should postToken', (done) => {
+    const req = {
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'content-length': 2
+        'content-length': 2,
       },
       method: 'POST',
       query: {},
@@ -25,57 +25,57 @@ describe('routes/oauth2', function () {
         client_id: 'test-mock-client',
         client_secret: 'test-mock-secret',
         grant_type: 'authorization_code',
-        code: 'ABC'
+        code: 'ABC',
       },
       log: {
-        fields: {}
-      }
+        fields: {},
+      },
     };
 
-    var res = {
+    const res = {
       headers: {},
       locals: {},
-      set: function () {},
-      status: function () {
+      set() {},
+      status() {
         return this;
       },
-      json: function () {
+      json() {
         return this;
       },
-      send: function () {
+      send() {
         return this;
-      }
+      },
     };
-    var mockCode = {
+    const mockCode = {
       client: {
-        id: 'test-mock-client'
+        id: 'test-mock-client',
       },
       user: {
-        something: 'here'
+        something: 'here',
       },
-      expiresAt: new Date(Date.now() + 1000)
+      expiresAt: new Date(Date.now() + 1000),
     };
 
-    var mockClient = {
+    const mockClient = {
       id: 'test-mock-client',
       client: {
         id: 'test-mock-client',
         client_id: 'test-mock-client',
-        other: 'stuff'
+        other: 'stuff',
       },
       grants: ['authorization_code'],
-      redirectUris: ['somewhere']
+      redirectUris: ['somewhere'],
     };
 
     sinon.stub(oauthModel, 'getAuthorizationCode').returns(mockCode);
     sinon.stub(oauthModel, 'getClient').returns(mockClient);
 
-    oauth.postToken.action(req, res, function (err) {
+    oauth.postToken.action(req, res, (err) => {
       expect(err).to.equal(undefined);
     });
 
     // Workaround to test the fact that the next is not called unless there is an error.
-    setTimeout(function () {
+    setTimeout(() => {
       expect(res.locals).to.deep.equal({
         oauth: {
           token: {
@@ -85,9 +85,9 @@ describe('routes/oauth2', function () {
             client: mockClient.client,
             user: mockCode.user,
             refreshToken: res.locals.oauth.token.refreshToken,
-            refreshTokenExpiresOn: undefined
-          }
-        }
+            refreshTokenExpiresOn: undefined,
+          },
+        },
       });
       done();
     }, 500);

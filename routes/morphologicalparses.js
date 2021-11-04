@@ -1,6 +1,7 @@
 /* Load modules provided by $ npm install, see package.json for details */
-var swagger = require('@cesine/swagger-node-express');
-var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
+const swagger = require('@cesine/swagger-node-express');
+const param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
+
 exports.getMorphologicalParses = {
   spec: {
     path: '/elanguages/{iso_code}/parses/{utterance}',
@@ -11,11 +12,11 @@ exports.getMorphologicalParses = {
     parameters: [param.path('iso_code', 'requested iso_code of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
-    nickname: 'getMorphologicalParses'
+    nickname: 'getMorphologicalParses',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };
 exports.postMorphologicalParses = {
   spec: {
@@ -27,11 +28,11 @@ exports.postMorphologicalParses = {
     parameters: [param.path('iso_code', 'requested iso_code of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
-    nickname: 'postMorphologicalParses'
+    nickname: 'postMorphologicalParses',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };
 exports.putMorphologicalParses = {
   spec: {
@@ -43,11 +44,11 @@ exports.putMorphologicalParses = {
     parameters: [param.path('iso_code', 'requested iso_code of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
-    nickname: 'putMorphologicalParses'
+    nickname: 'putMorphologicalParses',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };
 exports.deleteMorphologicalParses = {
   spec: {
@@ -59,9 +60,9 @@ exports.deleteMorphologicalParses = {
     parameters: [param.path('iso_code', 'requested iso_code of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
-    nickname: 'deleteMorphologicalParses'
+    nickname: 'deleteMorphologicalParses',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };

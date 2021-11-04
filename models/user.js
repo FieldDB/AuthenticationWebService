@@ -1,62 +1,62 @@
-var bcrypt = require('bcryptjs');
-var crypto = require('crypto');
-var debug = require('debug')('model:user');
-var lodash = require('lodash');
-var Sequelize = require('sequelize');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const debug = require('debug')('model:user');
+const lodash = require('lodash');
+const Sequelize = require('sequelize');
 
-var env = process.env;
-var DEBUG = env.DEBUG;
-var NODE_ENV = env.NODE_ENV;
-var sequelize = new Sequelize('database', 'username', 'password', {
+const { env } = process;
+const { DEBUG } = env;
+const { NODE_ENV } = env;
+const sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   logging: /(sql|user)/.test(DEBUG) ? console.log : false,
   pool: {
     max: 5,
     min: 0,
-    idle: 10000
+    idle: 10000,
   },
-  storage: 'db/users_' + NODE_ENV + '.sqlite'
+  storage: `db/users_${NODE_ENV}.sqlite`,
 });
 
-var DEFAULT_GRAVATAR = '9a85e3d0-4233-11e6-bac0-4b263459491d';
+const DEFAULT_GRAVATAR = '9a85e3d0-4233-11e6-bac0-4b263459491d';
 
 /*
  * Add new properties to the flat schema
  */
-var FLAT_SCHEMA = {
+const FLAT_SCHEMA = {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
-    primaryKey: true
+    primaryKey: true,
   },
   revision: Sequelize.STRING,
   deletedAt: Sequelize.DATE,
   deletedReason: Sequelize.STRING,
   username: {
     type: Sequelize.STRING,
-    unique: true
+    unique: true,
   },
   email: Sequelize.STRING,
   gravatar: {
     type: Sequelize.STRING,
     get: function getGravatar() {
-      var gravatar = this.getDataValue('gravatar');
-      var email;
+      const gravatar = this.getDataValue('gravatar');
+      let email;
       if (gravatar) {
         return gravatar;
       }
       email = this.getDataValue('email') || this.getDataValue('id') || DEFAULT_GRAVATAR;
       return crypto.createHash('md5').update(email).digest('hex');
-    }
+    },
   },
   description: Sequelize.TEXT,
   givenName: Sequelize.STRING,
   familyName: Sequelize.STRING,
   language: Sequelize.STRING,
-  hash: Sequelize.STRING
+  hash: Sequelize.STRING,
 };
 
-var User = sequelize.define('users', FLAT_SCHEMA);
+const User = sequelize.define('users', FLAT_SCHEMA);
 
 /**
  * Convert an incoming json and scrubs it against the above SCHEMA
@@ -64,9 +64,9 @@ var User = sequelize.define('users', FLAT_SCHEMA);
  * @return {Object}      A flat representation of the user which can be saved in the db
  */
 function jsonToFlat(json, defaultValue) {
-  var flat = {};
+  const flat = {};
 
-  Object.keys(FLAT_SCHEMA).forEach(function forEachKey(attr) {
+  Object.keys(FLAT_SCHEMA).forEach((attr) => {
     if (attr.indexOf('Name') > -1) {
       flat[attr] = (json.name && json.name[attr] !== undefined && json.name[attr] !== null)
         ? json.name[attr] : defaultValue;
@@ -99,11 +99,11 @@ function jsonToFlat(json, defaultValue) {
  * @return {Object}      A Passport compatible representation of the user
  */
 function flatToJson(flat, defaultValue) {
-  var json = {
-    name: {}
+  const json = {
+    name: {},
   };
 
-  Object.keys(FLAT_SCHEMA).forEach(function forEachKey(attr) {
+  Object.keys(FLAT_SCHEMA).forEach((attr) => {
     if (attr.indexOf('Name') > -1) {
       json.name[attr] = flat[attr] !== undefined && flat[attr] !== null
         ? flat[attr] : defaultValue;
@@ -129,8 +129,8 @@ function flatToJson(flat, defaultValue) {
 }
 
 function increaseRevision(revision) {
-  var revisionNumber = parseInt(revision.split('-')[0], 10);
-  return (revisionNumber + 1) + '-' + Date.now();
+  const revisionNumber = parseInt(revision.split('-')[0], 10);
+  return `${revisionNumber + 1}-${Date.now()}`;
 }
 
 /**
@@ -139,15 +139,15 @@ function increaseRevision(revision) {
  * @return {Promise}
  */
 function hashPassword(password) {
-  var salt;
+  let salt;
   if (!password) {
     return new Error('Please provide a password');
   }
 
   salt = bcrypt.genSaltSync(10);
   return {
-    salt: salt,
-    hash: bcrypt.hashSync(password, salt)
+    salt,
+    hash: bcrypt.hashSync(password, salt),
   };
 }
 
@@ -157,8 +157,8 @@ function hashPassword(password) {
  * @return {Promise}
  */
 function create(profile, callback) {
-  var flat;
-  var hashed;
+  let flat;
+  let hashed;
 
   if (!profile) {
     return callback(new Error('Please provide a user'));
@@ -180,7 +180,7 @@ function create(profile, callback) {
       flat.revision = increaseRevision(flat.revision);
     }
   }
-  flat.revision = flat.revision || '1-' + Date.now();
+  flat.revision = flat.revision || `1-${Date.now()}`;
 
   hashed = hashPassword(profile.password);
   // eslint-disable-next-line no-param-reassign
@@ -193,7 +193,7 @@ function create(profile, callback) {
 
   return User
     .create(flat)
-    .then(function whenCreated(data) {
+    .then((data) => {
       flat = data.toJSON();
       return callback(null, flatToJson(flat, ''));
     })
@@ -209,10 +209,10 @@ function read(profile, callback) {
   return User
     .findOne({
       where: {
-        username: profile.username
-      }
+        username: profile.username,
+      },
     })
-    .then(function whenFound(dbUser) {
+    .then((dbUser) => {
       if (!dbUser) {
         return callback(null, null);
       }
@@ -234,11 +234,11 @@ function verifyPassword(profile, callback) {
   return User
     .findOne({
       where: {
-        username: profile.username
-      }
+        username: profile.username,
+      },
       // attributes: ['hash']
     })
-    .then(function whenFound(dbUser) {
+    .then((dbUser) => {
       if (!dbUser) {
         return callback(new Error('User not found'));
       }
@@ -269,11 +269,11 @@ function changePassword(profile, callback) {
   return User
     .findOne({
       where: {
-        username: profile.username
-      }
+        username: profile.username,
+      },
     })
-    .then(function whenFound(dbUser) {
-      var hashed;
+    .then((dbUser) => {
+      let hashed;
       if (!dbUser.dataValues.hash) {
         return callback(new Error('Password was not set, please report this 34544.'));
       }
@@ -295,9 +295,7 @@ function changePassword(profile, callback) {
 
       // eslint-disable-next-line no-param-reassign
       dbUser.dataValues.hash = hashed.hash;
-      return dbUser.save().then(function whenSaved(savedDbUser) {
-        return callback(null, flatToJson(savedDbUser.toJSON(), ''));
-      }).catch(callback);
+      return dbUser.save().then((savedDbUser) => callback(null, flatToJson(savedDbUser.toJSON(), ''))).catch(callback);
     })
     .catch(callback);
 }
@@ -315,12 +313,12 @@ function save(profile, callback) {
   return User
     .findOne({
       where: {
-        username: profile.username
-      }
+        username: profile.username,
+      },
     })
-    .then(function whenFound(dbUser) {
-      var flat;
-      var hashed;
+    .then((dbUser) => {
+      let flat;
+      let hashed;
       // Create the user
       if (!dbUser) {
         return create(profile, callback);
@@ -335,7 +333,7 @@ function save(profile, callback) {
       debug(flat);
 
       // Update only the changed fields
-      Object.keys(flat).forEach(function forEachKey(attr) {
+      Object.keys(flat).forEach((attr) => {
         if (flat[attr] !== 'not:::patched') {
           dbUser.set(attr, flat[attr]);
           debug('setting ', attr);
@@ -359,7 +357,7 @@ function save(profile, callback) {
 
       return dbUser
         .save()
-        .then(function whenSaved(savedDbUser) {
+        .then((savedDbUser) => {
           debug(savedDbUser);
           if (!savedDbUser) {
             return callback(new Error('Unable to save the user.'));
@@ -378,25 +376,23 @@ function save(profile, callback) {
  * @return {Promise}        [description]
  */
 function list(options, callback) {
-  var opts = lodash.assign({
+  const opts = lodash.assign({
     limit: 10,
     offset: 0,
     where: {
-      deletedAt: null
-    }
+      deletedAt: null,
+    },
   }, options);
   opts.attributes = ['id', 'username', 'gravatar'];
 
   return User
     .findAll(opts)
-    .then(function whenFound(users) {
+    .then((users) => {
       if (!users) {
         return callback(new Error('Unable to fetch user collection'));
       }
 
-      return callback(null, users.map(function mapToJson(dbUser) {
-        return dbUser.toJSON();
-      }));
+      return callback(null, users.map((dbUser) => dbUser.toJSON()));
     })
     .catch(callback);
 }
@@ -414,10 +410,10 @@ function flagAsDeleted(profile, callback) {
   return User
     .findOne({
       where: {
-        username: profile.username
-      }
+        username: profile.username,
+      },
     })
-    .then(function whenFound(dbUser) {
+    .then((dbUser) => {
       if (!dbUser) {
         return callback(new Error('Cannot delete user which doesn\'t exist'));
       }
@@ -429,7 +425,7 @@ function flagAsDeleted(profile, callback) {
 
       return dbUser
         .save(dbUser)
-        .then(function whenSaved(savedDbUser) {
+        .then((savedDbUser) => {
           if (!savedDbUser) {
             return callback(new Error('Save failed'));
           }
@@ -458,6 +454,6 @@ module.exports.hashPassword = hashPassword;
 module.exports.changePassword = changePassword;
 module.exports.verifyPassword = verifyPassword;
 module.exports.serialization = {
-  flatToJson: flatToJson,
-  jsonToFlat: jsonToFlat
+  flatToJson,
+  jsonToFlat,
 };

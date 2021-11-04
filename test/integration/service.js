@@ -1,47 +1,47 @@
-var expect = require('chai').expect;
-var supertest = require('supertest');
+const { expect } = require('chai');
+const supertest = require('supertest');
 
-var service = process.env.URL || require('./../../auth_service');
+const service = process.env.URL || require('../../auth_service');
 
-describe('/v1', function () {
-  var NODE_ENV = process.env.NODE_ENV;
+describe('/v1', () => {
+  const { NODE_ENV } = process.env;
 
-  afterEach(function () {
+  afterEach(() => {
     process.env.NODE_ENV = NODE_ENV;
   });
 
-  it('should load', function () {
+  it('should load', () => {
     expect(service).to.be.a('function');
   });
 
-  describe('is production ready', function () {
-    it('should handle service endpoints which are not found', function () {
+  describe('is production ready', () => {
+    it('should handle service endpoints which are not found', () => {
       process.env.NODE_ENV = 'production';
 
       return supertest(service)
         .get('/v1/notexistant')
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(404)
-        .then(function (res) {
+        .then((res) => {
           expect(res.status).to.equal(404);
 
           expect(res.body).to.deep.equal({
             userFriendlyErrors: ['Not Found'],
-            status: 404
+            status: 404,
           });
         });
     });
 
-    it('should reply with healthcheck', function () {
+    it('should reply with healthcheck', () => {
       process.env.NODE_ENV = 'development';
 
       return supertest(service)
         .get('/v1/healthcheck')
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200)
-        .then(function (res) {
+        .then((res) => {
           expect(res.body).to.deep.equal({
-            ok: true
+            ok: true,
           });
         });
     });

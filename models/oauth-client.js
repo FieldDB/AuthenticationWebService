@@ -1,19 +1,19 @@
 /* global Promise */
 
-var debug = require('debug')('model:oauth');
-var fs = require('fs');
-var Sequelize = require('sequelize');
-var lodash = require('lodash');
-var AsToken = require('../lib/token');
+const debug = require('debug')('model:oauth');
+const fs = require('fs');
+const Sequelize = require('sequelize');
+const lodash = require('lodash');
+const AsToken = require('../lib/token');
 
-var OAuthToken = require('./oauth-token');
-var User = require('./user');
+const OAuthToken = require('./oauth-token');
+const User = require('./user');
 
-var env = process.env;
-var DEBUG = env.DEBUG;
-var NODE_ENV = env.NODE_ENV;
-var YEAR = 1000 * 60 * 60 * 24 * 365;
-var AUTHORIZATION_CODE_TRANSIENT_STORE = {};
+const { env } = process;
+const { DEBUG } = env;
+const { NODE_ENV } = env;
+const YEAR = 1000 * 60 * 60 * 24 * 365;
+const AUTHORIZATION_CODE_TRANSIENT_STORE = {};
 
 try {
   fs.mkdirSync('db');
@@ -22,22 +22,22 @@ try {
     console.log('err', err);
   }
 }
-var sequelize = new Sequelize('database', 'id', 'password', {
+const sequelize = new Sequelize('database', 'id', 'password', {
   dialect: 'sqlite',
   logging: /(sql|oauth)/.test(DEBUG) ? console.log : false,
   pool: {
     max: 5,
     min: 0,
-    idle: 10000
+    idle: 10000,
   },
-  storage: 'db/oauth_clients_' + NODE_ENV + '.sqlite'
+  storage: `db/oauth_clients_${NODE_ENV}.sqlite`,
 });
 
-var oauthClient = sequelize.define('oauth_clients', {
+const oauthClient = sequelize.define('oauth_clients', {
   client_id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
-    primaryKey: true
+    primaryKey: true,
   },
   client_secret: Sequelize.TEXT,
   title: Sequelize.TEXT,
@@ -50,11 +50,11 @@ var oauthClient = sequelize.define('oauth_clients', {
   throttle: Sequelize.INTEGER, // miliseconds
   expiresAt: Sequelize.DATE, // expiry date
   deletedAt: Sequelize.DATE,
-  deletedReason: Sequelize.TEXT
+  deletedReason: Sequelize.TEXT,
 });
 
 function signUserAsToken(json) {
-  var tokenJson = lodash.omit(json, ['exp']);
+  const tokenJson = lodash.omit(json, ['exp']);
   tokenJson.user = lodash.omit(json.user, ['hash', 'deletedAt', 'deletedReason']);
   tokenJson.client = lodash.pick(json.client, ['client_id', 'scope']);
 
@@ -69,7 +69,7 @@ function signUserAsToken(json) {
  */
 function create(options, callback) {
   // TODO avoid sql injections
-  var opts = lodash.clone(options);
+  const opts = lodash.clone(options);
   if (!options) {
     return callback(new Error('Invalid Options'));
   }
@@ -80,9 +80,7 @@ function create(options, callback) {
 
   return oauthClient
     .create(opts)
-    .then(function whenCreateClient(dbModel) {
-      return callback(null, dbModel.toJSON());
-    })
+    .then((dbModel) => callback(null, dbModel.toJSON()))
     .catch(callback);
 }
 
@@ -92,13 +90,13 @@ function create(options, callback) {
  * @param callback
  */
 function read(client, callback) {
-  var options = {
-    where: client
+  const options = {
+    where: client,
   };
 
   oauthClient
     .findOne(options)
-    .then(function whenReadDB(dbModel) {
+    .then((dbModel) => {
       if (!dbModel) {
         return callback(null, null);
       }
@@ -113,11 +111,11 @@ function read(client, callback) {
  * @param callback        [description]
  */
 function list(opts, callback) {
-  var options = lodash.clone(opts || {});
+  const options = lodash.clone(opts || {});
   options.limit = options.limit || 10;
   options.offset = options.offset || 0;
   options.where = options.where || {
-    deletedAt: null
+    deletedAt: null,
   };
 
   options.attributes = [
@@ -127,19 +125,17 @@ function list(opts, callback) {
     'description',
     'contact',
     'createdAt',
-    'deletedReason'
+    'deletedReason',
   ];
 
   oauthClient
     .findAll(options)
-    .then(function whenList(oauth_clients) {
+    .then((oauth_clients) => {
       if (!oauth_clients) {
         return callback(new Error('Unable to fetch oauthClient collection'));
       }
 
-      return callback(null, oauth_clients.map(function mapToJson(dbModel) {
-        return dbModel.toJSON();
-      }));
+      return callback(null, oauth_clients.map((dbModel) => dbModel.toJSON()));
     })
     .catch(callback);
 }
@@ -158,9 +154,7 @@ function flagAsDeleted() {
  * @param callback        [description]
  */
 function init() {
-  return OAuthToken.init().then(function whenInit() {
-    return sequelize.sync();
-  });
+  return OAuthToken.init().then(() => sequelize.sync());
 }
 
 /*
@@ -178,13 +172,13 @@ function init() {
  *    user (Object)
  */
 function getAccessToken(bearerToken) {
-  return new Promise(function whenPromise(resolve, reject) {
-    var decoded = AsToken.verify(bearerToken);
+  return new Promise((resolve, reject) => {
+    const decoded = AsToken.verify(bearerToken);
     debug('getAccessToken for token', bearerToken, decoded);
 
     OAuthToken.read({
-      access_token: decoded.accessToken
-    }, function whenFound(err, token) {
+      access_token: decoded.accessToken,
+    }, (err, token) => {
       if (err) {
         return reject(err);
       }
@@ -198,12 +192,12 @@ function getAccessToken(bearerToken) {
         accessTokenExpiresAt: token.accessTokenExpiresAt,
         client: {
           // TODO could fetch client details
-          id: token.client_id
+          id: token.client_id,
         },
         user: {
           // TODO could fetch user details
-          id: token.user_id
-        }
+          id: token.user_id,
+        },
       });
     });
   });
@@ -220,10 +214,10 @@ function getClient(clientId, clientSecret) {
       client_id: clientId,
       // examples show that that this is required, but when called via oauth.authorize it is missing
       // client_secret: clientSecret,
-      deletedAt: null
-    }
-  }).then(function whenClientFound(client) {
-    var json;
+      deletedAt: null,
+    },
+  }).then((client) => {
+    let json;
     if (!client) {
       throw new Error('Client id or secret is invalid');
     }
@@ -232,7 +226,7 @@ function getClient(clientId, clientSecret) {
       client: lodash.omit(client.toJSON(), ['client_secret']), // remove the secret
       id: clientId,
       grants: ['authorization_code'],
-      redirectUris: client.redirect_uri ? client.redirect_uri.split(',') : []
+      redirectUris: client.redirect_uri ? client.redirect_uri.split(',') : [],
     };
     json.client.id = client.client_id;
 
@@ -247,9 +241,9 @@ function getAuthorizationCode(code) {
   debug('getAuthorizationCode', arguments, AUTHORIZATION_CODE_TRANSIENT_STORE);
   debug('AUTHORIZATION_CODE_TRANSIENT_STORE', AUTHORIZATION_CODE_TRANSIENT_STORE);
 
-  return new Promise(function whenPromise(resolve, reject) {
-    var result = AUTHORIZATION_CODE_TRANSIENT_STORE[code];
-    var err;
+  return new Promise((resolve, reject) => {
+    const result = AUTHORIZATION_CODE_TRANSIENT_STORE[code];
+    let err;
     if (result) {
       // delete AUTHORIZATION_CODE_TRANSIENT_STORE[code];
       result.expiresAt = new Date(result.expiresAt);
@@ -259,7 +253,7 @@ function getAuthorizationCode(code) {
       return resolve(result);
     }
     err = new Error('Code is not authorized', {
-      code: 403
+      code: 403,
     });
     err.status = 403;
 
@@ -273,9 +267,9 @@ function getAuthorizationCode(code) {
 function revokeAuthorizationCode(code) {
   debug('revokeAuthorizationCode', arguments);
 
-  return new Promise(function whenPromise(resolve) {
-    var revokedCode = lodash.clone(code);
-    var itWas = AUTHORIZATION_CODE_TRANSIENT_STORE[code.code];
+  return new Promise((resolve) => {
+    const revokedCode = lodash.clone(code);
+    const itWas = AUTHORIZATION_CODE_TRANSIENT_STORE[code.code];
     debug('revoked ', itWas);
 
     revokedCode.expiresAt = new Date(Date.now() - 1000);
@@ -293,13 +287,13 @@ function saveAuthorizationCode(authorizationCode, value, user) {
   debug('saveAuthorizationCode value', value);
   debug('saveAuthorizationCode user', user);
 
-  return new Promise(function whenPromise(resolve) {
-    var result = {
+  return new Promise((resolve) => {
+    const result = {
       authorizationCode: authorizationCode.authorizationCode,
       code: authorizationCode,
       client: value.client,
-      user: user,
-      expiresAt: authorizationCode.expiresAt
+      user,
+      expiresAt: authorizationCode.expiresAt,
     };
     AUTHORIZATION_CODE_TRANSIENT_STORE[authorizationCode.authorizationCode] = result;
     debug('AUTHORIZATION_CODE_TRANSIENT_STORE', AUTHORIZATION_CODE_TRANSIENT_STORE);
@@ -313,8 +307,8 @@ function saveAuthorizationCode(authorizationCode, value, user) {
  */
 function getRefreshToken(bearerToken, callback) {
   OAuthToken.read({
-    refresh_token: bearerToken
-  }, function whenRead(err, token) {
+    refresh_token: bearerToken,
+  }, (err, token) => {
     if (err) {
       return callback(err);
     }
@@ -326,7 +320,7 @@ function getRefreshToken(bearerToken, callback) {
       accessToken: token.access_token,
       clientId: token.client_id,
       accessTokenExpiresAt: token.accessTokenExpiresAt,
-      userId: token.user_id
+      userId: token.user_id,
     });
   });
 }
@@ -337,9 +331,9 @@ function getRefreshToken(bearerToken, callback) {
 function getUser(username, password, callback) {
   debug('getUser', getUser);
   User.verifyPassword({
-    username: username,
-    password: password
-  }, function whenVerified(err, profile) {
+    username,
+    password,
+  }, (err, profile) => {
     if (err) {
       return callback(err);
     }
@@ -370,7 +364,7 @@ function verifyScope(decodedToken, scope, callback) {
  */
 function saveToken(token, value, user) {
   debug('saveToken ', arguments);
-  return new Promise(function whenPromise(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if (!token || !value || !user) {
       return reject(new Error('Invalid Options'));
     }
@@ -381,8 +375,8 @@ function saveToken(token, value, user) {
       client_id: value.client.client_id,
       refresh_token: token.refreshToken,
       refresh_token_expires_on: token.refreshTokenExpiresOn,
-      user_id: user.id
-    }, function whenCreated(err, result) {
+      user_id: user.id,
+    }, (err, result) => {
       if (err) {
         return reject(err);
       }
@@ -390,26 +384,26 @@ function saveToken(token, value, user) {
         return reject(new Error('Unable to create token, please report this.'));
       }
 
-      var jwt = signUserAsToken({
+      const jwt = signUserAsToken({
         accessToken: result.id,
         accessTokenExpiresAt: result.accessTokenExpiresAt,
         client: value.client,
-        user: user,
+        user,
         refreshToken: result.refresh_token,
-        refreshTokenExpiresOn: result.refresh_token_expires_on
+        refreshTokenExpiresOn: result.refresh_token_expires_on,
       });
       debug('updated jwt', jwt);
       debug('saveToken saved result', result.id);
 
       return resolve({
-        jwt: jwt,
+        jwt,
         accessToken: jwt,
         accessTokenExpiresAt: result.accessTokenExpiresAt,
         // clientId: result.client_id,
         client: value.client,
-        user: user,
+        user,
         refreshToken: result.refresh_token,
-        refreshTokenExpiresOn: result.refresh_token_expires_on
+        refreshTokenExpiresOn: result.refresh_token_expires_on,
         // userId: result.user_id
       });
     });

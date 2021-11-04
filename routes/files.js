@@ -1,6 +1,7 @@
 /* Load modules provided by $ npm install, see package.json for details */
-var swagger = require('@cesine/swagger-node-express');
-var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
+const swagger = require('@cesine/swagger-node-express');
+const param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
+
 exports.getFiles = {
   spec: {
     path: '/corpora/{dbname}/files/{filename}',
@@ -11,11 +12,11 @@ exports.getFiles = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'getFiles'
+    nickname: 'getFiles',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };
 exports.postFiles = {
   spec: {
@@ -27,11 +28,11 @@ exports.postFiles = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'postFiles'
+    nickname: 'postFiles',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };
 exports.putFiles = {
   spec: {
@@ -43,11 +44,11 @@ exports.putFiles = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'putFiles'
+    nickname: 'putFiles',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };
 exports.deleteFiles = {
   spec: {
@@ -59,9 +60,9 @@ exports.deleteFiles = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'Utterance',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'deleteFiles'
+    nickname: 'deleteFiles',
   },
   action: function action(req, res) {
     res.send({});
-  }
+  },
 };
