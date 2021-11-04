@@ -304,7 +304,7 @@ describe('models/oauth-client', function () {
 
       it('should handle client not found', function () {
         return OAuthClient
-          .getClient(fixtures.client.client_id, 'test-wrong-secret')
+          .getClient('not-a-known-client', undefined)
           .then(function (clientInfo) {
             throw new Error('should not succeed');
           }).catch(function(err) {
