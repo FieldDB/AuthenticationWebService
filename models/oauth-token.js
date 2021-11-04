@@ -102,12 +102,12 @@ function list(options, callback) {
 
   return oauthToken
     .findAll(opts)
-    .then(function whenFound(oauth_tokens) {
-      if (!oauth_tokens) {
+    .then(function whenFound(oauthTokens) {
+      if (!oauthTokens) {
         return callback(new Error('Unable to fetch oauthToken collection'));
       }
 
-      return callback(null, oauth_tokens.map(function mapToJson(dbModel) {
+      return callback(null, oauthTokens.map(function mapToJson(dbModel) {
         return dbModel.toJSON();
       }));
     })

@@ -1,6 +1,6 @@
+var debug = require('debug')('route:user');
 var swagger = require('@cesine/swagger-node-express');
 var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
-var appVersion = require('../package.json').version;
 
 var User = require('./../models/user');
 var authenticationMiddleware = require('./../middleware/authentication');
@@ -29,9 +29,9 @@ exports.getUser = {
         username: req.params.username
       };
 
-      User.read(json, function (err, profile) {
-        if (err) {
-          return next(err, req, res, next);
+      User.read(json, function (readErr, profile) {
+        if (readErr) {
+          return next(readErr, req, res, next);
         }
         res.json(profile);
       });
@@ -60,9 +60,9 @@ exports.getCurrentUser = {
         username: res.locals.user.username
       };
 
-      User.read(json, function (err, profile) {
-        if (err) {
-          return next(err, req, res, next);
+      User.read(json, function (readErr, profile) {
+        if (readErr) {
+          return next(readErr, req, res, next);
         }
 
         if (!profile) {
@@ -117,7 +117,7 @@ exports.postUsers = {
     errorResponses: [swagger.errors.invalid('username'), swagger.errors.notFound('user')],
     nickname: 'postUsers'
   },
-  action: function postUsers(req, res, next) {
+  action: function postUsers(req, res) {
     // If it has a password
     // Create the user
     res.send({});
@@ -147,16 +147,16 @@ exports.putUser = {
       if ((req.body.username && req.params.username !== req.body.username)
         || req.params.username !== res.locals.user.username) {
         debug(req.params, req.body);
-        var err = new Error('Username does not match, you can only update your own details');
-        err.status = 403;
+        var userMismatchErr = new Error('Username does not match, you can only update your own details');
+        userMismatchErr.status = 403;
 
-        return next(err, req, res, next);
+        return next(userMismatchErr, req, res, next);
       }
 
       req.body.username = res.locals.user.username;
-      User.save(req.body, function (err, profile) {
-        if (err) {
-          return next(err, req, res, next);
+      User.save(req.body, function (saveErr, profile) {
+        if (saveErr) {
+          return next(saveErr, req, res, next);
         }
         res.json(profile);
       });
@@ -176,7 +176,7 @@ exports.deleteUsers = {
     errorResponses: [swagger.errors.invalid('username'), swagger.errors.notFound('user')],
     nickname: 'deleteUsers'
   },
-  action: function deleteUsers(req, res, next) {
+  action: function deleteUsers(req, res) {
     // Return unimplemented
     res.send({});
   }
@@ -193,7 +193,7 @@ exports.getUserGravatars = {
     errorResponses: [swagger.errors.invalid('username'), swagger.errors.notFound('user')],
     nickname: 'getUserGravatars'
   },
-  action: function getUserGravatars(req, res, next) {
+  action: function getUserGravatars(req, res) {
     // If it is a user,
     // Get the gravatar
     res.send({});
@@ -211,7 +211,7 @@ exports.postUserGravatars = {
     errorResponses: [swagger.errors.invalid('username'), swagger.errors.notFound('user')],
     nickname: 'postUserGravatars'
   },
-  action: function postUserGravatars(req, res, next) {
+  action: function postUserGravatars(req, res) {
     // If it is a user,
     // Set the gravatar
     res.send({});
@@ -229,7 +229,7 @@ exports.putUserGravatars = {
     errorResponses: [swagger.errors.invalid('username'), swagger.errors.notFound('user')],
     nickname: 'putUserGravatars'
   },
-  action: function putUserGravatars(req, res, next) {
+  action: function putUserGravatars(req, res) {
     // If it is a user,
     // Set the gravatar
     res.send({});
@@ -247,7 +247,7 @@ exports.deleteUserGravatars = {
     errorResponses: [swagger.errors.invalid('username'), swagger.errors.notFound('user')],
     nickname: 'deleteUserGravatars'
   },
-  action: function deleteUserGravatars(req, res, next) {
+  action: function deleteUserGravatars(req, res) {
     // If it is a user,
     // Delete the gravatar
     res.send({});

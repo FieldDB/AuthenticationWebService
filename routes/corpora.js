@@ -1,7 +1,6 @@
 var swagger = require('@cesine/swagger-node-express');
 var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
 var corpusData = require('./../lib/corpus.js');
-var appVersion = require('../package.json').version;
 exports.getCorpora = {
   spec: {
     path: '/corpora/{dbname}',
@@ -14,7 +13,7 @@ exports.getCorpora = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'getCorpora'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has read permissions, get all details
     // If the user doesnt have permissions, get the corpus mask
     res.send({});
@@ -32,7 +31,7 @@ exports.postCorpora = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'postCorpora'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the dbname is in the user's namespace
     // Create the corpus
     var body = req.body;
@@ -56,7 +55,7 @@ exports.putCorpora = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'putCorpora'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has write permissions
     // Update the corpus
     var body = req.body;
@@ -80,7 +79,7 @@ exports.deleteCorpora = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'deleteCorpora'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has admin permissions
     // Flag the corpus as deleted
     // Remove the corpus from the user's list of corpora and add it to the deleted list
@@ -101,7 +100,7 @@ exports.searchCorpora = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'searchCorpora'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has search permissions
     // Return the search results
     res.send({});

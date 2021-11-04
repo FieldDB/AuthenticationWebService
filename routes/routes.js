@@ -1,6 +1,7 @@
 /* Load modules provided by $ npm install, see package.json for details */
 var swagger = require('@cesine/swagger-node-express');
 var config = require('config');
+var debug = require('debug')('route:routes');
 
 /* Load modules provided by this codebase */
 var userRoutes = require('./user');
@@ -15,6 +16,7 @@ var eLanguagesRoutes = require('./elanguages');
 var morphologicalParsesRoutes = require('./morphologicalparses');
 
 var setup = function setup(api, apiVersion) {
+  debug('apiVersion', apiVersion);
   swagger.configureSwaggerPaths('', '/api', '');
   swagger.setErrorHandler(function (req, res, error) {
     return errorHandler(error, req, res);

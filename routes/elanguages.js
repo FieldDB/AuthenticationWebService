@@ -1,7 +1,6 @@
 /* Load modules provided by $ npm install, see package.json for details */
 var swagger = require('@cesine/swagger-node-express');
 var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
-var appVersion = require('../package.json').version;
 exports.getELanguages = {
   spec: {
     path: '/elanguages/{iso_code}',
@@ -14,7 +13,7 @@ exports.getELanguages = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('elanguage')],
     nickname: 'getELanguages'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -30,7 +29,7 @@ exports.postELanguages = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('elanguage')],
     nickname: 'postELanguages'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -46,7 +45,7 @@ exports.putELanguages = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('elanguage')],
     nickname: 'putELanguages'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -62,7 +61,7 @@ exports.deleteELanguages = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('elanguage')],
     nickname: 'deleteELanguages'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -78,7 +77,7 @@ exports.searchELanguages = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('elanguage')],
     nickname: 'searchELanguages'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };

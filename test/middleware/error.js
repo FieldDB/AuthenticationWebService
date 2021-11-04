@@ -53,7 +53,7 @@ describe('middleware/error-handler', function () {
           url: undefined,
           details: undefined,
           status: err.status,
-          userFriendlyErrors: [ 'Server erred, please report this 816' ]
+          userFriendlyErrors: ['Server erred, please report this 816']
         });
       });
     });

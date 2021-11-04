@@ -14,7 +14,7 @@ exports.getUtterances = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'getUtterances'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has read permissions
     // Gets the data
     res.send({});
@@ -32,7 +32,7 @@ exports.postUtterances = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'postUtterances'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has write permissions
     // Uploads the data
     res.send({});
@@ -50,7 +50,7 @@ exports.putUtterances = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'putUtterances'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has write permissions
     // Updates the data
     res.send({});
@@ -68,7 +68,7 @@ exports.deleteUtterances = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'deleteUtterances'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     // If the user has write permissions
     // Flags the data as deleted
     res.send({});

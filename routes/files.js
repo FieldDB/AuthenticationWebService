@@ -1,7 +1,6 @@
 /* Load modules provided by $ npm install, see package.json for details */
 var swagger = require('@cesine/swagger-node-express');
 var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
-var appVersion = require('../package.json').version;
 exports.getFiles = {
   spec: {
     path: '/corpora/{dbname}/files/{filename}',
@@ -14,7 +13,7 @@ exports.getFiles = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'getFiles'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -30,7 +29,7 @@ exports.postFiles = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'postFiles'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -46,7 +45,7 @@ exports.putFiles = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'putFiles'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -62,7 +61,7 @@ exports.deleteFiles = {
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
     nickname: 'deleteFiles'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };

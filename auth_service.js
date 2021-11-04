@@ -24,7 +24,6 @@ var authWebServiceRoutes = require('./routes/routes');
 var errorHandler = require('./middleware/error-handler').errorHandler;
 var deprecatedRoutes = require('./routes/deprecated');
 var apiVersion = 'v1'; // 'v' + parseInt(require('./package.json').version, 10);
-var apiRegex = /\/v1/;
 var corsOptions = {
   credentials: true,
   maxAge: 86400,

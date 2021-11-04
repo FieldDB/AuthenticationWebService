@@ -9,10 +9,11 @@ var cleanErrorStatus = function (status) {
   return '';
 };
 
+// eslint-disable-next-line no-unused-vars
 var errorHandler = function (err, req, res, next) {
   var data;
   var NODE_ENV = process.env.NODE_ENV;
-  debug('errorHandler ' + NODE_ENV + " " +  req.url, err);
+  debug('errorHandler ' + NODE_ENV + ' ' + req.url, err);
 
   if (res.headersSent) {
     console.warn('This request has already been replied to', err);
@@ -25,7 +26,7 @@ var errorHandler = function (err, req, res, next) {
       message: err.message,
       stack: err.stack,
       url: err.url,
-      details: err.details,
+      details: err.details
     };
     if (data.details && data.details.url) {
       delete data.details.url;

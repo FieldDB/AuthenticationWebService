@@ -1,12 +1,13 @@
 var fs = require('fs');
+var path = require('path');
 var Connection = require('fielddb/api/corpus/Connection').Connection;
 
-var deploy_target = process.env.NODE_ENV || 'localhost';
+var deployTarget = process.env.NODE_ENV || 'localhost';
 // backward compatible
-if (deploy_target === 'test') {
-  deploy_target = 'beta';
+if (deployTarget === 'test') {
+  deployTarget = 'beta';
 }
-Connection.knownConnections.thisserver = Connection.knownConnections[deploy_target];
+Connection.knownConnections.thisserver = Connection.knownConnections[deployTarget];
 Connection.knownConnections.test = Connection.knownConnections.beta;
 Connection.knownConnections.testing = Connection.knownConnections.beta;
 Connection.knownConnections.dyslexdisorth = Connection.knownConnections.thisserver.clone();
@@ -33,8 +34,8 @@ Connection.knownConnections.georgiantogether.serverLabel = 'georgiantogether';
 module.exports = {
   sessionKey: 'uwotm8',
   httpsOptions: {
-    key: fs.readFileSync(__dirname + '/fielddb_debug.key', 'utf8'),
-    cert: fs.readFileSync(__dirname + '/fielddb_debug.crt', 'utf8'),
+    key: fs.readFileSync(path.join(__dirname, '/fielddb_debug.key'), 'utf8'),
+    cert: fs.readFileSync(path.join(__dirname, '/fielddb_debug.crt'), 'utf8'),
     port: '3183',
     protocol: 'https://'
   },

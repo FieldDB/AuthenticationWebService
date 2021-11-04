@@ -19,12 +19,12 @@ passport.use(new JwtStrategy(opts, function (jwtPayload, done) {
 
   user.read({
     username: jwtPayload.sub
-  }, function (err, user) {
+  }, function (err, userModel) {
     if (err) {
       return done(err, false);
     }
-    if (user) {
-      done(null, user);
+    if (userModel) {
+      done(null, userModel);
     } else {
       done(null, false);
       // or you could create a new account
@@ -72,13 +72,14 @@ function jwt(req, res, next) {
 }
 
 function requireAuthentication(req, res, next) {
+  var err;
   if (!res.locals.user) {
-    var err = new Error('You must login to access this data');
+    err = new Error('You must login to access this data');
     err.status = 403;
     return next(err, req, res, next);
   }
   if (res.locals.user.expired) {
-    var err = new Error('Your session has expired, you must login to access this data');
+    err = new Error('Your session has expired, you must login to access this data');
     err.status = 403;
     return next(err, req, res, next);
   }

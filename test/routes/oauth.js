@@ -71,7 +71,6 @@ describe('routes/oauth2', function () {
     sinon.stub(oauthModel, 'getClient').returns(mockClient);
 
     oauth.postToken.action(req, res, function (err) {
-      console.log('err', err);
       expect(err).to.equal(undefined);
     });
 

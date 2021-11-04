@@ -1,7 +1,6 @@
 /* Load modules provided by $ npm install, see package.json for details */
 var swagger = require('@cesine/swagger-node-express');
 var param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
-var appVersion = require('../package.json').version;
 exports.getMorphologicalParses = {
   spec: {
     path: '/elanguages/{iso_code}/parses/{utterance}',
@@ -14,7 +13,7 @@ exports.getMorphologicalParses = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
     nickname: 'getMorphologicalParses'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -30,7 +29,7 @@ exports.postMorphologicalParses = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
     nickname: 'postMorphologicalParses'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -46,7 +45,7 @@ exports.putMorphologicalParses = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
     nickname: 'putMorphologicalParses'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };
@@ -62,7 +61,7 @@ exports.deleteMorphologicalParses = {
     errorResponses: [swagger.errors.invalid('iso_code'), swagger.errors.notFound('corpus')],
     nickname: 'deleteMorphologicalParses'
   },
-  action: function action(req, res, next) {
+  action: function action(req, res) {
     res.send({});
   }
 };

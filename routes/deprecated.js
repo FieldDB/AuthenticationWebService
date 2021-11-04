@@ -22,7 +22,7 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * Responds to requests for login, if sucessful replies with the user's details
    * as json
    */
-  app.post('/login', function postLogin(req, res, next) {
+  app.post('/login', function postLogin(req, res) {
     authenticationfunctions.authenticateUser(req.body.username, req.body.password, req, function afterAuthenticateUser(err, user, info) {
       var returndata = {};
       if (err) {
@@ -47,7 +47,7 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       res.send(returndata);
     });
   });
-  app.get('/login', function getLogin(req, res, next) {
+  app.get('/login', function getLogin(req, res) {
     res.send({
       info: 'Service is running normally.'
     });
@@ -90,7 +90,7 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       res.send(returndata);
     });
   });
-  app.get('/register', function getRegister(req, res, next) {
+  app.get('/register', function getRegister(req, res) {
     res.send({});
   });
   /**
@@ -144,7 +144,7 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       res.send(returndata);
     });
   });
-  app.get('/changepassword', function getChangePassword(req, res, next) {
+  app.get('/changepassword', function getChangePassword(req, res) {
     res.send({});
   });
   /**
@@ -183,14 +183,14 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       res.send(returndata);
     });
   });
-  app.get('/forgotpassword', function getForgotPassword(req, res, next) {
+  app.get('/forgotpassword', function getForgotPassword(req, res) {
     res.send({});
   });
   /**
    * Responds to requests for a list of team members on a corpus, if successful replies with a list of
    * usernames as json
    */
-  app.post('/corpusteam', function postCorpusTeam(req, res, next) {
+  app.post('/corpusteam', function postCorpusTeam(req, res) {
     var returndata = {};
     req.body.dbname = req.body.dbname || req.body.pouchname;
     authenticationfunctions.fetchCorpusPermissions(req, function afterFetchCorpusPermissions(err, users, info) {
@@ -215,7 +215,7 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       res.send(returndata);
     });
   });
-  app.post('/corpusteamwhichrequiresvalidauthentication', function postCorpusTeamWhichRequiresValidAuthentication(req, res, next) {
+  app.post('/corpusteamwhichrequiresvalidauthentication', function postCorpusTeamWhichRequiresValidAuthentication(req, res) {
     var returndata = {};
     authenticationfunctions.authenticateUser(req.body.username, req.body.password, req, function afterAuthenticateUser(err, user, info) {
       if (err) {
@@ -226,18 +226,18 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         res.send(returndata);
         return;
       }
-      authenticationfunctions.fetchCorpusPermissions(req, function afterFetchCorpusPermissions(err, users, info) {
-        if (err) {
-          res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-          returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-          req.log.debug(new Date() + ' There was an error in the authenticationfunctions.fetchCorpusPermissions:\n' + util.inspect(err));
-          returndata.userFriendlyErrors = [info.message];
+      authenticationfunctions.fetchCorpusPermissions(req, function afterFetchCorpusPermissions(fetchPermsErr, users, fetchPermsInfo) {
+        if (fetchPermsErr) {
+          res.status(cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400);
+          returndata.status = cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400;
+          req.log.debug(new Date() + ' There was an err in the authenticationfunctions.fetchCorpusPermissions:\n' + util.inspect(fetchPermsErr));
+          returndata.userFriendlyErrors = [fetchPermsInfo.message];
         }
         if (!users) {
-          returndata.userFriendlyErrors = [info.message];
+          returndata.userFriendlyErrors = [fetchPermsInfo.message];
         } else {
           returndata.users = users;
-          returndata.info = [info.message];
+          returndata.info = [fetchPermsInfo.message];
           // returndata.userFriendlyErrors = ["Faking an error to test"];
         }
         // req.log.debug(new Date() + " Returning response:\n" + util.inspect(returndata));
@@ -249,7 +249,7 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       });
     });
   });
-  app.get('/corpusteam', function getCorpusTeam(req, res, next) {
+  app.get('/corpusteam', function getCorpusTeam(req, res) {
     res.send({});
   });
   /**
@@ -380,7 +380,7 @@ var addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     });
   };
   app.post('/addroletouser', addroletouser);
-  app.get('/addroletouser', function getAddroletouser(req, res, next) {
+  app.get('/addroletouser', function getAddroletouser(req, res) {
     res.send({});
   });
   /**

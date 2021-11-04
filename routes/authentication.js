@@ -1,6 +1,4 @@
-var AsToken = require('../lib/token');
 var debug = require('debug')('authentication');
-var lodash = require('lodash');
 var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
 var sequelize = require('sequelize');
 var querystring = require('querystring');
@@ -59,7 +57,7 @@ exports.postLogin = {
         return next(err, req, res, next);
       }
 
-      token = signUserAsToken({ user });
+      token = signUserAsToken({ user: user });
       debug('token', token);
       res.set('Set-Cookie', 'Authorization=Bearer ' + token + '; path=/; Secure; HttpOnly');
       res.set('Authorization', 'Bearer ' + token);
@@ -166,7 +164,7 @@ exports.postRegister = {
         return next(err, req, res, next);
       }
 
-      token = signUserAsToken({ user });
+      token = signUserAsToken({ user: user });
       debug('token', token);
       res.set('Set-Cookie', 'Authorization=Bearer ' + token + '; path=/; Secure; HttpOnly');
       res.set('Authorization', 'Bearer ' + token);
