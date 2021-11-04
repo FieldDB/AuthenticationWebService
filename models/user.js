@@ -207,7 +207,7 @@ function create(profile, callback) {
  */
 function read(profile, callback) {
   return User
-    .find({
+    .findOne({
       where: {
         username: profile.username
       }
@@ -232,7 +232,7 @@ function verifyPassword(profile, callback) {
   }
 
   return User
-    .find({
+    .findOne({
       where: {
         username: profile.username
       }
@@ -267,7 +267,7 @@ function changePassword(profile, callback) {
   }
 
   return User
-    .find({
+    .findOne({
       where: {
         username: profile.username
       }
@@ -313,7 +313,7 @@ function save(profile, callback) {
   }
 
   return User
-    .find({
+    .findOne({
       where: {
         username: profile.username
       }
@@ -412,7 +412,7 @@ function flagAsDeleted(profile, callback) {
   }
 
   return User
-    .find({
+    .findOne({
       where: {
         username: profile.username
       }

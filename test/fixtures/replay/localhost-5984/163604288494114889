@@ -1,0 +1,13 @@
+GET /_all_dbs
+accept-encoding: gzip, deflate
+accept: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Thu, 04 Nov 2021 16:21:24 GMT
+content-type: application/json
+content-length: 1862
+cache-control: must-revalidate
+
+["_replicator","_users","anonymouswordclouduser1401365327719-activity_feed","anonymouswordclouduser1401365327719-firstcorpus","anonymouswordclouduser1401365327719-firstcorpus-activity_feed","jenkins-activity_feed","jenkins-firstcorpus","jenkins-firstcorpus-activity_feed","lingllama-activity_feed","lingllama-firstcorpus","lingllama-firstcorpus-activity_feed","new_corpus","new_lexicon","new_testing_corpus","testingdisabledusers-activity_feed","testingdisabledusers-firstcorpus","testingdisabledusers-firstcorpus-activity_feed","testingphophlo-activity_feed","testingphophlo-phophlo","testingphophlo-phophlo-activity_feed","testingprototype-activity_feed","testingprototype-firstcorpus","testingprototype-firstcorpus-activity_feed","testingspreadsheet-activity_feed","testingspreadsheet-firstcorpus","testingspreadsheet-firstcorpus-activity_feed","testingv3_32-activity_feed","testingv3_32-firstcorpus","testingv3_32-firstcorpus-activity_feed","testuser1-activity_feed","testuser1-firstcorpus","testuser1-firstcorpus-activity_feed","testuser2-activity_feed","testuser2-firstcorpus","testuser2-firstcorpus-activity_feed","testuser3-activity_feed","testuser3-firstcorpus","testuser3-firstcorpus-activity_feed","testuser4-activity_feed","testuser4-firstcorpus","testuser4-firstcorpus-activity_feed","testuser41-activity_feed","testuser41-firstcorpus","testuser41-firstcorpus-activity_feed","testuser5-activity_feed","testuser5-firstcorpus","testuser5-firstcorpus-activity_feed","testuser6-activity_feed","testuser6-firstcorpus","testuser6-firstcorpus-activity_feed","testuser6-testing_v3_32_01","testuser7-activity_feed","testuser7-firstcorpus","testuser7-firstcorpus-activity_feed","testuser7-georgian","testuser8-activity_feed","testuser8-an_offline_corpus_created_in_the_prototype","testuser8-firstcorpus","testuser8-firstcorpus-activity_feed","theuserscouch"]

@@ -97,7 +97,7 @@ function read(client, callback) {
   };
 
   oauthClient
-    .find(options)
+    .findOne(options)
     .then(function whenReadDB(dbModel) {
       if (!dbModel) {
         return callback(null, null);
@@ -215,10 +215,13 @@ function getAccessToken(bearerToken) {
 function getClient(clientId, clientSecret) {
   debug('getClient arguments', arguments);
 
-  return oauthClient.find({
-    client_id: clientId,
-    client_secret: clientSecret,
-    deletedAt: null
+  return oauthClient.findOne({
+    where: {
+      client_id: clientId,
+      // examples show that that this is required, but when called via oauth.authorize it is missing
+      // client_secret: clientSecret,
+      deletedAt: null
+    },
   }).then(function whenClientFound(client) {
     var json;
     if (!client) {

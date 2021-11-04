@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var Sequelize = require('sequelize').Sequelize;
 var AsToken = require('../../lib/token');
 
 var OAuthClient = require('./../../models/oauth-client');
@@ -153,7 +154,7 @@ describe('models/oauth-client', function () {
       OAuthClient.list({
         where: {
           client_id: {
-            $like: 'testm-%'
+            [Sequelize.Op.like]: 'testm-%'
           }
         },
         limit: 1000
@@ -178,7 +179,7 @@ describe('models/oauth-client', function () {
       OAuthClient.list({
         where: {
           deletedReason: {
-            $like: '%spider%'
+            [Sequelize.Op.like]: '%spider%'
           }
         },
         limit: 1000
@@ -298,6 +299,16 @@ describe('models/oauth-client', function () {
                 id: fixtures.client.client_id
               }
             });
+          });
+      });
+
+      it('should handle client not found', function () {
+        return OAuthClient
+          .getClient('not-a-known-client', undefined)
+          .then(function (clientInfo) {
+            throw new Error('should not succeed');
+          }).catch(function(err) {
+            expect(err.message).to.equal('Client id or secret is invalid');
           });
       });
     });

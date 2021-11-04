@@ -1,13 +1,12 @@
 GET /theuserscouch/testinguserwithemail
+accept: application/json
+accept-encoding: deflate, gzip
 x-request-id: lib-userauthentication
 content-type: application/json
-accept: application/json
-host: corpusdev.example.org:5984
-authorization: Basic YWRtaW46bm9uZQ==
 
 HTTP/1.1 404 Object Not Found
 server: CouchDB/1.6.1 (Erlang OTP/17)
-date: Wed, 03 Nov 2021 19:45:02 GMT
+date: Thu, 04 Nov 2021 16:21:28 GMT
 content-type: application/json
 content-length: 41
 cache-control: must-revalidate

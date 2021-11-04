@@ -1,14 +1,13 @@
 GET /theuserscouch/testingphophlo
+accept: application/json
+accept-encoding: deflate, gzip
 x-request-id: lib-userauthentication
 content-type: application/json
-accept: application/json
-host: corpusdev.example.org:5984
-authorization: Basic YWRtaW46bm9uZQ==
 
 HTTP/1.1 200 OK
 server: CouchDB/1.6.1 (Erlang OTP/17)
 etag: "1-5611d1f3e98b0661811069fb736ba129"
-date: Wed, 03 Nov 2021 19:45:02 GMT
+date: Thu, 04 Nov 2021 16:21:28 GMT
 content-type: application/json
 content-length: 4596
 cache-control: must-revalidate
