@@ -1,6 +1,7 @@
-var swagger = require('@cesine/swagger-node-express');
-var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
-var corpusData = require('./../lib/corpus.js');
+const swagger = require('@cesine/swagger-node-express');
+const param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
+const corpusData = require('../lib/corpus.js');
+
 exports.getCorpora = {
   spec: {
     path: '/corpora/{dbname}',
@@ -11,13 +12,13 @@ exports.getCorpora = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'getCorpora'
+    nickname: 'getCorpora',
   },
   action: function action(req, res) {
     // If the user has read permissions, get all details
     // If the user doesnt have permissions, get the corpus mask
     res.send({});
-  }
+  },
 };
 exports.postCorpora = {
   spec: {
@@ -29,19 +30,19 @@ exports.postCorpora = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'postCorpora'
+    nickname: 'postCorpora',
   },
   action: function action(req, res) {
     // If the dbname is in the user's namespace
     // Create the corpus
-    var body = req.body;
+    const { body } = req;
     if (!body || !body.id) {
       throw swagger.errors.invalid('corpus');
     } else {
       corpusData.addCorpus(body);
       res.send(200);
     }
-  }
+  },
 };
 exports.putCorpora = {
   spec: {
@@ -53,19 +54,19 @@ exports.putCorpora = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'putCorpora'
+    nickname: 'putCorpora',
   },
   action: function action(req, res) {
     // If the user has write permissions
     // Update the corpus
-    var body = req.body;
+    const { body } = req;
     if (!body || !body.id) {
       throw swagger.errors.invalid('corpus');
     } else {
       corpusData.addCorpus(body);
       res.send(200);
     }
-  }
+  },
 };
 exports.deleteCorpora = {
   spec: {
@@ -77,16 +78,16 @@ exports.deleteCorpora = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'deleteCorpora'
+    nickname: 'deleteCorpora',
   },
   action: function action(req, res) {
     // If the user has admin permissions
     // Flag the corpus as deleted
     // Remove the corpus from the user's list of corpora and add it to the deleted list
-    var id = parseInt(req.params.id);
+    const id = parseInt(req.params.id);
     corpusData.deleteCorpus(id);
     res.status(204);
-  }
+  },
 };
 exports.searchCorpora = {
   spec: {
@@ -98,11 +99,11 @@ exports.searchCorpora = {
     parameters: [param.path('dbname', 'requested dbname of the corpus', 'string')],
     responseClass: 'User',
     errorResponses: [swagger.errors.invalid('dbname'), swagger.errors.notFound('corpus')],
-    nickname: 'searchCorpora'
+    nickname: 'searchCorpora',
   },
   action: function action(req, res) {
     // If the user has search permissions
     // Return the search results
     res.send({});
-  }
+  },
 };

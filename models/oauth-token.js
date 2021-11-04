@@ -1,25 +1,25 @@
-var Sequelize = require('sequelize');
-var lodash = require('lodash');
+const Sequelize = require('sequelize');
+const lodash = require('lodash');
 
-var env = process.env;
-var DEBUG = env.DEBUG;
-var NODE_ENV = env.NODE_ENV;
-var sequelize = new Sequelize('database', 'id', 'password', {
+const { env } = process;
+const { DEBUG } = env;
+const { NODE_ENV } = env;
+const sequelize = new Sequelize('database', 'id', 'password', {
   dialect: 'sqlite',
   logging: /(sql|oauth|token)/.test(DEBUG) ? console.log : false,
   pool: {
     max: 5,
     min: 0,
-    idle: 10000
+    idle: 10000,
   },
-  storage: 'db/oauth_tokens_' + NODE_ENV + '.sqlite'
+  storage: `db/oauth_tokens_${NODE_ENV}.sqlite`,
 });
 
-var oauthToken = sequelize.define('oauth_tokens', {
+const oauthToken = sequelize.define('oauth_tokens', {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
-    primaryKey: true
+    primaryKey: true,
   },
   access_token: Sequelize.TEXT,
   accessTokenExpiresAt: Sequelize.DATE,
@@ -29,8 +29,8 @@ var oauthToken = sequelize.define('oauth_tokens', {
   refresh_token: Sequelize.TEXT,
   refresh_token_expires_on: Sequelize.DATE,
   user_id: {
-    type: Sequelize.UUID
-  }
+    type: Sequelize.UUID,
+  },
 });
 
 /**
@@ -45,7 +45,7 @@ function create(options, callback) {
 
   return oauthToken
     .create(options)
-    .then(function whenCreated(dbToken) {
+    .then((dbToken) => {
       callback(null, dbToken.toJSON());
     })
     .catch(callback);
@@ -57,17 +57,17 @@ function create(options, callback) {
  * @return {Promise}
  */
 function read(token, callback) {
-  var options = {
-    where: {}
+  const options = {
+    where: {},
   };
 
   if (token.access_token) {
     options.where = {
-      access_token: token.access_token
+      access_token: token.access_token,
     };
   } else if (token.refresh_token) {
     options.where = {
-      refresh_token: token.refresh_token
+      refresh_token: token.refresh_token,
     };
   } else {
     return callback(new Error('Read tokens by  either access_token or refresh_token'));
@@ -75,7 +75,7 @@ function read(token, callback) {
 
   return oauthToken
     .findOne(options)
-    .then(function whenFound(dbModel) {
+    .then((dbModel) => {
       if (!dbModel) {
         return callback(null, null);
       }
@@ -90,26 +90,24 @@ function read(token, callback) {
  * @return {Promise}        [description]
  */
 function list(options, callback) {
-  var opts = lodash.assign({
+  const opts = lodash.assign({
     limit: 10,
     offset: 0,
     where: {
-      deletedAt: null
-    }
+      deletedAt: null,
+    },
   }, options);
 
   opts.attributes = ['access_token', 'client_id', 'user_id', 'deletedReason'];
 
   return oauthToken
     .findAll(opts)
-    .then(function whenFound(oauthTokens) {
+    .then((oauthTokens) => {
       if (!oauthTokens) {
         return callback(new Error('Unable to fetch oauthToken collection'));
       }
 
-      return callback(null, oauthTokens.map(function mapToJson(dbModel) {
-        return dbModel.toJSON();
-      }));
+      return callback(null, oauthTokens.map((dbModel) => dbModel.toJSON()));
     })
     .catch(callback);
 }

@@ -1,13 +1,13 @@
-var expect = require('chai').expect;
+const { expect } = require('chai');
 
-var service = process.env.URL || require('../auth_service');
+const service = process.env.URL || require('../auth_service');
 
-describe('auth_service', function () {
-  it('should load', function () {
+describe('auth_service', () => {
+  it('should load', () => {
     expect(process.env.NODE_ENV).to.equal('test');
     expect(service).to.not.equal(undefined);
   });
-  it('should be an express app', function () {
+  it('should be an express app', () => {
     expect(typeof service.listen).to.equal('function');
   });
 });

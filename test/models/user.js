@@ -1,26 +1,24 @@
-var expect = require('chai').expect;
-var Sequelize = require('sequelize').Sequelize;
+const { expect } = require('chai');
+const { Sequelize } = require('sequelize');
 
-var User = require('./../../models/user');
+const User = require('../../models/user');
 
-describe('models/user', function () {
-  before(function () {
-    return User.init();
-  });
+describe('models/user', () => {
+  before(() => User.init());
 
-  describe('serialization', function () {
-    it('should convert flat to json', function () {
-      var flat = {
+  describe('serialization', () => {
+    it('should convert flat to json', () => {
+      const flat = {
         username: 'test-abc',
-        givenName: 'abc'
+        givenName: 'abc',
       };
 
-      var json = User.serialization.flatToJson(flat, '');
+      const json = User.serialization.flatToJson(flat, '');
 
       expect(json).to.deep.equal({
         name: {
           givenName: 'abc',
-          familyName: ''
+          familyName: '',
         },
         id: '',
         revision: '',
@@ -31,20 +29,20 @@ describe('models/user', function () {
         hash: '',
         gravatar: '',
         language: '',
-        username: 'test-abc'
+        username: 'test-abc',
       });
     });
 
-    it('should convert json to flat', function () {
-      var json = {
+    it('should convert json to flat', () => {
+      const json = {
         username: 'test-abc',
         name: {
-          givenName: 'abc'
+          givenName: 'abc',
         },
-        extraneous: 'will be removed from flat'
+        extraneous: 'will be removed from flat',
       };
 
-      var flat = User.serialization.jsonToFlat(json, '');
+      const flat = User.serialization.jsonToFlat(json, '');
 
       expect(flat).to.deep.equal({
         givenName: 'abc',
@@ -57,26 +55,24 @@ describe('models/user', function () {
         hash: '',
         gravatar: '',
         language: '',
-        username: 'test-abc'
+        username: 'test-abc',
       });
     });
   });
 
-  describe('persistance', function () {
-    before(function () {
-      return User.init();
-    });
+  describe('persistance', () => {
+    before(() => User.init());
 
-    it('should create a user', function (done) {
-      var json = {
-        username: 'test-' + Date.now(),
+    it('should create a user', (done) => {
+      const json = {
+        username: `test-${Date.now()}`,
         password: '7hfD!hujoijK',
         name: {
-          familyName: 'Test'
-        }
+          familyName: 'Test',
+        },
       };
 
-      User.create(json, function (err, profile) {
+      User.create(json, (err, profile) => {
         if (err) {
           return done(err);
         }
@@ -99,27 +95,27 @@ describe('models/user', function () {
       });
     });
 
-    it('should require a password', function (done) {
-      var json = {
-        username: 'test-deficient' + Date.now()
+    it('should require a password', (done) => {
+      const json = {
+        username: `test-deficient${Date.now()}`,
       };
 
-      User.create(json, function (err) {
+      User.create(json, (err) => {
         expect(err.message).equal('Please provide a password which is 8 characters or longer');
 
         done();
       });
     });
 
-    it('should ignore invalid revisions', function (done) {
-      var json = {
-        username: 'test-deficient' + Date.now(),
+    it('should ignore invalid revisions', (done) => {
+      const json = {
+        username: `test-deficient${Date.now()}`,
         password: 'a390j3qawoeszidj',
         name: {},
-        revision: 'notanexpectedtrevision'
+        revision: 'notanexpectedtrevision',
       };
 
-      User.create(json, function (err, profile) {
+      User.create(json, (err, profile) => {
         if (err) {
           return done(err);
         }
@@ -133,14 +129,14 @@ describe('models/user', function () {
       });
     });
 
-    it('should accept a client side user', function (done) {
-      var json = {
-        id: 'aa9e1e0042client984created95uuid' + Date.now(),
-        revision: '3-' + (Date.now() - 14 * 1000 * 1000),
-        username: 'test-' + Date.now(),
+    it('should accept a client side user', (done) => {
+      const json = {
+        id: `aa9e1e0042client984created95uuid${Date.now()}`,
+        revision: `3-${Date.now() - 14 * 1000 * 1000}`,
+        username: `test-${Date.now()}`,
         password: 'a390j3qawoeszidj',
         name: {
-          familyName: 'Test'
+          familyName: 'Test',
         },
         language: 'ko',
         email: 'example@example.com',
@@ -149,10 +145,10 @@ describe('models/user', function () {
         // extra fields will be scrubbed
         extraneous: 'some other stuff from the client side that wont be persisted',
         createdAt: new Date() - 30 * 1000 * 1000,
-        updatedAt: new Date() - 14 * 1000 * 1000
+        updatedAt: new Date() - 14 * 1000 * 1000,
       };
 
-      User.create(json, function (err, profile) {
+      User.create(json, (err, profile) => {
         if (err) {
           return done(err);
         }
@@ -161,7 +157,7 @@ describe('models/user', function () {
         expect(profile.createdAt instanceof Date).to.equal(true);
         expect(profile.createdAt).to.equal(profile.updatedAt);
 
-        var revisionNumber = parseInt(profile.revision.split('-')[0], 10);
+        const revisionNumber = parseInt(profile.revision.split('-')[0], 10);
         expect(revisionNumber).to.equal(4);
 
         expect(profile).to.deep.equal({
@@ -177,27 +173,27 @@ describe('models/user', function () {
           gravatar: 'previouslydeterminedstring',
           name: {
             givenName: '',
-            familyName: 'Test'
+            familyName: 'Test',
           },
           language: 'ko',
           hash: profile.hash,
           // dates will be the db dates
           createdAt: profile.createdAt,
-          updatedAt: profile.updatedAt
+          updatedAt: profile.updatedAt,
         });
 
         done();
       });
     });
 
-    it('should save a new user', function (done) {
-      var json = {
-        username: 'test-abc' + Date.now(),
+    it('should save a new user', (done) => {
+      const json = {
+        username: `test-abc${Date.now()}`,
         password: 'a390j3qawoeszidj',
-        name: {}
+        name: {},
       };
 
-      User.save(json, function (err, profile) {
+      User.save(json, (err, profile) => {
         if (err) {
           return done(err);
         }
@@ -214,10 +210,10 @@ describe('models/user', function () {
       });
     });
 
-    it('should return null if user not found', function (done) {
+    it('should return null if user not found', (done) => {
       User.read({
-          username: 'test-nonexistant-user'
-        }, function (err, profile) {
+        username: 'test-nonexistant-user',
+      }, (err, profile) => {
         if (err) {
           return done(err);
         }
@@ -228,26 +224,26 @@ describe('models/user', function () {
       });
     });
 
-    describe('existing users', function () {
-      beforeEach(function (done) {
+    describe('existing users', () => {
+      beforeEach((done) => {
         User.save({
           username: 'test-efg',
           password: 'a390j3qawoeszidj',
           name: {
             givenName: 'Anony',
-            familyName: 'Mouse'
+            familyName: 'Mouse',
           },
           description: 'Friendly',
-          language: 'zh'
-        }, function () {
+          language: 'zh',
+        }, () => {
           done();
         });
       });
 
-      it('should read an existing user', function (done) {
+      it('should read an existing user', (done) => {
         User.read({
-          username: 'test-efg'
-        }, function (err, profile) {
+          username: 'test-efg',
+        }, (err, profile) => {
           if (err) {
             return done(err);
           }
@@ -255,7 +251,7 @@ describe('models/user', function () {
           expect(profile).to.deep.equal({
             name: {
               givenName: 'Anony',
-              familyName: 'Mouse'
+              familyName: 'Mouse',
             },
             id: profile.id,
             revision: profile.revision,
@@ -268,36 +264,36 @@ describe('models/user', function () {
             gravatar: profile.gravatar,
             language: 'zh',
             createdAt: profile.createdAt,
-            updatedAt: profile.updatedAt
+            updatedAt: profile.updatedAt,
           });
 
           done();
         });
       });
 
-      it('should update a user', function (done) {
-        var json = {
+      it('should update a user', (done) => {
+        const json = {
           username: 'test-efg',
           password: 'a390j3qawoeszidj',
           name: {
             givenName: 'Albert',
-            familyName: ''
+            familyName: '',
           },
-          language: 'ko'
+          language: 'ko',
         };
-        User.save(json, function (err, profile) {
+        User.save(json, (err, profile) => {
           if (err) {
             return done(err);
           }
 
-          var revisionNumber = parseInt(profile.revision.split('-')[0], 10);
+          const revisionNumber = parseInt(profile.revision.split('-')[0], 10);
           expect(typeof revisionNumber).to.equal('number');
 
           expect(profile).to.deep.equal({
             name: {
               givenName: 'Albert',
               // should overwrite values if patch is specified
-              familyName: ''
+              familyName: '',
             },
             id: profile.id,
             revision: profile.revision,
@@ -311,68 +307,68 @@ describe('models/user', function () {
             gravatar: profile.gravatar,
             language: 'ko',
             createdAt: profile.createdAt,
-            updatedAt: profile.updatedAt
+            updatedAt: profile.updatedAt,
           });
 
           done();
         });
       });
 
-      describe('deletion', function () {
-        var userToDelete = {
-          username: 'test-delete' + Date.now(),
+      describe('deletion', () => {
+        const userToDelete = {
+          username: `test-delete${Date.now()}`,
           password: 'a390j3qawoeszidj',
-          name: {}
+          name: {},
         };
 
-        before(function (done) {
-          User.create(userToDelete, function () {
+        before((done) => {
+          User.create(userToDelete, () => {
             done();
           });
         });
 
-        it('should require a user', function (done) {
-          User.flagAsDeleted(null, function (err) {
+        it('should require a user', (done) => {
+          User.flagAsDeleted(null, (err) => {
             expect(err.message).equal('Please provide a username and a deletedReason');
 
             done();
           });
         });
 
-        it('should require a username', function (done) {
-          User.flagAsDeleted({}, function (err) {
+        it('should require a username', (done) => {
+          User.flagAsDeleted({}, (err) => {
             expect(err.message).equal('Please provide a username and a deletedReason');
 
             done();
           });
         });
 
-        it('should require a reason', function (done) {
+        it('should require a reason', (done) => {
           User.flagAsDeleted({
-            username: 'test-deleted' + Date.now()
-          }, function (err) {
+            username: `test-deleted${Date.now()}`,
+          }, (err) => {
             expect(err.message).equal('Please provide a username and a deletedReason');
 
             done();
           });
         });
 
-        it('should warn if the user doesnt exist', function (done) {
+        it('should warn if the user doesnt exist', (done) => {
           User.flagAsDeleted({
-            username: 'test-deleted' + Date.now(),
-            deletedReason: 'for testing purposes'
-          }, function (err) {
+            username: `test-deleted${Date.now()}`,
+            deletedReason: 'for testing purposes',
+          }, (err) => {
             expect(err.message).equal('Cannot delete user which doesn\'t exist');
 
             done();
           });
         });
 
-        it('should flag user as deleted', function (done) {
+        it('should flag user as deleted', (done) => {
           User.flagAsDeleted({
             username: userToDelete.username,
-            deletedReason: 'for testing purposes'
-          }, function (err, user) {
+            deletedReason: 'for testing purposes',
+          }, (err, user) => {
             if (err) {
               return done(err);
             }
@@ -387,19 +383,19 @@ describe('models/user', function () {
     });
   });
 
-  describe('password', function () {
-    var userWithPassword = {
-      username: 'test-password' + Date.now(),
+  describe('password', () => {
+    const userWithPassword = {
+      username: `test-password${Date.now()}`,
       name: {
         givenName: 'Test',
-        familyName: 'Password'
+        familyName: 'Password',
       },
-      password: 'zKmmfweLj2!h'
+      password: 'zKmmfweLj2!h',
     };
 
-    before(function (done) {
+    before((done) => {
       User.init();
-      User.create(userWithPassword, function (err, profile) {
+      User.create(userWithPassword, (err, profile) => {
         if (profile) {
           expect(userWithPassword.password).to.equal(undefined);
           userWithPassword.hash = profile.hash;
@@ -408,40 +404,40 @@ describe('models/user', function () {
       });
     });
 
-    it('should reply with invalid username and password', function () {
-      var hashed = User.hashPassword('123ioiw3we_!');
+    it('should reply with invalid username and password', () => {
+      const hashed = User.hashPassword('123ioiw3we_!');
 
       expect(hashed.hash).length(60);
       expect(hashed.salt).length(29);
     });
 
-    it('should reply with invalid username and password', function (done) {
+    it('should reply with invalid username and password', (done) => {
       User.verifyPassword({
         username: 'test-nonexistant-user',
-        password: '123ioiw3we_!'
-      }, function (err) {
+        password: '123ioiw3we_!',
+      }, (err) => {
         expect(err.message).equal('User not found');
 
         done();
       });
     });
 
-    it('should reply with invalid username and password', function (done) {
+    it('should reply with invalid username and password', (done) => {
       User.verifyPassword({
         username: userWithPassword.username,
-        password: 'anotherpassword'
-      }, function (err) {
+        password: 'anotherpassword',
+      }, (err) => {
         expect(err.message).equal('Invalid password');
 
         done();
       });
     });
 
-    it('should recognize the password', function (done) {
+    it('should recognize the password', (done) => {
       User.verifyPassword({
         username: userWithPassword.username,
-        password: 'zKmmfweLj2!h'
-      }, function (err, profile) {
+        password: 'zKmmfweLj2!h',
+      }, (err, profile) => {
         if (err) {
           return done(err);
         }
@@ -452,13 +448,13 @@ describe('models/user', function () {
       });
     });
 
-    it('should be able to change a password', function (done) {
+    it('should be able to change a password', (done) => {
       expect(userWithPassword.hash).to.not.equal(undefined);
       User.changePassword({
         username: userWithPassword.username,
         password: 'zKmmfweLj2!h',
-        newPassword: 'changedpassword'
-      }, function (err, updatedProfile) {
+        newPassword: 'changedpassword',
+      }, (err, updatedProfile) => {
         if (err) {
           return done(err);
         }
@@ -467,33 +463,33 @@ describe('models/user', function () {
         User.changePassword({
           username: userWithPassword.username,
           password: 'changedpassword',
-          newPassword: 'zKmmfweLj2!h'
-        }, function () {
+          newPassword: 'zKmmfweLj2!h',
+        }, () => {
           done();
         });
       });
     });
 
-    it('should require matching old password to able to change a password', function (done) {
-      var info = {
+    it('should require matching old password to able to change a password', (done) => {
+      const info = {
         username: userWithPassword.username,
         password: 'nottherightpassword',
-        newPassword: 'attempedpassword'
+        newPassword: 'attempedpassword',
       };
-      User.changePassword(info, function (err) {
+      User.changePassword(info, (err) => {
         expect(err.message).to.equal('Password doesn\'t match your old password');
 
         done();
       });
     });
 
-    it('should bubble bycrpt errors', function (done) {
-      var info = {
+    it('should bubble bycrpt errors', (done) => {
+      const info = {
         username: userWithPassword.username,
         password: 'zKmmfweLj2!h',
-        newPassword: 123
+        newPassword: 123,
       };
-      User.changePassword(info, function (err) {
+      User.changePassword(info, (err) => {
         // eslint-disable-next-line no-console
         console.log('err', err);
         expect(err.message).to.equal('Illegal arguments: number, string');
@@ -503,40 +499,40 @@ describe('models/user', function () {
     });
   });
 
-  describe('collection', function () {
-    beforeEach(function (done) {
+  describe('collection', () => {
+    beforeEach((done) => {
       User.save({
         username: 'yoan oct',
         password: 'zKmmfweLj2!h',
-        name: {}
-      }, function () {
+        name: {},
+      }, () => {
         User.save({
           username: 'alex oct',
           password: 'zKmmfweLj2!h',
           name: {},
-          email: ''
-        }, function () {
+          email: '',
+        }, () => {
           User.save({
             username: 'noemi oct',
             password: 'zKmmfweLj2!h',
             name: {},
-            email: 'noemi@example.com'
-          }, function () {
+            email: 'noemi@example.com',
+          }, () => {
             done();
           });
         });
       });
     });
 
-    it('should list a public view of all users', function (done) {
+    it('should list a public view of all users', (done) => {
       User.list({
         where: {
           username: {
-            [Sequelize.Op.like]: '%oct'
-          }
+            [Sequelize.Op.like]: '%oct',
+          },
         },
-        limit: 1000
-      }, function (err, users) {
+        limit: 1000,
+      }, (err, users) => {
         if (err) {
           return done(err);
         }
@@ -548,15 +544,15 @@ describe('models/user', function () {
       });
     });
 
-    it('should return empty lists', function (done) {
+    it('should return empty lists', (done) => {
       User.list({
         where: {
           username: {
-            [Sequelize.Op.like]: '%unlikely'
-          }
+            [Sequelize.Op.like]: '%unlikely',
+          },
         },
-        limit: 1000
-      }, function (err, users) {
+        limit: 1000,
+      }, (err, users) => {
         if (err) {
           return done(err);
         }

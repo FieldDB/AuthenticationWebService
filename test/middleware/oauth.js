@@ -1,9 +1,9 @@
-var expect = require('chai').expect;
+const { expect } = require('chai');
 
-var oauth = require('./../../middleware/oauth');
+const oauth = require('../../middleware/oauth');
 
-describe('middleware/oauth', function () {
-  it('should load', function () {
+describe('middleware/oauth', () => {
+  it('should load', () => {
     expect(oauth).to.be.a('object');
     expect(oauth.server).to.be.a('object');
 

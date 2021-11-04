@@ -1,23 +1,24 @@
-var AsToken = require('../../lib/token');
-var debug = require('debug')('test:integration:oauth');
-var expect = require('chai').expect;
-var Express = require('express');
-var OAuth2Strategy = require('passport-oauth2');
-var passport = require('passport');
-var querystring = require('querystring');
-var session = require('express-session');
-var supertest = require('supertest');
-var url = require('url');
+const AsToken = require('../../lib/token');
+const debug = require('debug')('test:integration:oauth');
+const { expect } = require('chai');
+const Express = require('express');
+const OAuth2Strategy = require('passport-oauth2');
+const passport = require('passport');
+const querystring = require('querystring');
+const session = require('express-session');
+const supertest = require('supertest');
+const url = require('url');
 
-var service = process.env.URL || require('../../auth_service');
-var OauthClient = require('./../../models/oauth-client');
-var UserModel = require('./../../models/user');
-var fixtures = {
-  client: require('./../fixtures/client.json'), // eslint-disable-line global-require
-  user: require('./../fixtures/user.json') // eslint-disable-line global-require
+const service = process.env.URL || require('../../auth_service');
+const OauthClient = require('../../models/oauth-client');
+const UserModel = require('../../models/user');
+
+const fixtures = {
+  client: require('../fixtures/client.json'), // eslint-disable-line global-require
+  user: require('../fixtures/user.json'), // eslint-disable-line global-require
 };
 
-describe('/oauth2', function () {
+describe('/oauth2', () => {
   /**
    * Register the client app
 
@@ -27,101 +28,99 @@ describe('/oauth2', function () {
 
       8011->3183: POST /v1/client { name, redirect_uri }
    */
-  before(function (done) {
+  before((done) => {
     OauthClient.init()
-      .then((function () {
+      .then((() => {
         OauthClient
-          .create(fixtures.client, function (err, result) {
+          .create(fixtures.client, (err, result) => {
             debug('created client', result);
             done();
           });
       }));
   });
 
-  before(function (done) {
+  before((done) => {
     UserModel
-      .create(fixtures.user, function (err, result) {
+      .create(fixtures.user, (err, result) => {
         debug('created user', result);
         done();
       });
   });
 
-  describe('GET /oauth2/authorize', function () {
-    it('should redirect to login if user is not present', function () {
-      return supertest(service)
-        .get('/oauth2/authorize')
-        .query({
-          client_id: 'test-client',
-          client_secret: 'test-secret',
-          grant_type: 'authorization_code',
-          redirect_uri: 'http://localhost:8011/v1/users'
-        })
-        .expect(302)
-        .expect('Content-Type', 'text/plain; charset=utf-8')
-        .then(function (res) {
-          expect(res.text).to.contain('Found. Redirecting to');
-          expect(res.text).to.equal('Found. Redirecting to /authentication/login/?client_id=test-client&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A8011%2Fv1%2Fusers'); // jshint ignore:line
-        });
-    });
+  describe('GET /oauth2/authorize', () => {
+    it('should redirect to login if user is not present', () => supertest(service)
+      .get('/oauth2/authorize')
+      .query({
+        client_id: 'test-client',
+        client_secret: 'test-secret',
+        grant_type: 'authorization_code',
+        redirect_uri: 'http://localhost:8011/v1/users',
+      })
+      .expect(302)
+      .expect('Content-Type', 'text/plain; charset=utf-8')
+      .then((res) => {
+        expect(res.text).to.contain('Found. Redirecting to');
+        expect(res.text).to.equal('Found. Redirecting to /authentication/login/?client_id=test-client&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A8011%2Fv1%2Fusers'); // jshint ignore:line
+      }));
   });
 
-  describe('OAuth2 Dance', function () {
-    var clientApp;
-    var clientServer;
-    var oauthOpts = {
+  describe('OAuth2 Dance', () => {
+    let clientApp;
+    let clientServer;
+    const oauthOpts = {
       authorizationURL: 'http://localhost:3183/oauth2/authorize',
       tokenURL: 'http://localhost:3183/oauth2/token',
       clientID: fixtures.client.client_id,
       clientSecret: fixtures.client.client_secret,
       state: true,
       callbackURL: 'http://localhost:8011/auth/example/callback',
-      scope: 'corpora, datalist, session, speech'
+      scope: 'corpora, datalist, session, speech',
     };
-    var port;
-    var server;
+    let port;
+    let server;
 
-    before(function (done) {
-      server = service.listen(0, function () {
+    before((done) => {
+      server = service.listen(0, () => {
         port = server.address().port;
         debug('Listening on http port %d', port);
         done();
       });
     });
 
-    after(function () {
+    after(() => {
       server.close();
     });
 
-    before(function setUpClientApp(done) {
+    before((done) => {
       clientApp = new Express();
       clientApp.use(session({
         resave: true,
         saveUninitialized: true,
-        secret: 'justtestingasanoauthclientapp'
+        secret: 'justtestingasanoauthclientapp',
       }));
       clientApp.use(passport.initialize());
       clientApp.use(passport.session());
-      passport.serializeUser(function (passportUser, callback) {
+      passport.serializeUser((passportUser, callback) => {
         callback(null, passportUser);
       });
-      passport.deserializeUser(function (passportUser, callback) {
+      passport.deserializeUser((passportUser, callback) => {
         callback(null, passportUser);
       });
       oauthOpts.authorizationURL = oauthOpts.authorizationURL.replace('3183', port);
       oauthOpts.tokenURL = oauthOpts.tokenURL.replace('3183', port);
       debug('port', port, oauthOpts);
       passport.use(new OAuth2Strategy(oauthOpts,
-        function (accessToken, refreshToken, profile, cb) {
+        ((accessToken, refreshToken, profile, cb) => {
           debug('in the clientApp oauth OAuth2Strategy', accessToken, refreshToken, profile, cb);
           // Workaround for user missing in response from strategy
-          var decoded = AsToken.verify(accessToken);
+          const decoded = AsToken.verify(accessToken);
           decoded.user.accessToken = accessToken;
 
           // res.set('Authorization', 'Bearer ' + accessToken);
           return cb(null, decoded.user, { info: 'goes here' });
-        }));
-      clientApp.get('/auth/example', function (req, res, next) {
-        var x = passport.authenticate('oauth2');
+        })));
+      clientApp.get('/auth/example', (req, res, next) => {
+        const x = passport.authenticate('oauth2');
         debug('/auth/example will call passport.authenticate', x);
         debug('headers', req.headers);
         // res.set('Authorization', req.headers.authorization);
@@ -129,9 +128,9 @@ describe('/oauth2', function () {
       });
       clientApp.get('/auth/example/callback',
         passport.authenticate('oauth2', {
-          failureRedirect: '/login'
+          failureRedirect: '/login',
         }),
-        function (req, res, next) {
+        (req, res, next) => {
           debug('auth/example/callback got called back', req.headers, req.body, req.query);
           // Successful authentication, now try to use the token
 
@@ -139,8 +138,8 @@ describe('/oauth2', function () {
           supertest(server)
             .get('/v1/user') // an authenticated route
             // .set('Authorization', req.headers.authorization)
-            .set('Authorization', 'Bearer ' + req.session.passport.user.accessToken)
-            .then(function whenContactedApi(response) {
+            .set('Authorization', `Bearer ${req.session.passport.user.accessToken}`)
+            .then((response) => {
               res.json({
                 success: 'called back',
                 headers: req.headers,
@@ -148,24 +147,24 @@ describe('/oauth2', function () {
                 locals: res.locals,
                 query: req.query,
                 session: req.session,
-                response: response.body
+                response: response.body,
               });
             })
             .catch(next);
         });
       // eslint-disable-next-line no-unused-vars
-      clientApp.use(function (err, req, res, next) {
+      clientApp.use((err, req, res, next) => {
         debug('Error in the clientApp', err);
         res.status(err.status || 500);
         res.json(err);
       });
-      clientServer = clientApp.listen(8011, function () {
-        debug('HTTP clientApp listening on http://localhost:' + clientServer.address().port);
+      clientServer = clientApp.listen(8011, () => {
+        debug(`HTTP clientApp listening on http://localhost:${clientServer.address().port}`);
         done();
       });
     });
 
-    after(function setUpClientApp() {
+    after(() => {
       if (!clientServer) {
         return null;
       }
@@ -190,18 +189,18 @@ describe('/oauth2', function () {
       3183-->8011: { token, profile }
       8011-->User: Welcome anonymous!
      */
-    it('should perform oauth2 dance', function () {
-      var loginUrl;
-      var clientAppSessionCookies;
+    it('should perform oauth2 dance', () => {
+      let loginUrl;
+      let clientAppSessionCookies;
 
       // Trigger the dance
       return supertest('http://localhost:8011')
         .get('/auth/example')
         .send({
-          client_id: fixtures.client.client_id
+          client_id: fixtures.client.client_id,
         })
         .set('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-        .then(function (res) {
+        .then((res) => {
           debug(' client app redirect res.headers', res.headers);
           expect(res.status).to.equal(302, res.text);
           expect(res.headers.location).to.contain('/oauth2/authorize');
@@ -210,9 +209,9 @@ describe('/oauth2', function () {
 
           // Request authorization
           return supertest(server)
-            .get(res.headers.location.replace('http://localhost:' + port, ''));
+            .get(res.headers.location.replace(`http://localhost:${port}`, ''));
         })
-        .then(function (res) {
+        .then((res) => {
           debug(' service redirect res.headers', res.headers);
           expect(res.status).to.equal(302, res.text);
           loginUrl = url.parse(res.headers.location);
@@ -227,7 +226,7 @@ describe('/oauth2', function () {
             .get(loginUrl.pathname)
             .query(loginUrl.params);
         })
-        .then(function (res) {
+        .then((res) => {
           expect(res.status).to.equal(200, res.text);
           expect(res.text).to.contain('Login');
           expect(res.text).to.contain('button');
@@ -236,7 +235,7 @@ describe('/oauth2', function () {
           debug('redirect res.body', res.body);
           debug('redirect res.headers', res.headers);
 
-          loginUrl.params.redirect = '/oauth2/authorize?' + querystring.stringify(loginUrl.params);
+          loginUrl.params.redirect = `/oauth2/authorize?${querystring.stringify(loginUrl.params)}`;
           loginUrl.params.username = fixtures.user.username;
           loginUrl.params.password = 'phonemes';
 
@@ -245,7 +244,7 @@ describe('/oauth2', function () {
             .post(loginUrl.pathname)
             .send(loginUrl.params);
         })
-        .then(function (res) {
+        .then((res) => {
           debug('logged in res.body', res.body);
           debug('logged in res.headers', res.headers);
           expect(res.status).to.equal(302, res.text);
@@ -257,21 +256,21 @@ describe('/oauth2', function () {
             .get(res.headers.location)
             .set('Authorization', res.headers.authorization);
         })
-        .then(function (res) {
-          var callbackUrl;
+        .then((res) => {
+          let callbackUrl;
           debug('after authorize in res.body', res.body);
           debug('after authorize in res.headers', res.headers);
           expect(res.status).to.equal(302, res.text);
           expect(res.headers.location).to.contain('/auth/example/callback');
           expect(res.headers.authorization).to.contain('Bearer');
 
-          var token = res.headers.authorization.replace(/Bearer v1\//, '');
-          var decoded = AsToken.verify(token);
+          const token = res.headers.authorization.replace(/Bearer v1\//, '');
+          const decoded = AsToken.verify(token);
           expect(decoded).to.deep.equal({
             user: {
               name: {
                 givenName: 'Anony',
-                familyName: 'Mouse'
+                familyName: 'Mouse',
               },
               id: '6e6017b0-4235-11e6-afb5-8d78a35b2f79',
               revision: decoded.user.revision,
@@ -284,11 +283,11 @@ describe('/oauth2', function () {
               language: 'zh',
               // hash: decoded.user.hash,
               createdAt: decoded.user.createdAt,
-              updatedAt: decoded.user.updatedAt
+              updatedAt: decoded.user.updatedAt,
             },
             client: {},
             iat: decoded.iat,
-            exp: decoded.exp
+            exp: decoded.exp,
           });
 
           // Follow redirect back to client
@@ -299,7 +298,7 @@ describe('/oauth2', function () {
             .set('Authorization', res.headers.authorization)
             .set('Cookie', clientAppSessionCookies);
         })
-        .then(function (res) {
+        .then((res) => {
           debug('after app callback res.status', res.status);
           debug('after app callback res.body', res.body);
           debug('after app callback res.headers', res.headers);
@@ -310,14 +309,14 @@ describe('/oauth2', function () {
           expect(res.body.query.state).length(24);
           expect(res.body.headers.authorization).to.contain('Bearer v1');
 
-          var token = res.body.headers.authorization.replace(/Bearer v1\//, '');
-          var decoded = AsToken.verify(token);
+          const token = res.body.headers.authorization.replace(/Bearer v1\//, '');
+          const decoded = AsToken.verify(token);
           expect(decoded).to.deep.equal({
             client: {},
             user: {
               name: {
                 givenName: 'Anony',
-                familyName: 'Mouse'
+                familyName: 'Mouse',
               },
               id: '6e6017b0-4235-11e6-afb5-8d78a35b2f79',
               revision: decoded.user.revision,
@@ -330,10 +329,10 @@ describe('/oauth2', function () {
               language: 'zh',
               // hash: decoded.user.hash,
               createdAt: decoded.user.createdAt,
-              updatedAt: decoded.user.updatedAt
+              updatedAt: decoded.user.updatedAt,
             },
             iat: decoded.iat,
-            exp: decoded.exp
+            exp: decoded.exp,
           });
 
           debug('body from calling app', res.body);
@@ -346,11 +345,11 @@ describe('/oauth2', function () {
               // 'user-agent': 'node-superagent/3.8.3',
               authorization: res.body.headers.authorization,
               connection: 'close',
-              cookie: res.body.headers.cookie
+              cookie: res.body.headers.cookie,
             },
             query: {
               code: res.body.query.code,
-              state: res.body.query.state
+              state: res.body.query.state,
             },
             locals: {},
             session: {
@@ -358,14 +357,14 @@ describe('/oauth2', function () {
                 originalMaxAge: null,
                 expires: null,
                 httpOnly: true,
-                path: '/'
+                path: '/',
               },
               passport: {
                 user: {
                   accessToken: res.body.session.passport.user.accessToken,
                   name: {
                     givenName: 'Anony',
-                    familyName: 'Mouse'
+                    familyName: 'Mouse',
                   },
                   id: '6e6017b0-4235-11e6-afb5-8d78a35b2f79',
                   revision: decoded.user.revision,
@@ -375,14 +374,14 @@ describe('/oauth2', function () {
                   description: 'Friendly',
                   language: 'zh',
                   createdAt: decoded.user.createdAt,
-                  updatedAt: decoded.user.updatedAt
-                }
-              }
+                  updatedAt: decoded.user.updatedAt,
+                },
+              },
             },
             response: {
               name: {
                 givenName: 'Anony',
-                familyName: 'Mouse'
+                familyName: 'Mouse',
               },
               id: '6e6017b0-4235-11e6-afb5-8d78a35b2f79',
               revision: res.body.response.revision,
@@ -396,11 +395,11 @@ describe('/oauth2', function () {
               updatedAt: res.body.response.updatedAt,
               deletedAt: null,
               deletedReason: '',
-              token: 'Bearer ' + res.body.session.passport.user.accessToken
-            }
+              token: `Bearer ${res.body.session.passport.user.accessToken}`,
+            },
           });
 
-          var newToken = AsToken.decode(res.body.session.passport.user.accessToken);
+          const newToken = AsToken.decode(res.body.session.passport.user.accessToken);
           expect(newToken.accessToken).length(36);
           expect(newToken.refreshToken).length(40);
 
@@ -410,12 +409,12 @@ describe('/oauth2', function () {
             refreshToken: newToken.refreshToken,
             client: {
               client_id: fixtures.client.client_id,
-              scope: 'corpora, datalist, session, speech, activity'
+              scope: 'corpora, datalist, session, speech, activity',
             },
             user: {
               name: {
                 givenName: 'Anony',
-                familyName: 'Mouse'
+                familyName: 'Mouse',
               },
               id: '6e6017b0-4235-11e6-afb5-8d78a35b2f79',
               revision: newToken.user.revision,
@@ -425,81 +424,75 @@ describe('/oauth2', function () {
               description: 'Friendly',
               language: 'zh',
               createdAt: newToken.user.createdAt,
-              updatedAt: newToken.user.updatedAt
+              updatedAt: newToken.user.updatedAt,
             },
             iat: newToken.iat,
-            exp: newToken.exp
+            exp: newToken.exp,
           });
         });
     });
   });
 
-  describe('POST /oauth2/authorize', function () {
-    it('should be not found', function () {
-      return supertest(service)
-        .post('/oauth2/authorize')
-        .type('form')
-        .send({
-          client_id: fixtures.client.client_id,
-          client_secret: 'test-secret',
-          grant_type: 'authorization_code',
-          redirect_uri: 'http://localhost:8011/v1/users'
-        })
-        .expect(404)
-        // .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(function (res) {
-          expect(res.body).to.deep.equal({
-            status: 404,
-            userFriendlyErrors: ['Not Found']
-          });
+  describe('POST /oauth2/authorize', () => {
+    it('should be not found', () => supertest(service)
+      .post('/oauth2/authorize')
+      .type('form')
+      .send({
+        client_id: fixtures.client.client_id,
+        client_secret: 'test-secret',
+        grant_type: 'authorization_code',
+        redirect_uri: 'http://localhost:8011/v1/users',
+      })
+      .expect(404)
+    // .expect('Content-Type', 'application/json; charset=utf-8')
+      .then((res) => {
+        expect(res.body).to.deep.equal({
+          status: 404,
+          userFriendlyErrors: ['Not Found'],
         });
-    });
+      }));
   });
 
-  describe('GET /oauth2/token', function () {
-    it('should be not found', function () {
-      return supertest(service)
-        .get('/oauth2/token')
-        .send({
-          client_id: fixtures.client.client_id,
-          client_secret: 'test-secret',
-          grant_type: 'authorization_code',
-          username: 'test-user',
-          code: 'ABC'
-        })
-        .expect(404)
-        // .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(function (res) {
-          expect(res.body).to.deep.equal({
-            status: 404,
-            message: 'Not Found',
-            stack: res.body.stack,
-            userFriendlyErrors: ['Not Found']
-          });
+  describe('GET /oauth2/token', () => {
+    it('should be not found', () => supertest(service)
+      .get('/oauth2/token')
+      .send({
+        client_id: fixtures.client.client_id,
+        client_secret: 'test-secret',
+        grant_type: 'authorization_code',
+        username: 'test-user',
+        code: 'ABC',
+      })
+      .expect(404)
+    // .expect('Content-Type', 'application/json; charset=utf-8')
+      .then((res) => {
+        expect(res.body).to.deep.equal({
+          status: 404,
+          message: 'Not Found',
+          stack: res.body.stack,
+          userFriendlyErrors: ['Not Found'],
         });
-    });
+      }));
   });
 
-  describe('POST /oauth2/token', function () {
-    it('should validate the authorization code', function () {
-      return supertest(service)
-        .post('/oauth2/token')
-        .type('form') // content must be application/x-www-form-urlencoded
-        .send({
-          client_id: fixtures.client.client_id,
-          client_secret: 'test-secret',
-          grant_type: 'authorization_code',
-          username: 'test-user',
-          code: 'ABC'
-        })
-        .expect(403)
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(function (res) {
-          expect(res.body).to.deep.equal({
-            status: 403,
-            userFriendlyErrors: ['Code is not authorized']
-          });
+  describe('POST /oauth2/token', () => {
+    it('should validate the authorization code', () => supertest(service)
+      .post('/oauth2/token')
+      .type('form') // content must be application/x-www-form-urlencoded
+      .send({
+        client_id: fixtures.client.client_id,
+        client_secret: 'test-secret',
+        grant_type: 'authorization_code',
+        username: 'test-user',
+        code: 'ABC',
+      })
+      .expect(403)
+      .expect('Content-Type', 'application/json; charset=utf-8')
+      .then((res) => {
+        expect(res.body).to.deep.equal({
+          status: 403,
+          userFriendlyErrors: ['Code is not authorized'],
         });
-    });
+      }));
   });
 });

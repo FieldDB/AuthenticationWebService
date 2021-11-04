@@ -1,10 +1,10 @@
-var debug = require('debug')('authentication');
-var param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
-var sequelize = require('sequelize');
-var querystring = require('querystring');
+const debug = require('debug')('authentication');
+const param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
+const sequelize = require('sequelize');
+const querystring = require('querystring');
 
-var User = require('../models/user');
-var signUserAsToken = require('../models/oauth-client').signUserAsToken;
+const User = require('../models/user');
+const { signUserAsToken } = require('../models/oauth-client');
 
 /**
  * Log in
@@ -28,25 +28,25 @@ exports.postLogin = {
         format: 'password',
         minLength: 8,
         required: true,
-        paramType: 'form'
+        paramType: 'form',
       },
       param.form('client_id', 'client_id of the application', 'string'),
       param.form('redirect', 'requested redirect after registration', 'string'),
-      param.form('redirect_uri', 'requested redirect_uri after registration', 'string')
+      param.form('redirect_uri', 'requested redirect_uri after registration', 'string'),
     ],
     responseClass: 'User',
     errorResponses: [],
-    nickname: 'postLogin'
+    nickname: 'postLogin',
   },
   action: function postLogin(req, res, next) {
     debug('postLogin req.body', req.body);
     debug('postLogin req.query', req.query);
     User.verifyPassword({
       password: req.body.password,
-      username: req.body.username
-    }, function whenVerified(err, user) {
-      var token;
-      var redirect;
+      username: req.body.username,
+    }, (err, user) => {
+      let token;
+      let redirect;
 
       delete req.body.password;
       if (err) {
@@ -57,15 +57,15 @@ exports.postLogin = {
         return next(err, req, res, next);
       }
 
-      token = signUserAsToken({ user: user });
+      token = signUserAsToken({ user });
       debug('token', token);
-      res.set('Set-Cookie', 'Authorization=Bearer ' + token + '; path=/; Secure; HttpOnly');
-      res.set('Authorization', 'Bearer ' + token);
+      res.set('Set-Cookie', `Authorization=Bearer ${token}; path=/; Secure; HttpOnly`);
+      res.set('Authorization', `Bearer ${token}`);
 
-      redirect = req.body.redirect || req.body.redirect_uri + '?' + querystring.stringify(req.body);
+      redirect = req.body.redirect || `${req.body.redirect_uri}?${querystring.stringify(req.body)}`;
       return res.redirect(redirect);
     });
-  }
+  },
 };
 
 exports.getLogout = {
@@ -76,17 +76,17 @@ exports.getLogout = {
     summary: 'Logs user out',
     method: 'GET',
     parameters: [
-      param.query('redirect', 'requested redirect after logout', 'string')
+      param.query('redirect', 'requested redirect after logout', 'string'),
     ],
     responseClass: 'User',
     errorResponses: [],
-    nickname: 'getLogout'
+    nickname: 'getLogout',
   },
   action: function getLogout(req, res) {
     res.set('Set-Cookie', 'Authorization=null; path=/; Secure; HttpOnly');
     res.set('Authorization', 'null');
     res.redirect(req.query.redirect || '/authentication/login');
-  }
+  },
 };
 
 /**
@@ -111,7 +111,7 @@ exports.postRegister = {
         format: 'password',
         minLength: 8,
         required: true,
-        paramType: 'form'
+        paramType: 'form',
       },
       {
         name: 'confirmPassword',
@@ -120,18 +120,18 @@ exports.postRegister = {
         format: 'password',
         minLength: 8,
         required: true,
-        paramType: 'form'
+        paramType: 'form',
       },
       param.form('client_id', 'client_id of the application', 'string'),
       param.form('redirect', 'requested redirect after registration', 'string'),
-      param.form('redirect_uri', 'requested redirect_uri after registration', 'string')
+      param.form('redirect_uri', 'requested redirect_uri after registration', 'string'),
     ],
     responseClass: 'User',
     errorResponses: [],
-    nickname: 'postRegister'
+    nickname: 'postRegister',
   },
   action: function postRegister(req, res, next) {
-    var err;
+    let err;
 
     if (!req.body || !req.body.username || req.body.username.length < 4) {
       err = new Error('Please provide a username which is 4 characters or longer '
@@ -146,8 +146,8 @@ exports.postRegister = {
       return next(err, req, res, next);
     }
 
-    return User.create(req.body, function whenCreated(createErr, user) {
-      var token;
+    return User.create(req.body, (createErr, user) => {
+      let token;
 
       if (createErr) {
         err = createErr;
@@ -155,7 +155,7 @@ exports.postRegister = {
 
         if (err instanceof sequelize.UniqueConstraintError
           && err.fields && err.fields.indexOf('username') > -1) {
-          err = new Error('Username ' + req.body.username + ' is already taken,'
+          err = new Error(`Username ${req.body.username} is already taken,`
             + ' please try another username');
           err.status = 403;
         }
@@ -164,13 +164,12 @@ exports.postRegister = {
         return next(err, req, res, next);
       }
 
-      token = signUserAsToken({ user: user });
+      token = signUserAsToken({ user });
       debug('token', token);
-      res.set('Set-Cookie', 'Authorization=Bearer ' + token + '; path=/; Secure; HttpOnly');
-      res.set('Authorization', 'Bearer ' + token);
+      res.set('Set-Cookie', `Authorization=Bearer ${token}; path=/; Secure; HttpOnly`);
+      res.set('Authorization', `Bearer ${token}`);
 
       return res.redirect(req.body.redirect_uri || '');
     });
-  }
+  },
 };
-

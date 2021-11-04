@@ -1,49 +1,49 @@
-var expect = require('chai').expect;
-var sinon = require('sinon');
+const { expect } = require('chai');
+const sinon = require('sinon');
 
-var error = require('./../../middleware/error-handler').errorHandler;
+const error = require('../../middleware/error-handler').errorHandler;
 
-describe('middleware/error-handler', function () {
-  var NODE_ENV = process.env.NODE_ENV;
-  var err = new Error('oops');
+describe('middleware/error-handler', () => {
+  const { NODE_ENV } = process.env;
+  const err = new Error('oops');
   err.status = 500;
 
-  var req = {
+  const req = {
     app: {
-      locals: {}
-    }
+      locals: {},
+    },
   };
-  var res = {};
+  const res = {};
 
-  afterEach(function () {
+  afterEach(() => {
     process.env.NODE_ENV = NODE_ENV;
   });
 
-  it('should load', function () {
+  it('should load', () => {
     expect(error).to.be.a('function');
   });
 
-  describe('api endpoint', function () {
-    beforeEach(function () {
+  describe('api endpoint', () => {
+    beforeEach(() => {
       req.url = '/v1/nodata';
       req.headers = {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       };
       res.json = sinon.spy();
       res.render = sinon.spy();
       res.status = sinon.spy();
       req.log = {
-        fields: {}
+        fields: {},
       };
     });
 
-    describe('in development', function () {
-      beforeEach(function () {
+    describe('in development', () => {
+      beforeEach(() => {
         process.env.NODE_ENV = 'development';
       });
 
-      it('should expose stack traces', function () {
-        error(err, req, res, function () {});
+      it('should expose stack traces', () => {
+        error(err, req, res, () => {});
 
         sinon.assert.calledWith(res.status, 500);
         // console.log('res.json', res.json.getCall(0).args)
@@ -53,25 +53,25 @@ describe('middleware/error-handler', function () {
           url: undefined,
           details: undefined,
           status: err.status,
-          userFriendlyErrors: ['Server erred, please report this 816']
+          userFriendlyErrors: ['Server erred, please report this 816'],
         });
       });
     });
 
-    describe('in production', function () {
-      beforeEach(function () {
+    describe('in production', () => {
+      beforeEach(() => {
         process.env.NODE_ENV = 'production';
       });
 
-      it('should not expose stack traces', function () {
-        error(err, req, res, function () {});
+      it('should not expose stack traces', () => {
+        error(err, req, res, () => {});
 
         sinon.assert.calledWith(res.status, 500);
         sinon.assert.calledWith(res.json, {
           message: 'Internal server error',
           stack: undefined,
           status: 500,
-          userFriendlyErrors: ['Server erred, please report this 816']
+          userFriendlyErrors: ['Server erred, please report this 816'],
         });
       });
     });

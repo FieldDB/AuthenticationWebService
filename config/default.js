@@ -1,8 +1,8 @@
-var fs = require('fs');
-var path = require('path');
-var Connection = require('fielddb/api/corpus/Connection').Connection;
+const fs = require('fs');
+const path = require('path');
+const { Connection } = require('fielddb/api/corpus/Connection');
 
-var deployTarget = process.env.NODE_ENV || 'localhost';
+let deployTarget = process.env.NODE_ENV || 'localhost';
 // backward compatible
 if (deployTarget === 'test') {
   deployTarget = 'beta';
@@ -37,22 +37,22 @@ module.exports = {
     key: fs.readFileSync(path.join(__dirname, '/fielddb_debug.key'), 'utf8'),
     cert: fs.readFileSync(path.join(__dirname, '/fielddb_debug.crt'), 'utf8'),
     port: '3183',
-    protocol: 'https://'
+    protocol: 'https://',
   },
   url: 'https://localhost:3183',
   usersDbConnection: {
     url: 'http://localhost:5984',
-    dbname: 'theuserscouch'
+    dbname: 'theuserscouch',
   },
   couchKeys: {
     username: 'admin',
-    password: 'none'
+    password: 'none',
   },
   externalOrigin: Connection.knownConnections.thisserver.authUrls[0],
   sampleUsers: {
     public: ['public'],
     fieldlinguist: ['lingllama', 'teammatetiger'],
-    gamified: ['alakazou', 'valeriebilleentete']
+    gamified: ['alakazou', 'valeriebilleentete'],
   },
   mailConnection: {
     host: 'smtp.gmail.com',
@@ -61,8 +61,8 @@ module.exports = {
     service: '',
     auth: {
       user: '',
-      pass: ''
-    }
+      pass: '',
+    },
   },
   newUserMailOptions: function newUserMailOptions() {
     return {
@@ -70,7 +70,7 @@ module.exports = {
       to: '', // list of receivers
       subject: 'Welcome to localhost!', // Subject line
       text: 'Your username is: ', // plaintext // body
-      html: 'Your username is: '
+      html: 'Your username is: ',
     };
   },
   welcomeToCorpusTeamMailOptions: function welcomeToCorpusTeamMailOptions() {
@@ -79,7 +79,7 @@ module.exports = {
       to: '', // list of receivers
       subject: '[LingSync.org] Someone has granted you access to their corpus', // Subject line
       text: "The new corpus's identifier is: ", // plaintext // body
-      html: "The new corpus's identifier is: "
+      html: "The new corpus's identifier is: ",
     };
   },
   suspendedUserMailOptions: function suspendedUserMailOptions() {
@@ -88,7 +88,7 @@ module.exports = {
       to: '', // list of receivers
       subject: 'New Temporary Password', // Subject line
       text: 'Your username is: ', // plaintext // body
-      html: 'Your username is: '
+      html: 'Your username is: ',
     };
   },
   newUserMailOptionsPhophlo: function newUserMailOptionsPhophlo() {
@@ -97,7 +97,7 @@ module.exports = {
       to: '', // list of receivers
       subject: 'Welcome to localhost!', // Subject line
       text: 'Your username is: ', // plaintext // body
-      html: 'Your username is: '
+      html: 'Your username is: ',
     };
   },
   welcomeToCorpusTeamMailOptionsPhophlo: function welcomeToCorpusTeamMailOptionsPhophlo() {
@@ -106,7 +106,7 @@ module.exports = {
       to: '', // list of receivers
       subject: '[LingSync.org] Someone has granted you access to their corpus', // Subject line
       text: "The new corpus's identifier is: ", // plaintext // body
-      html: "The new corpus's identifier is: "
+      html: "The new corpus's identifier is: ",
     };
   },
   suspendedUserMailOptionsPhophlo: function suspendedUserMailOptionsPhophlo() {
@@ -115,8 +115,7 @@ module.exports = {
       to: '', // list of receivers
       subject: 'New Temporary Password', // Subject line
       text: 'Your username is: ', // plaintext // body
-      html: 'Your username is: '
+      html: 'Your username is: ',
     };
-  }
+  },
 };
-
