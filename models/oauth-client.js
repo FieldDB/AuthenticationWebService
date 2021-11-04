@@ -97,7 +97,7 @@ function read(client, callback) {
   };
 
   oauthClient
-    .find(options)
+    .findOne(options)
     .then(function whenReadDB(dbModel) {
       if (!dbModel) {
         return callback(null, null);
@@ -215,7 +215,7 @@ function getAccessToken(bearerToken) {
 function getClient(clientId, clientSecret) {
   debug('getClient arguments', arguments);
 
-  return oauthClient.find({
+  return oauthClient.findOne({
     client_id: clientId,
     client_secret: clientSecret,
     deletedAt: null

@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var Sequelize = require('sequelize').Sequelize;
 
 var OauthToken = require('./../../models/oauth-token');
 
@@ -159,7 +160,7 @@ describe('models/oauth-token', function () {
       OauthToken.list({
         where: {
           access_token: {
-            $like: 'testm-%'
+            [Sequelize.Op.like]: 'testm-%'
           }
         },
         limit: 1000

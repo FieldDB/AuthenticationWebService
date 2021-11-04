@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var Sequelize = require('sequelize').Sequelize;
 var AsToken = require('../../lib/token');
 
 var OAuthClient = require('./../../models/oauth-client');
@@ -153,7 +154,7 @@ describe('models/oauth-client', function () {
       OAuthClient.list({
         where: {
           client_id: {
-            $like: 'testm-%'
+            [Sequelize.Op.like]: 'testm-%'
           }
         },
         limit: 1000
@@ -178,7 +179,7 @@ describe('models/oauth-client', function () {
       OAuthClient.list({
         where: {
           deletedReason: {
-            $like: '%spider%'
+            [Sequelize.Op.like]: '%spider%'
           }
         },
         limit: 1000

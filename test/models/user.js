@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var Sequelize = require('sequelize').Sequelize;
 
 var User = require('./../../models/user');
 
@@ -214,7 +215,9 @@ describe('models/user', function () {
     });
 
     it('should return null if user not found', function (done) {
-      User.read('test-nonexistant-user', function (err, profile) {
+      User.read({
+          username: 'test-nonexistant-user'
+        }, function (err, profile) {
         if (err) {
           return done(err);
         }
@@ -494,7 +497,9 @@ describe('models/user', function () {
         expect(err.message).to.equal('data must be a string and salt must either be a salt string or a number of rounds');
 
         done();
-      });
+      }, function () {
+          done(new Error('should not succeed'));
+        });
     });
   });
 
@@ -527,7 +532,7 @@ describe('models/user', function () {
       User.list({
         where: {
           username: {
-            $like: '%oct'
+            [Sequelize.Op.like]: '%oct'
           }
         },
         limit: 1000
@@ -547,7 +552,7 @@ describe('models/user', function () {
       User.list({
         where: {
           username: {
-            $like: '%unlikely'
+            [Sequelize.Op.like]: '%unlikely'
           }
         },
         limit: 1000

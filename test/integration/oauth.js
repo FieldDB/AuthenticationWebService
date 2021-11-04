@@ -343,7 +343,7 @@ describe('/oauth2', function () {
             headers: {
               host: '127.0.0.1:8011',
               'accept-encoding': 'gzip, deflate',
-              'user-agent': 'node-superagent/3.8.3',
+              // 'user-agent': 'node-superagent/3.8.3',
               authorization: res.body.headers.authorization,
               connection: 'close',
               cookie: res.body.headers.cookie

@@ -74,7 +74,7 @@ function read(token, callback) {
   }
 
   return oauthToken
-    .find(options)
+    .findOne(options)
     .then(function whenFound(dbModel) {
       if (!dbModel) {
         return callback(null, null);
