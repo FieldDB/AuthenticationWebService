@@ -301,6 +301,16 @@ describe('models/oauth-client', function () {
             });
           });
       });
+
+      it('should handle client not found', function () {
+        return OAuthClient
+          .getClient(fixtures.client.client_id, 'test-wrong-secret')
+          .then(function (clientInfo) {
+            throw new Error('should not succeed');
+          }).catch(function(err) {
+            expect(err.message).to.equal('Client id or secret is invalid');
+          });
+      });
     });
 
     describe('users', function () {

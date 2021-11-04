@@ -216,9 +216,11 @@ function getClient(clientId, clientSecret) {
   debug('getClient arguments', arguments);
 
   return oauthClient.findOne({
-    client_id: clientId,
-    client_secret: clientSecret,
-    deletedAt: null
+    where: {
+      client_id: clientId,
+      client_secret: clientSecret,
+      deletedAt: null
+    },
   }).then(function whenClientFound(client) {
     var json;
     if (!client) {
