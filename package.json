@@ -62,6 +62,9 @@
     "sinon": "^12.0.0",
     "supertest": "^6.1.6"
   },
+  "resolutions": {
+    "lodash": "^4.17.21"
+  },
   "main": "./auth_service.js",
   "bin": {
     "fielddb-auth": "./auth_service.js"
