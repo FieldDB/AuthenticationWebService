@@ -58,7 +58,20 @@ describe.only('lib/user', () => {
   describe('findByEmail', () => {
     it('should reject with an error', () => findByEmail()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.equal('Please provide an email');
+      }));
+
+    it('should find lingllama', () => findByEmail({
+      email: 'lingllama@example.org',
+    })
+      .then((result) => {
+        expect(result.users.map(({ username, email }) => ({ username, email }))).to.deep.equal([{
+          username: 'lingllama',
+          email: 'lingllama@example.org',
+        }]);
+        expect(result.info).to.deep.equal({
+          message: 'Found 1 users for undefined',
+        });
       }));
   });
 
@@ -175,8 +188,6 @@ describe.only('lib/user', () => {
         })
         .catch((err) => {
           expect(err.message).to.equal('Document update conflict.');
-          console.log('err.userFriendlyErrors', err.userFriendlyErrors);
-
           expect(err.userFriendlyErrors).to.deep.equal(['Conflict saving user in the database. Please try again.']);
         });
     });
