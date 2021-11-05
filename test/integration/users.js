@@ -24,7 +24,7 @@ describe.skip('/users', () => {
   describe('POST /users/:username', () => {
     const username = `test${Date.now()}`;
     // const username = `anonymous${Date.now()}`;
-    it.only('should register a new user', () => supertest(authWebService)
+    it('should register a new user', () => supertest(authWebService)
       .post(`/users/${username}`)
       .set('x-request-id', `${requestId}-register`)
       .send({

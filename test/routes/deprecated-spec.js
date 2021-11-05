@@ -175,9 +175,7 @@ describe('/ deprecated', () => {
       })
       .then((res) => {
         expect(res.body.userFriendlyErrors).to.deep.equal([
-          "You asked to use ნინო ბერიძე but we would reccomend using this instead:  the following are a list of reason's why.",
-          "You have some characters which web servers wouldn't trust in your identifier.",
-          'Your identifier is really too short.',
+          "Please use '' instead (the username you have chosen isn't very safe for urls, which means your corpora would be potentially inaccessible in old browsers)",
         ]);
       }));
 
