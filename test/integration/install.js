@@ -169,75 +169,122 @@ describe('install', () => {
   });
 
   describe('new_corpus_activity_feed', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
-    // TODO unable to replicate the activity feeds
-    it.skip('should replicate new_corpus_activity_feed', () => {
+    // unable to replicate the activity feeds
+    // due to permissions so instead
+    // replicating a db that contains both validate docs
+    it('should replicate new_corpus_activity_feed', () => {
       const dbnameToReplicate = 'new_corpus_activity_feed';
 
       return supertest(destination)
         .post('/_replicate')
         .set('Accept', 'application/json')
         .send({
-          source: `${source}/${dbnameToReplicate}`,
+          source: `${source}/new_activity_feed`,
           target: {
             url: `${destination}/${dbnameToReplicate}`,
           },
           create_target: true,
         })
         .then((res) => {
-          debug('res.body new_corpus_activity_feed', res.body);
+          debug('res.body new_activity_feed', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
-            .get('/_all_dbs')
+            .get(`/${dbnameToReplicate}/_design/blockNonContribAdminWrites`)
             .set('Accept', 'application/json');
         })
         .then((res) => {
-          debug('res.body', res.body);
-          expect(res.body).includes(dbnameToReplicate);
+          console.log('res.body', res.body);
+          const doc = res.body;
+          if (!doc.corpus_validate_doc_update) {
+            expect(doc.user_validate_doc_update).to.equal(undefined);
+            return res;
+          }
+
+          // Convert to the new_corpus_activity_feed validate_doc_update
+          expect(doc.corpus_validate_doc_update).not.to.equal(undefined);
+          doc.validate_doc_update = doc.corpus_validate_doc_update;
+          delete doc.user_validate_doc_update;
+          delete doc.corpus_validate_doc_update;
+
+          return supertest(destination)
+            .put(`/${dbnameToReplicate}/_design/blockNonContribAdminWrites`)
+            .set('Accept', 'application/json')
+            // https://stackoverflow.com/questions/49720537/referer-header-required-error-in-couchdb-when-trying-to-use-find
+            .set('Referer', '')
+            .set('X-Forwarded-Host', '')
+            .send(doc);
+        })
+        .then((res) => {
+          if (res.body._id) {
+            expect(res.status).to.equal(200);
+          } else {
+            console.log('res.status', res.status);
+            console.log('res.body', res.body);
+            console.log('res.headers', res.headers);
+            expect(res.status).to.equal(201);
+            expect(res.body.id).to.equal('_design/blockNonContribAdminWrites');
+          }
         });
     });
   });
 
   describe('new_user_activity_feed', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
-    // TODO unable to replicate the activity feeds
-    it.skip('should replicate new_user_activity_feed', () => {
+    // unable to replicate the activity feeds
+    // due to permissions so instead
+    // replicating a db that contains both validate docs
+    it('should replicate new_user_activity_feed', () => {
       const dbnameToReplicate = 'new_user_activity_feed';
 
       return supertest(destination)
         .post('/_replicate')
         .set('Accept', 'application/json')
         .send({
-          source: `${source}/${dbnameToReplicate}`,
+          source: `${source}/new_activity_feed`,
           target: {
             url: `${destination}/${dbnameToReplicate}`,
           },
           create_target: true,
         })
         .then((res) => {
-          debug('res.body new_user_activity_feed', res.body);
+          debug('res.body new_activity_feed', res.body);
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
-            .get('/_all_dbs')
+            .get(`/${dbnameToReplicate}/_design/blockNonContribAdminWrites`)
             .set('Accept', 'application/json');
         })
         .then((res) => {
-          debug('res.body', res.body);
-          expect(res.body).includes(dbnameToReplicate);
+          console.log('res.body', res.body);
+          const doc = res.body;
+          if (!doc.user_validate_doc_update) {
+            expect(doc.corpus_validate_doc_update).to.equal(undefined);
+            return res;
+          }
+
+          // Convert to the new_user_activity_feed validate_doc_update
+          expect(doc.user_validate_doc_update).not.to.equal(undefined);
+          doc.validate_doc_update = doc.user_validate_doc_update;
+          delete doc.user_validate_doc_update;
+          delete doc.corpus_validate_doc_update;
+
+          return supertest(destination)
+            .put(`/${dbnameToReplicate}/_design/blockNonContribAdminWrites`)
+            .set('Accept', 'application/json')
+            .set('Referer', '')
+            .set('X-Forwarded-Host', '')
+            .send(doc);
+        })
+        .then((res) => {
+          if (res.body._id) {
+            expect(res.status).to.equal(200);
+          } else {
+            console.log('res.status', res.status);
+            console.log('res.body', res.body);
+            console.log('res.headers', res.headers);
+            expect(res.status).to.equal(201);
+            expect(res.body.id).to.equal('_design/blockNonContribAdminWrites');
+          }
         });
     });
   });
