@@ -1,11 +1,11 @@
 const { expect } = require('chai');
 const supertest = require('supertest');
 
-const api = process.env.URL || require('../../auth_service');
-const user = require('../../models/user');
+const api = process.env.URL || require('../../../auth_service');
+const user = require('../../../models/user');
 
 const fixtures = {
-  user: require('../fixtures/user.json'),
+  user: require('../../fixtures/user.json'),
 };
 
 describe('/v1/users', () => {

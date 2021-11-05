@@ -165,6 +165,33 @@ describe('/ deprecated', () => {
           'Please choose a longer username `ba` is too short.',
         ]);
       }));
+
+    it('should refuse to register non ascii usernames', () => supertest(authWebService)
+      .post('/register')
+      .set('x-request-id', `${requestId}-register`)
+      .send({
+        username: 'ნინო ბერიძე',
+        password: 'phoneme',
+      })
+      .then((res) => {
+        expect(res.body.userFriendlyErrors).to.deep.equal([
+          "You asked to use ნინო ბერიძე but we would reccomend using this instead:  the following are a list of reason's why.",
+          "You have some characters which web servers wouldn't trust in your identifier.",
+          'Your identifier is really too short.',
+        ]);
+      }));
+
+    it('should require a username', () => supertest(authWebService)
+      .post('/register')
+      .set('x-request-id', `${requestId}-register`)
+      .send({
+        password: 'phoneme',
+      })
+      .then((res) => {
+        expect(res.body.userFriendlyErrors).to.deep.equal([
+          'Please provide a username',
+        ]);
+      }));
   });
 
   describe('/login', () => {
