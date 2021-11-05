@@ -367,7 +367,7 @@ describe('/ deprecated', () => {
   });
 
   describe('/changepassword', () => {
-    it.only('should accept changepassword', function () {
+    it('should accept changepassword', function () {
       if (process.env.REPLAY !== 'bloody') {
         this.skip();
       }
@@ -417,11 +417,29 @@ describe('/ deprecated', () => {
   });
 
   describe('/forgotpassword', () => {
+    before(function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      this.timeout(10000);
+
+      return supertest(authWebService)
+        .post('/register')
+        .set('x-request-id', `${requestId}-addroletouser`)
+        .send({
+          username: 'testinguserwithemail',
+          password: 'test',
+          email: 'myemail@example.com',
+        })
+        .then((res) => {
+          debug('register testinguserwithemail', res.body);
+        });
+    });
     it('should refuse forgotpassword if the user hasnt tried to login (ie doesnt know their username)', () => supertest(authWebService)
       .post('/login')
       .set('x-request-id', `${requestId}-forgotpassword`)
       .send({
-        username: 'testinguserwithemail',
+        username: 'testinguserwhohasnttriedtologin',
         password: 'test',
       })
       .then((res) => {
@@ -433,14 +451,35 @@ describe('/ deprecated', () => {
           .post('/forgotpassword')
           .set('x-request-id', `${requestId}-forgotpassword`)
           .send({
-            email: 'myemail@example.com',
+            email: 'myotheremail@example.com',
           });
       })
       .then((res) => {
         debug(JSON.stringify(res.body));
         expect(res.body.userFriendlyErrors).to.deep.equal([
-          'Sorry, there are no users who have failed to login who have the email you provided myemail@example.com. You cannot request a temporary password until you have at least tried to login once with your correct username. If you are not able to guess your username please contact us for assistance.',
+          'Sorry, there are no users who have failed to login who have the email you provided myotheremail@example.com. You cannot request a temporary password until you have at least tried to login once with your correct username. If you are not able to guess your username please contact us for assistance.',
         ]);
+      }));
+
+    it('should support forgotpassword if the user has tried to login with the correct username', () => supertest(authWebService)
+      .post('/login')
+      .set('x-request-id', `${requestId}-forgotpassword`)
+      .send({
+        username: 'testinguserwithemail',
+        password: 'wrongpassword',
+      })
+      .then((res) => {
+        expect(res.body.userFriendlyErrors).length(1);
+
+        return supertest(authWebService)
+          .post('/forgotpassword')
+          .set('x-request-id', `${requestId}-forgotpassword`)
+          .send({
+            email: 'myemail@example.com',
+          });
+      })
+      .then((res) => {
+        expect(res.body).to.deep.equal({ status: 500, userFriendlyErrors: [' The server was unable to send you an email, your password has not been reset. Please report this 2823'] });
       }));
 
     it('should refuse to send a password reset if neither email nor username was provided', () => supertest(authWebService)

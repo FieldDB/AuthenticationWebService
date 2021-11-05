@@ -19,7 +19,7 @@ const {
   verifyPassword,
 } = require('../../lib/user');
 
-describe.only('lib/user', () => {
+describe('lib/user', () => {
   describe('addCorpusToUser', () => {
     it('should reject with an error', () => addCorpusToUser()
       .catch((err) => {
@@ -140,7 +140,14 @@ describe.only('lib/user', () => {
   describe('forgotPassword', () => {
     it('should reject with an error', () => forgotPassword()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.equal('Please provide an email.');
+      }));
+
+    it('should send password reset emails', () => forgotPassword({
+      email: 'myemail@example.com',
+    })
+      .catch((err) => {
+        expect(err.message).to.equal('The mail configuration is missing a user, this server cant send email.');
       }));
   });
 

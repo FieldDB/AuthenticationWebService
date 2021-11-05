@@ -10,8 +10,8 @@ const {
 } = require('../../lib/email');
 
 describe('lib/email', () => {
-  describe('emailWelcomeToTheUser', () => {
-    it('should reject with an error', () => emailWelcomeToTheUser()
+  describe('emailWhenServerStarts', () => {
+    it('should reject with an error', () => emailWhenServerStarts()
       .catch((err) => {
         expect(err.message).to.equal('not implemented');
       }));
@@ -27,7 +27,7 @@ describe('lib/email', () => {
   describe('emailTemporaryPasswordToTheUserIfTheyHavAnEmail', () => {
     it('should reject with an error', () => emailTemporaryPasswordToTheUserIfTheyHavAnEmail()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.equal('The user didnt provide a valid email.');
       }));
   });
 
