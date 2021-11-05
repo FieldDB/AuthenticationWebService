@@ -1,0 +1,15 @@
+POST /_replicate
+accept-encoding: gzip, deflate
+accept: application/json
+content-type: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"source\":\"https://public:none@corpusdev.example.org/new_lexicon\",\"target\":{\"url\":\"http://admin:none@localhost:5984/new_lexicon\"},\"create_target\":true}
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Fri, 05 Nov 2021 13:54:15 GMT
+content-type: application/json
+content-length: 420
+cache-control: must-revalidate
+
+{"ok":true,"no_changes":true,"session_id":"938a987b64aec208eee96bcab2451f41","source_last_seq":1,"replication_id_version":3,"history":[{"session_id":"938a987b64aec208eee96bcab2451f41","start_time":"Thu, 04 Nov 2021 17:12:56 GMT","end_time":"Thu, 04 Nov 2021 17:12:56 GMT","start_last_seq":0,"end_last_seq":1,"recorded_seq":1,"missing_checked":2,"missing_found":2,"docs_read":2,"docs_written":2,"doc_write_failures":0}]}
