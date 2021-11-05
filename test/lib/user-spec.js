@@ -69,10 +69,10 @@ describe.only('lib/user', () => {
       }));
 
     it('should look up a username', () => findByUsername({
-        username: 'lingllama',
-      })
+      username: 'lingllama',
+    })
       .then(({
-        user
+        user,
       }) => {
         expect(user.name).to.equal('Ling Llama');
         expect(user.corpuses).to.equal(undefined);
@@ -80,8 +80,8 @@ describe.only('lib/user', () => {
       }));
 
     it('should return not found', () => findByUsername({
-        username: 'notauser',
-      })
+      username: 'notauser',
+    })
       .catch(({
         message,
         status,
@@ -102,8 +102,8 @@ describe.only('lib/user', () => {
       }));
 
     it('should handle disabled users', () => findByUsername({
-        username: 'testingdisabledusers',
-      })
+      username: 'testingdisabledusers',
+    })
       .catch(({
         message,
         status,
@@ -150,22 +150,15 @@ describe.only('lib/user', () => {
         expect(err.message).to.equal('Please provide a username');
       }));
 
-    it.only('should change a password both for auth and corpus', () => {
-      const user = {
-        username: 'jenkins',
-        hash: '$2a$10$g1kJ4A8RfYhIqv1G5IsQEen2mZFpSwasG/BcXrKwKrltV3kdz9p7W',
-      };
-
-      return setPassword({
-          newpassword: 'phoneme',
-          oldpassword: 'phoneme',
-          password: 'phoneme',
-          user,
-        })
-        .then((result) => {
-          expect(result).to.equal(user);
-        })
-    });
+    it.only('should change a password both for auth and corpus', () => setPassword({
+      newpassword: 'phoneme',
+      oldpassword: 'phoneme',
+      password: 'phoneme',
+      username: 'jenkins',
+    })
+      .then((result) => {
+        expect(result).to.equal('hi');
+      }));
   });
 
   describe('sortByUsername', () => {
@@ -203,12 +196,12 @@ describe.only('lib/user', () => {
       };
 
       return verifyPassword({
-          user,
-          password: 'phoneme',
-        })
+        user,
+        password: 'phoneme',
+      })
         .then((result) => {
           expect(result).to.equal(user);
-        })
+        });
     });
 
     it('should reject with an error', () => {
@@ -218,20 +211,20 @@ describe.only('lib/user', () => {
       };
 
       return verifyPassword({
-          user,
-          password: 'wrongpassword',
-        })
+        user,
+        password: 'wrongpassword',
+      })
         .then((result) => {
           expect(result).to.equal('should not get here');
         })
         .catch(({
           message,
           stack,
-          status
+          status,
         }) => {
           expect({
             message,
-            status
+            status,
           }).to.contain({
             message: 'Username or password is invalid. Please try again.',
             status: 401,
