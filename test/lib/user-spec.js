@@ -42,9 +42,47 @@ describe('lib/user', () => {
   });
 
   describe('createNewCorpusesIfDontExist', () => {
-    it('should reject with an error', () => createNewCorpusesIfDontExist()
-      .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+    it('should do nothing if there are no corpora', () => createNewCorpusesIfDontExist()
+      .then((result) => {
+        expect(result).to.deep.equal([]);
+      }));
+
+    it('should do nothing if the corpus is likely someone elses corpora', () => createNewCorpusesIfDontExist({
+      user: {
+        username: 'testuser',
+      },
+      corpora: [{
+        dbname: 'testanotheruser-a_corpus',
+      }],
+    })
+      .then((result) => {
+        expect(result).to.deep.equal([{
+          dbname: 'testanotheruser-a_corpus',
+        }]);
+      }));
+
+    it('should create corpora', () => createNewCorpusesIfDontExist({
+      user: {
+        username: 'testuser',
+      },
+      corpora: [{
+        dbname: 'testuser-firstcorpus',
+      }, {
+        dbname: 'testanotheruser-a_corpus',
+      }, {
+        dbname: 'testuser-two',
+      }],
+    })
+      .then((result) => {
+        expect(result).to.deep.equal([{
+          // TODO this should have details in it after the create
+          // but it is currently not blocking
+          dbname: 'testuser-firstcorpus',
+        }, {
+          dbname: 'testanotheruser-a_corpus',
+        }, {
+          dbname: 'testuser-two',
+        }]);
       }));
   });
 

@@ -32,7 +32,7 @@ describe('lib/email', () => {
   });
 
   describe('makeRandomPassword', () => {
-    it('should reject with an error', () => {
+    it('should generate strings of 10 ascii characters', () => {
       const result = makeRandomPassword();
       expect(result).length(10);
     });
