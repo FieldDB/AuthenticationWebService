@@ -367,7 +367,7 @@ describe('/ deprecated', () => {
   });
 
   describe('/changepassword', () => {
-    it('should accept changepassword', function () {
+    it.only('should accept changepassword', function () {
       if (process.env.REPLAY !== 'bloody') {
         this.skip();
       }

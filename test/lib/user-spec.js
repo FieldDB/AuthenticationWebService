@@ -19,7 +19,7 @@ const {
   verifyPassword,
 } = require('../../lib/user');
 
-describe('lib/user', () => {
+describe.only('lib/user', () => {
   describe('addCorpusToUser', () => {
     it('should reject with an error', () => addCorpusToUser()
       .catch((err) => {
@@ -69,17 +69,19 @@ describe('lib/user', () => {
       }));
 
     it('should look up a username', () => findByUsername({
-      username: 'lingllama',
-    })
-      .then(({ user }) => {
+        username: 'lingllama',
+      })
+      .then(({
+        user
+      }) => {
         expect(user.name).to.equal('Ling Llama');
         expect(user.corpuses).to.equal(undefined);
         expect(user.corpora.length).above(0);
       }));
 
     it('should return not found', () => findByUsername({
-      username: 'notauser',
-    })
+        username: 'notauser',
+      })
       .catch(({
         message,
         status,
@@ -100,8 +102,8 @@ describe('lib/user', () => {
       }));
 
     it('should handle disabled users', () => findByUsername({
-      username: 'testingdisabledusers',
-    })
+        username: 'testingdisabledusers',
+      })
       .catch(({
         message,
         status,
@@ -145,8 +147,25 @@ describe('lib/user', () => {
   describe('setPassword', () => {
     it('should reject with an error', () => setPassword()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.equal('Please provide a username');
       }));
+
+    it.only('should change a password both for auth and corpus', () => {
+      const user = {
+        username: 'jenkins',
+        hash: '$2a$10$g1kJ4A8RfYhIqv1G5IsQEen2mZFpSwasG/BcXrKwKrltV3kdz9p7W',
+      };
+
+      return setPassword({
+          newpassword: 'phoneme',
+          oldpassword: 'phoneme',
+          password: 'phoneme',
+          user,
+        })
+        .then((result) => {
+          expect(result).to.equal(user);
+        })
+    });
   });
 
   describe('sortByUsername', () => {
@@ -176,5 +195,50 @@ describe('lib/user', () => {
       .catch((err) => {
         expect(err.message).to.contain('Cannot read properties of undefined');
       }));
+
+    it('should verify a password', () => {
+      const user = {
+        username: 'lingllama',
+        hash: '$2a$10$g1kJ4A8RfYhIqv1G5IsQEen2mZFpSwasG/BcXrKwKrltV3kdz9p7W',
+      };
+
+      return verifyPassword({
+          user,
+          password: 'phoneme',
+        })
+        .then((result) => {
+          expect(result).to.equal(user);
+        })
+    });
+
+    it('should reject with an error', () => {
+      const user = {
+        username: 'lingllama',
+        hash: '$2a$10$g1kJ4A8RfYhIqv1G5IsQEen2mZFpSwasG/BcXrKwKrltV3kdz9p7W',
+      };
+
+      return verifyPassword({
+          user,
+          password: 'wrongpassword',
+        })
+        .then((result) => {
+          expect(result).to.equal('should not get here');
+        })
+        .catch(({
+          message,
+          stack,
+          status
+        }) => {
+          expect({
+            message,
+            status
+          }).to.contain({
+            message: 'Username or password is invalid. Please try again.',
+            status: 401,
+          });
+
+          expect(stack).to.contain('lib/user.js');
+        });
+    });
   });
 });
