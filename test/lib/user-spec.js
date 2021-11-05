@@ -140,8 +140,46 @@ describe.only('lib/user', () => {
   describe('saveUpdateUserToDatabase', () => {
     it('should reject with an error', () => saveUpdateUserToDatabase()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.contain('Please provide a username 8933');
       }));
+
+    it('should not save changes to sample users', () => {
+      const expectedUser = {
+        username: 'lingllama',
+      };
+      return saveUpdateUserToDatabase({
+        password: 'phoneme',
+        user: expectedUser,
+      })
+        .then(({ user, info }) => {
+          expect(user).to.equal(expectedUser);
+
+          expect(info).to.deep.equal({
+            message: 'User is a reserved user and cannot be updated in this manner.',
+          });
+        });
+    });
+
+    it('should handle document update conflicts', () => {
+      const expectedUser = {
+        username: 'jenkins',
+        _id: 'jenkins',
+        _rev: '1193-114a11fd4172aab53b8bf8ce06d63513',
+      };
+      return saveUpdateUserToDatabase({
+        password: 'phoneme',
+        user: expectedUser,
+      })
+        .then((result) => {
+          expect(result).to.equal('should not get here');
+        })
+        .catch((err) => {
+          expect(err.message).to.equal('Document update conflict.');
+          console.log('err.userFriendlyErrors', err.userFriendlyErrors);
+
+          expect(err.userFriendlyErrors).to.deep.equal(['Conflict saving user in the database. Please try again.']);
+        });
+    });
   });
 
   describe('setPassword', () => {
@@ -150,14 +188,24 @@ describe.only('lib/user', () => {
         expect(err.message).to.equal('Please provide a username');
       }));
 
-    it.only('should change a password both for auth and corpus', () => setPassword({
+    it('should change a password both for auth and corpus', () => setPassword({
       newpassword: 'phoneme',
       oldpassword: 'phoneme',
       password: 'phoneme',
       username: 'jenkins',
     })
-      .then((result) => {
-        expect(result).to.equal('hi');
+      .then(({ user, info }) => {
+        expect(user.username).to.equal('jenkins');
+        // eslint-disable-next-line no-underscore-dangle
+        expect(user._id).not.to.equal(undefined);
+        // eslint-disable-next-line no-underscore-dangle
+        expect(user._rev).not.to.equal(undefined);
+        expect(user.hash).not.to.equal(undefined);
+        expect(user.salt).to.equal(undefined);
+
+        expect(info).to.deep.equal({
+          message: 'Your password has succesfully been updated.',
+        });
       }));
   });
 
