@@ -17,80 +17,116 @@ const {
   sortByUsername,
   undoCorpusCreation,
   verifyPassword,
-} =
-require('../../lib/user');
+} = require('../../lib/user');
 
 describe('lib/user', () => {
   describe('addCorpusToUser', () => {
-    it('should reject with an error', () => {
-      return addCorpusToUser()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => addCorpusToUser()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('addRoleToUser', () => {
-    it('should reject with an error', () => {
-      return addRoleToUser()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => addRoleToUser()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('authenticateUser', () => {
-    it('should reject with an error', () => {
-      return authenticateUser()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => authenticateUser()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('createNewCorpusesIfDontExist', () => {
-    it('should reject with an error', () => {
-      return createNewCorpusesIfDontExist()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => createNewCorpusesIfDontExist()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('fetchCorpusPermissions', () => {
-    it('should reject with an error', () => {
-      return fetchCorpusPermissions()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => fetchCorpusPermissions()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('findByEmail', () => {
-    it('should reject with an error', () => {
-      return findByEmail()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => findByEmail()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('findByUsername', () => {
-    it('should reject with an error', () => {
-      return findByUsername()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
+    it('should reject with an error', () => findByUsername()
+      .catch((err) => {
+        expect(err.message).to.equal('username is required');
+      }));
+
+    it('should look up a username', () => findByUsername({
+      username: 'lingllama',
+    })
+      .then(({ user }) => {
+        expect(user.name).to.equal('Ling Llama');
+        expect(user.corpuses).to.equal(undefined);
+        expect(user.corpora.length).above(0);
+      }));
+
+    it('should return not found', () => findByUsername({
+      username: 'notauser',
+    })
+      .catch(({
+        message,
+        status,
+        userFriendlyErrors,
+        stack,
+      }) => {
+        expect({
+          message,
+          status,
+          userFriendlyErrors,
+        }).to.deep.equal({
+          message: 'User notauser does not exist',
+          status: 401,
+          userFriendlyErrors: ['Username or password is invalid. Please try again'],
         });
-    });
+
+        expect(stack).to.contain('lib/user.js');
+      }));
+
+    it('should handle disabled users', () => findByUsername({
+      username: 'testingdisabledusers',
+    })
+      .catch(({
+        message,
+        status,
+        userFriendlyErrors,
+        stack,
+      }) => {
+        expect({
+          message,
+          status,
+          userFriendlyErrors,
+        }).to.deep.equal({
+          message: 'User testingdisabledusers has been disabled, probably because of a violation of the terms of service. This username was reported to us as a suspicously fictitous username.',
+          status: 401,
+          userFriendlyErrors: ['This username has been disabled. Please contact us at support@lingsync.org if you would like to reactivate this username. Reasons: This username was reported to us as a suspicously fictitous username.'],
+        });
+
+        expect(stack).to.contain('lib/user.js');
+      }));
   });
 
   describe('forgotPassword', () => {
-    it('should reject with an error', () => {
-      return forgotPassword()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => forgotPassword()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('sampleUsers', () => {
@@ -100,31 +136,27 @@ describe('lib/user', () => {
   });
 
   describe('saveUpdateUserToDatabase', () => {
-    it('should reject with an error', () => {
-      return saveUpdateUserToDatabase()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => saveUpdateUserToDatabase()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('setPassword', () => {
-    it('should reject with an error', () => {
-      return setPassword()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => setPassword()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('sortByUsername', () => {
     it('should reject with an error', () => {
       const result = [{
-        username: 'b'
+        username: 'b',
       }, {
         username: 'a',
         foo: 'hi',
-      }].sort(sortByUsername)
+      }].sort(sortByUsername);
       expect(result[0]).to.deep.equal({
         username: 'a',
         foo: 'hi',
@@ -133,20 +165,16 @@ describe('lib/user', () => {
   });
 
   describe('undoCorpusCreation', () => {
-    it('should reject with an error', () => {
-      return undoCorpusCreation()
-        .catch((err) => {
-          expect(err.message).to.equal('not implemented');
-        });
-    });
+    it('should reject with an error', () => undoCorpusCreation()
+      .catch((err) => {
+        expect(err.message).to.equal('not implemented');
+      }));
   });
 
   describe('verifyPassword', () => {
-    it('should reject with an error', () => {
-      return verifyPassword()
-        .catch((err) => {
-          expect(err.message).to.contain('Cannot read properties of undefined');
-        });
-    });
+    it('should reject with an error', () => verifyPassword()
+      .catch((err) => {
+        expect(err.message).to.contain('Cannot read properties of undefined');
+      }));
   });
 });
