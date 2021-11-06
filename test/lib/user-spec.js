@@ -33,7 +33,7 @@ describe('lib/user', () => {
       }));
   });
 
-  describe.only('authenticateUser', () => {
+  describe('authenticateUser', () => {
     it('should require a username', () => authenticateUser()
       .catch(({ message, status, userFriendlyErrors }) => {
         expect(message).to.equal('Username was not specified. undefined');
@@ -50,14 +50,29 @@ describe('lib/user', () => {
         expect(userFriendlyErrors).to.deep.equal(['Please supply a password.']);
       }));
 
-    it.only('should handle invalid password', () => authenticateUser({
+    it('should handle invalid password', () => authenticateUser({
       username: 'jenkins',
       password: 'wrongpassword',
     })
       .catch(({ message, status, userFriendlyErrors }) => {
         expect(message).to.equal('Username or password is invalid. Please try again.');
         expect(status).to.equal(401);
-        expect(userFriendlyErrors).to.deep.equal(undefined);
+        expect(userFriendlyErrors).to.deep.equal([
+          'Username or password is invalid. Please try again.',
+        ]);
+      }));
+
+    it('should handle invalid password who have an email address', () => authenticateUser({
+      username: 'testinguserwithemail',
+      password: 'wrongpassword',
+    })
+      .catch((err) => {
+        const { message, status, userFriendlyErrors } = err;
+        expect(message).to.equal('Username or password is invalid. Please try again.');
+        expect(status).to.equal(401);
+        expect(userFriendlyErrors).to.deep.equal([
+          'Username or password is invalid. Please try again. You have tried to log in too many times. The server was unable to send you an email, your password has not been reset. Please report this 2823',
+        ]);
       }));
 
     it('should detect non ascii usernames', () => authenticateUser({
@@ -378,7 +393,7 @@ describe('lib/user', () => {
         password: 'phoneme',
       })
         .then((result) => {
-          expect(result).to.equal(user);
+          expect(result.user).to.equal(user);
         });
     });
 
