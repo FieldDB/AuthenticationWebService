@@ -27,15 +27,19 @@ describe('lib/user', () => {
         expect(err.userFriendlyErrors).to.deep.equal(['Username doesnt exist on this server. This is a bug.']);
       }));
 
-    it('should reject with an error', () => addCorpusToUser({
+    it('should return info about what was changed', () => addCorpusToUser({
       username: 'testuser2',
       newConnection: {
         dbname: 'testuser2-firstcorpus',
       },
     })
-      .then( ({ user, info }) => {
-        console.log('user', user);
-        expect(user).to.equal(undefined);
+      .then(({
+        info,
+      }) => {
+        console.log('info', info);
+        expect(info).to.deep.equal({
+          message: 'User testuser2 was removed from the testuser2-firstcorpus team.',
+        });
       }));
   });
 
