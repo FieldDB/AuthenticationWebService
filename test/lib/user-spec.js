@@ -19,10 +19,23 @@ const {
 } = require('../../lib/user');
 
 describe('lib/user', () => {
-  describe('addCorpusToUser', () => {
+  describe.only('addCorpusToUser', () => {
     it('should reject with an error', () => addCorpusToUser()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.equal('username is required');
+        expect(err.status).to.equal(500);
+        expect(err.userFriendlyErrors).to.deep.equal(['Username doesnt exist on this server. This is a bug.']);
+      }));
+
+    it('should reject with an error', () => addCorpusToUser({
+      username: 'testuser2',
+      newConnection: {
+        dbname: 'testuser2-firstcorpus',
+      },
+    })
+      .then( ({ user, info }) => {
+        console.log('user', user);
+        expect(user).to.equal(undefined);
       }));
   });
 
