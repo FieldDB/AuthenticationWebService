@@ -18,8 +18,8 @@ const {
   verifyPassword,
 } = require('../../lib/user');
 
-describe('lib/user', () => {
-  describe.only('addCorpusToUser', () => {
+describe.only('lib/user', () => {
+  describe('addCorpusToUser', () => {
     it('should reject with an error', () => addCorpusToUser()
       .catch((err) => {
         expect(err.message).to.equal('username is required');
@@ -46,7 +46,28 @@ describe('lib/user', () => {
   describe('addRoleToUser', () => {
     it('should reject with an error', () => addRoleToUser()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.contain('Client didnt define the dbname to modify');
+      }));
+
+    it('should return info about what was changed', () => addRoleToUser({
+      req: {
+        body: {
+          username: 'jenkins',
+          password: 'phoneme',
+          connection: {
+            dbname: 'jenkins-firstcorpus',
+          },
+          users: [{
+            username: 'testingprototype',
+            add: ['reader', 'commenter'],
+            remove: ['admin', 'writer'],
+          }],
+        },
+      },
+    })
+      .then((result) => {
+        console.log('result', result);
+        expect(result[0].message).to.equal('User testingprototype now has reader commenter access to jenkins-firstcorpus, the user was already a member of this corpus team.');
       }));
   });
 
