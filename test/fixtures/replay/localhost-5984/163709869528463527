@@ -1,0 +1,15 @@
+PUT /theuserscouch/jenkins
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: 
+body: {\"username\":\"jenkins\",\"_id\":\"jenkins\",\"_rev\":\"1193-114a11fd4172aab53b8bf8ce06d63513\"}
+
+HTTP/1.1 409 Conflict
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 16 Nov 2021 21:38:15 GMT
+content-type: application/json
+content-length: 58
+cache-control: must-revalidate
+
+{"error":"conflict","reason":"Document update conflict."}

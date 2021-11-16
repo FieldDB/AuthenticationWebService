@@ -1,0 +1,13 @@
+GET /_users/org.couchdb.user%3Atestuser3
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "1-5c95f0905fd647af47cc8e2452496d3b"
+date: Tue, 16 Nov 2021 21:38:15 GMT
+content-type: text/plain; charset=utf-8
+content-length: 493
+cache-control: must-revalidate
+
+{"_id":"org.couchdb.user:testuser3","_rev":"1-5c95f0905fd647af47cc8e2452496d3b","password_scheme":"pbkdf2","iterations":10,"name":"testuser3","roles":["testuser3-firstcorpus_admin","testuser3-firstcorpus_writer","testuser3-firstcorpus_reader","testuser3-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"],"previous_rev":"1-7d65d41ad6454575313cb04eac2b1c3f","type":"user","derived_key":"0992cb12922e85d1da58ef1b387287e7e846df00","salt":"00cfca0c42791da1d8c15a5e8c8fb963"}

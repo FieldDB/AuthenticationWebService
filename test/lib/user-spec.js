@@ -81,28 +81,28 @@ describe.only('lib/user', () => {
     })
       .then((result) => {
         // console.log('result', result);
-      expect(result).to.deep.equal([{
-        "add": [
-          "testuser4-firstcorpus_reader",
-          "testuser4-firstcorpus_commenter",
-        ],
-        "after": [
-          "reader",
-          "commenter",
-        ],
-        "before": [
-          "reader",
-          "commenter",
-        ],
-        "message": "User testingprototype now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.",
-        "remove": [
-          "testuser4-firstcorpus_admin",
-          "testuser4-firstcorpus_writer",
-        ],
-        "status": 200,
-        "username": "testingprototype",
-      }]);
-    }));
+        expect(result).to.deep.equal([{
+          add: [
+            'testuser4-firstcorpus_reader',
+            'testuser4-firstcorpus_commenter',
+          ],
+          after: [
+            'reader',
+            'commenter',
+          ],
+          before: [
+            'reader',
+            'commenter',
+          ],
+          message: 'User testingprototype now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
+          remove: [
+            'testuser4-firstcorpus_admin',
+            'testuser4-firstcorpus_writer',
+          ],
+          status: 200,
+          username: 'testingprototype',
+        }]);
+      }));
   });
 
   describe('authenticateUser', () => {
@@ -122,17 +122,22 @@ describe.only('lib/user', () => {
         expect(userFriendlyErrors).to.deep.equal(['Please supply a password.']);
       }));
 
-    it('should handle invalid password', () => authenticateUser({
-      username: 'jenkins',
-      password: 'wrongpassword',
-    })
-      .catch(({ message, status, userFriendlyErrors }) => {
-        expect(message).to.equal('Username or password is invalid. Please try again.');
-        expect(status).to.equal(401);
-        expect(userFriendlyErrors).to.deep.equal([
-          'Username or password is invalid. Please try again.',
-        ]);
-      }));
+    it('should handle invalid password', function it() {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      return authenticateUser({
+        username: 'jenkins',
+        password: 'wrongpassword',
+      })
+        .catch(({ message, status, userFriendlyErrors }) => {
+          expect(message).to.equal('Username or password is invalid. Please try again.');
+          expect(status).to.equal(401);
+          expect(userFriendlyErrors).to.deep.equal([
+            'Username or password is invalid. Please try again.',
+          ]);
+        });
+    });
 
     it('should handle invalid password who have an email address', () => authenticateUser({
       username: 'testinguserwithemail',
@@ -157,49 +162,59 @@ describe.only('lib/user', () => {
         expect(userFriendlyErrors).to.deep.equal(['Username or password is invalid. Maybe your username is jenkins?']);
       }));
 
-    it('should authenticate', () => authenticateUser({
-      username: 'testuser5',
-      password: 'test',
-    })
-      .then((result) => {
+    it('should authenticate', function it() {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      return authenticateUser({
+        username: 'testuser5',
+        password: 'test',
+      })
+        .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
-        expect(result.user._rev).not.to.equal(undefined);
-        const lastLogin = result.user.serverlogs
-          .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
-        const lastLoginMs = new Date(lastLogin).getTime();
-        const expectedDate = Date.now();
-        debug('lastLogin', lastLogin, lastLoginMs);
-        debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
-        expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
-      }));
+          expect(result.user._rev).not.to.equal(undefined);
+          const lastLogin = result.user.serverlogs
+            .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
+          const lastLoginMs = new Date(lastLogin).getTime();
+          const expectedDate = Date.now();
+          debug('lastLogin', lastLogin, lastLoginMs);
+          debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
+          expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
+        });
+    });
 
-    it('should sync user details', () => authenticateUser({
-      username: 'testuser6',
-      password: 'test',
-      syncDetails: true,
-      syncUserDetails: {
-        newCorpora: [{
-          dbname: 'testuser-firstcorpus',
-        }, {
-          dbname: 'testanotheruser-a_corpus',
-        }, {
-          dbname: 'testuser-two',
-        }],
-      },
-    })
-      .then((result) => {
+    it('should sync user details', function it() {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      return authenticateUser({
+        username: 'testuser6',
+        password: 'test',
+        syncDetails: true,
+        syncUserDetails: {
+          newCorpora: [{
+            dbname: 'testuser-firstcorpus',
+          }, {
+            dbname: 'testanotheruser-a_corpus',
+          }, {
+            dbname: 'testuser-two',
+          }],
+        },
+      })
+        .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
-        expect(result.user._rev).not.to.equal(undefined);
-        expect(result.newCorpora).to.equal(undefined);
-        expect(result.syncUserDetails).to.equal(undefined);
-        const lastLogin = result.user.serverlogs
-          .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
-        const lastLoginMs = new Date(lastLogin).getTime();
-        const expectedDate = Date.now();
-        debug('lastLogin', lastLogin, lastLoginMs);
-        debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
-        expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
-      }));
+          expect(result.user._rev).not.to.equal(undefined);
+          expect(result.newCorpora).to.equal(undefined);
+          expect(result.syncUserDetails).to.equal(undefined);
+          const lastLogin = result.user.serverlogs
+            .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
+          const lastLoginMs = new Date(lastLogin).getTime();
+          const expectedDate = Date.now();
+          debug('lastLogin', lastLogin, lastLoginMs);
+          debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
+          expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
+        });
+    });
   });
 
   describe('createNewCorpusesIfDontExist', () => {
@@ -255,6 +270,7 @@ describe.only('lib/user', () => {
 
     it('should fetchCorpusPermissions for test users', () => fetchCorpusPermissions({
       req: {
+        id: 'fetchCorpusPermissions-test',
         body: {
           username: 'testingprototype',
           password: 'test',
@@ -279,6 +295,7 @@ describe.only('lib/user', () => {
 
     it('should fetchCorpusPermissions for normal users', () => fetchCorpusPermissions({
       req: {
+        id: 'fetchCorpusPermissions-normal',
         body: {
           username: 'jenkins',
           password: 'phoneme',
@@ -340,11 +357,12 @@ describe.only('lib/user', () => {
     it('should return not found', () => findByUsername({
       username: 'notauser',
       req: {
+        id: 'findByUsername-not-found',
         log: {
           error: () => {},
           warn: () => {},
-        }
-      }
+        },
+      },
     })
       .catch(({
         message,
@@ -457,25 +475,30 @@ describe.only('lib/user', () => {
         expect(err.message).to.equal('Please provide a username');
       }));
 
-    it('should change a password both for auth and corpus', () => setPassword({
-      newpassword: 'test',
-      oldpassword: 'test',
-      password: 'test',
-      username: 'testuser3',
-    })
-      .then(({ user, info }) => {
-        expect(user.username).to.equal('testuser3');
-        // eslint-disable-next-line no-underscore-dangle
-        expect(user._id).not.to.equal(undefined);
-        // eslint-disable-next-line no-underscore-dangle
-        expect(user._rev).not.to.equal(undefined);
-        expect(user.hash).not.to.equal(undefined);
-        expect(user.salt).to.equal(undefined);
+    it('should change a password both for auth and corpus', function it() {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      return setPassword({
+        newpassword: 'test',
+        oldpassword: 'test',
+        password: 'test',
+        username: 'testuser3',
+      })
+        .then(({ user, info }) => {
+          expect(user.username).to.equal('testuser3');
+          // eslint-disable-next-line no-underscore-dangle
+          expect(user._id).not.to.equal(undefined);
+          // eslint-disable-next-line no-underscore-dangle
+          expect(user._rev).not.to.equal(undefined);
+          expect(user.hash).not.to.equal(undefined);
+          expect(user.salt).to.equal(undefined);
 
-        expect(info).to.deep.equal({
-          message: 'Your password has succesfully been updated.',
+          expect(info).to.deep.equal({
+            message: 'Your password has succesfully been updated.',
+          });
         });
-      }));
+    });
   });
 
   describe('sortByUsername', () => {

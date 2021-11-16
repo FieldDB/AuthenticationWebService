@@ -1,0 +1,18 @@
+GET /_users/_design/users/_view/normalusers
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: fetchCorpusPermissions-normal
+content-type: application/json
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "6E80EZSM0KJODPUNB4G54SBRA"
+date: Tue, 16 Nov 2021 21:38:15 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":2,"offset":0,"rows":[
+{"id":"org.couchdb.user:jenkins","key":"jenkins","value":["jenkins-firstcorpus_admin","jenkins-firstcorpus_writer","jenkins-firstcorpus_reader","jenkins-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","lingllama-communitycorpus_writer","lingllama-communitycorpus_reader","lingllama-communitycorpus_commenter"]},
+{"id":"org.couchdb.user:lingllama","key":"lingllama","value":["lingllama-firstcorpus_admin","lingllama-firstcorpus_writer","lingllama-firstcorpus_reader","lingllama-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user","lingllama-communitycorpus_writer","lingllama-communitycorpus_reader","lingllama-communitycorpus_commenter"]}
+]}

@@ -1,0 +1,15 @@
+GET /_users/org.couchdb.user%3Atestuser4
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: lib-corpus
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "2-63519d329b7fd784b92a9bbe28f20669"
+date: Tue, 16 Nov 2021 21:38:14 GMT
+content-type: application/json
+content-length: 441
+cache-control: must-revalidate
+
+{"_id":"org.couchdb.user:testuser4","_rev":"2-63519d329b7fd784b92a9bbe28f20669","password_scheme":"pbkdf2","iterations":10,"name":"testuser4","roles":["testuser4-firstcorpus_admin","testuser4-firstcorpus_writer","testuser4-firstcorpus_reader","testuser4-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"],"type":"user","derived_key":"d20c165ee30c1d3ff9bd6e8c50e7cdbf3604f777","salt":"6114cbe9ed1832f3d7bb3d95e54f3102"}
