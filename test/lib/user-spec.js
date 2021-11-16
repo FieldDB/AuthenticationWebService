@@ -20,9 +20,19 @@ const {
   verifyPassword,
 } = require('../../lib/user');
 
+const originalLocalhosts = replay._localhosts;
 replay.fixtures = path.join(__dirname, '../fixtures/replay');
 
 describe.only('lib/user', () => {
+  before(() => {
+    replay._localhosts = new Set(['127.0.0.1', '::1']);
+    debug('before replay localhosts', replay._localhosts);
+  });
+  after(() => {
+    replay._localhosts = originalLocalhosts;
+    debug('after replay localhosts', replay._localhosts);
+  });
+
   describe('addCorpusToUser', () => {
     it('should reject with an error', () => addCorpusToUser()
       .catch((err) => {
@@ -56,10 +66,10 @@ describe.only('lib/user', () => {
     it('should return info about what was changed', () => addRoleToUser({
       req: {
         body: {
-          username: 'jenkins',
-          password: 'phoneme',
+          username: 'testuser4',
+          password: 'test',
           connection: {
-            dbname: 'jenkins-firstcorpus',
+            dbname: 'testuser4-firstcorpus',
           },
           users: [{
             username: 'testingprototype',
@@ -71,8 +81,28 @@ describe.only('lib/user', () => {
     })
       .then((result) => {
         // console.log('result', result);
-        expect(result[0].message).to.equal('User testingprototype now has reader commenter access to jenkins-firstcorpus, the user was already a member of this corpus team.');
-      }));
+      expect(result).to.deep.equal([{
+        "add": [
+          "testuser4-firstcorpus_reader",
+          "testuser4-firstcorpus_commenter",
+        ],
+        "after": [
+          "reader",
+          "commenter",
+        ],
+        "before": [
+          "reader",
+          "commenter",
+        ],
+        "message": "User testingprototype now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.",
+        "remove": [
+          "testuser4-firstcorpus_admin",
+          "testuser4-firstcorpus_writer",
+        ],
+        "status": 200,
+        "username": "testingprototype",
+      }]);
+    }));
   });
 
   describe('authenticateUser', () => {
@@ -128,8 +158,8 @@ describe.only('lib/user', () => {
       }));
 
     it('should authenticate', () => authenticateUser({
-      username: 'jenkins',
-      password: 'phoneme',
+      username: 'testuser5',
+      password: 'test',
     })
       .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -144,8 +174,8 @@ describe.only('lib/user', () => {
       }));
 
     it('should sync user details', () => authenticateUser({
-      username: 'jenkins',
-      password: 'phoneme',
+      username: 'testuser6',
+      password: 'test',
       syncDetails: true,
       syncUserDetails: {
         newCorpora: [{
@@ -428,13 +458,13 @@ describe.only('lib/user', () => {
       }));
 
     it('should change a password both for auth and corpus', () => setPassword({
-      newpassword: 'phoneme',
-      oldpassword: 'phoneme',
-      password: 'phoneme',
-      username: 'jenkins',
+      newpassword: 'test',
+      oldpassword: 'test',
+      password: 'test',
+      username: 'testuser3',
     })
       .then(({ user, info }) => {
-        expect(user.username).to.equal('jenkins');
+        expect(user.username).to.equal('testuser3');
         // eslint-disable-next-line no-underscore-dangle
         expect(user._id).not.to.equal(undefined);
         // eslint-disable-next-line no-underscore-dangle
