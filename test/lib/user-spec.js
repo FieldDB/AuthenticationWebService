@@ -1,5 +1,7 @@
 const debug = require('debug')('test:lib:user');
 const { expect } = require('chai');
+const path = require('path');
+const replay = require('replay');
 
 const {
   addCorpusToUser,
@@ -17,6 +19,8 @@ const {
   undoCorpusCreation,
   verifyPassword,
 } = require('../../lib/user');
+
+replay.fixtures = path.join(__dirname, '../fixtures/replay');
 
 describe.only('lib/user', () => {
   describe('addCorpusToUser', () => {
@@ -36,7 +40,7 @@ describe.only('lib/user', () => {
       .then(({
         info,
       }) => {
-        console.log('info', info);
+        // console.log('info', info);
         expect(info).to.deep.equal({
           message: 'User testuser2 was removed from the testuser2-firstcorpus team.',
         });
@@ -66,7 +70,7 @@ describe.only('lib/user', () => {
       },
     })
       .then((result) => {
-        console.log('result', result);
+        // console.log('result', result);
         expect(result[0].message).to.equal('User testingprototype now has reader commenter access to jenkins-firstcorpus, the user was already a member of this corpus team.');
       }));
   });
@@ -305,6 +309,12 @@ describe.only('lib/user', () => {
 
     it('should return not found', () => findByUsername({
       username: 'notauser',
+      req: {
+        log: {
+          error: () => {},
+          warn: () => {},
+        }
+      }
     })
       .catch(({
         message,
