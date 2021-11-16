@@ -349,7 +349,7 @@ describe.only('lib/user', () => {
       .then(({
         user,
       }) => {
-        expect(user.name).to.equal('Ling Llama');
+        expect(user.firstname).to.equal('Ling');
         expect(user.corpuses).to.equal(undefined);
         expect(user.corpora.length).above(0);
       }));
