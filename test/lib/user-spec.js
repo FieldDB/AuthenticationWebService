@@ -439,7 +439,7 @@ describe.only('lib/user', () => {
   });
 
   describe('sortByUsername', () => {
-    it('should reject with an error', () => {
+    it('should sort by username', () => {
       const result = [{
         username: 'b',
       }, {
@@ -454,9 +454,25 @@ describe.only('lib/user', () => {
   });
 
   describe('undoCorpusCreation', () => {
-    it('should reject with an error', () => undoCorpusCreation()
-      .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+    it('should not reject', () => undoCorpusCreation()
+      .then((result) => {
+        expect(result).to.equal(undefined);
+      }));
+
+    it('should undoCorpusCreation', () => undoCorpusCreation({
+      user: {
+        username: 'testingcreatefailure',
+      },
+      connection: {
+        dbname: 'testingcreatefailure-firstcorpus',
+      },
+      docs: [{
+        _id: 'corpus',
+        placeholder: 'foo',
+      }],
+    })
+      .then((result) => {
+        expect(result).to.equal(undefined);
       }));
   });
 
@@ -481,7 +497,7 @@ describe.only('lib/user', () => {
         });
     });
 
-    it('should reject with an error', () => {
+    it('should reject if password is invalid', () => {
       const user = {
         username: 'lingllama',
         hash: '$2a$10$g1kJ4A8RfYhIqv1G5IsQEen2mZFpSwasG/BcXrKwKrltV3kdz9p7W',
