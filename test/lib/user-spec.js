@@ -216,7 +216,53 @@ describe.only('lib/user', () => {
   describe('fetchCorpusPermissions', () => {
     it('should reject with an error', () => fetchCorpusPermissions()
       .catch((err) => {
-        expect(err.message).to.equal('not implemented');
+        expect(err.message).to.equal('Please provide a username, you must be a member of a corpus in order to find out who else is a member.');
+      }));
+
+    it('should fetchCorpusPermissions for test users', () => fetchCorpusPermissions({
+      req: {
+        body: {
+          username: 'testingprototype',
+          password: 'test',
+          connection: {
+            dbname: 'testingprototype-firstcorpus',
+          },
+        },
+      },
+    })
+      .then((result) => {
+        const notonteam = result.rolesAndUsers.notonteam.map(({ username }) => username);
+        expect(notonteam).to.include('testingspreadsheet');
+        expect(notonteam).not.to.include('lingllama');
+        expect(result.rolesAndUsers.commenters).length(1);
+        expect(result.rolesAndUsers.readers).length(1);
+        expect(result.rolesAndUsers.writers).length(1);
+        expect(result.rolesAndUsers.admins).length(1);
+        expect(result.info).to.deep.equal({
+          message: 'Look up successful.',
+        });
+      }));
+
+    it('should fetchCorpusPermissions for normal users', () => fetchCorpusPermissions({
+      req: {
+        body: {
+          username: 'jenkins',
+          password: 'phoneme',
+          connection: {
+            dbname: 'jenkins-firstcorpus',
+          },
+        },
+      },
+    })
+      .then((result) => {
+        expect(result.rolesAndUsers.notonteam.map(({ username }) => username)).to.include('lingllama');
+        expect(result.rolesAndUsers.commenters).length(1);
+        expect(result.rolesAndUsers.readers).length(1);
+        expect(result.rolesAndUsers.writers).length(1);
+        expect(result.rolesAndUsers.admins).length(1);
+        expect(result.info).to.deep.equal({
+          message: 'Look up successful.',
+        });
       }));
   });
 
