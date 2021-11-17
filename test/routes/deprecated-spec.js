@@ -493,7 +493,7 @@ describe('/ deprecated', () => {
       }));
   });
 
-  describe('/addroletouser', () => {
+  describe.only('/addroletouser', () => {
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
         this.skip();
@@ -636,6 +636,7 @@ describe('/ deprecated', () => {
         }],
       })
       .then((res) => {
+        debug('response res.body', res.body);
         expect(res.body.userFriendlyErrors).to.deep.equal([
           'You can\'t add userdoesntexist to this corpus, their username was unrecognized. User not found.',
         ]);

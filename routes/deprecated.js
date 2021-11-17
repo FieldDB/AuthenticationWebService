@@ -258,29 +258,25 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * as json
    */
   const addroletouser = function addroletouser(req, res, next) {
-    const returndata = {};
     if (!req.body.username) {
-      res.status(412);
-      returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: username of requester'];
-      res.send(returndata);
+      const err = new Error('Username is required');
+      err.status = 412;
+      err.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: username of requester'];
+      next(err);
       return;
     }
     if (!req.body.password) {
-      res.status(412);
-      returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: user credentials must be reqested from the user prior to running this request'];
-      res.send(returndata);
+      const err = new Error('Password is required');
+      err.status = 412;
+      err.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: user credentials must be reqested from the user prior to running this request'];
+      next(err);
       return;
     }
-    authenticationfunctions.authenticateUser(req.body.username, req.body.password, req, (err, user, info) => {
-      const returndata = {};
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
-        returndata.userFriendlyErrors = [info.message];
-        res.send(returndata);
-        return;
-      }
+    userFunctions.authenticateUser({
+      username: req.body.username,
+      password: req.body.password,
+      req,
+    }).then(({ user, info }) => {
       let { users } = req.body;
       if (!users) {
         // backward compatability for prototype app
@@ -314,71 +310,61 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       req.body.connection = connection;
       req.log.debug(req.body.connection);
       if (!req.body.connection || !req.body.connection.dbname || req.body.connection.dbname === 'default') {
-        req.log.debug('Client didnt define the corpus to modify.');
-        res.status(412);
-        returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: the corpus to be modified must be included in the request'];
-        res.send(returndata);
+        const err = new Error('Client didnt define the corpus to modify.');
+        err.status = 412;
+        err.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: the corpus to be modified must be included in the request'];
+        next(err);
         return;
       }
       if (!req || !req.body.users || req.body.users.length === 0 || !req.body.users[0].username) {
-        req.log.debug('Client didnt define the user(s) to modify.');
-        res.status(412);
-        returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: user(s) to modify must be included in this request'];
-        res.send(returndata);
+        const err = new Error('Client didnt define the user(s) to modify.');
+        err.status = 412;
+        err.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: user(s) to modify must be included in this request'];
+        next(err);
         return;
       }
       // Add a role to the user
-      authenticationfunctions.addRoleToUser(req, (err, userPermissionSet, optionalInfo) => {
-        req.log.debug('Getting back the results of authenticationfunctions.addRoleToUser ');
-        // req.log.debug(err);
-        // req.log.debug(userPermissionSet);
-        if (!userPermissionSet) {
-          userPermissionSet = {
-            username: 'error',
-            status: 500,
-            message: 'There was a problem processing your request, Please report this 32134.',
-          };
-          if (optionalInfo && optionalInfo.message) {
-            userPermissionSet.message = optionalInfo.message;
-          }
-          if (err && err.statusCode || err.status) {
-            userPermissionSet.status = err.statusCode || err.status;
-          }
-        }
-        if (Object.prototype.toString.call(userPermissionSet) !== '[object Array]') {
-          userPermissionSet = [userPermissionSet];
-        }
-        req.log.debug(userPermissionSet);
+      return userFunctions.addRoleToUser({
+        req,
+      })
+      .catch(next);
+    })
+      .then((userPermissionSet) => {
         const info = userPermissionSet.map((userPermission) => {
           if (!userPermission) {
             return '';
           }
           if (!userPermission.message) {
             userPermission.message = 'There was a problem processing this user permission, Please report this 3134.';
-            req.log.debug(userPermission.message);
-            req.log.debug(userPermission);
-          } else if (userPermission.message.indexOf('not found') > -1) {
-            userPermission.message = `You can't add ${userPermission.username} to this corpus, their username was unrecognized. ${userPermission.message}`;
+            req.log.debug(userPermission, userPermission.message);
           }
           return userPermission.message;
         });
         // req.log.debug(info);
-        if (err) {
-          res.status(cleanErrorStatus(err.statusCode || err.status) || 500);
-          returndata.status = cleanErrorStatus(err.statusCode || err.status) || 500;
-          req.log.debug(`${new Date()} There was an error in the authenticationfunctions.addRoleToUser:\n${util.inspect(err)}`);
-          returndata.userFriendlyErrors = info;
-        } else {
-          returndata.roleadded = true;
-          returndata.users = userPermissionSet;
-          returndata.info = info;
-          // returndata.userFriendlyErrors = ["Faking an error"];
-          req.log.debug(`${new Date()} Returning role added okay:\n`);
-        }
-        req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
+        const returndata = {};
+        returndata.roleadded = true;
+        returndata.users = userPermissionSet;
+        returndata.info = info;
+        // returndata.userFriendlyErrors = ["Faking an error"];
+        req.log.debug(`${new Date()} Returning role added okay:\n`);
+        req.log.debug(returndata, `${new Date()} Returning response:`);
         res.send(returndata);
+      })
+      .catch((err) => {
+        req.log.debug(err, 'in the error handle');
+
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 500);
+        // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 500;
+        // req.log.debug(`${new Date()} There was an error in the authenticationfunctions.addRoleToUser:\n${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = info;
+
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+        // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = [info.message];
+        // res.send(returndata);
+        next(err);
       });
-    });
   };
   app.post('/addroletouser', addroletouser);
   app.get('/addroletouser', (req, res) => {
