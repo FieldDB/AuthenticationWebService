@@ -9,7 +9,7 @@ const originalLocalhosts = replay._localhosts;
 const requestId = 'deprecated-spec';
 replay.fixtures = path.join(__dirname, '/../fixtures/replay');
 
-describe('/ deprecated', () => {
+describe.only('/ deprecated', () => {
   before(() => {
     replay._localhosts = new Set(['127.0.0.1', '::1']);
     debug('before replay localhosts', replay._localhosts);
@@ -493,7 +493,7 @@ describe('/ deprecated', () => {
       }));
   });
 
-  describe.only('/addroletouser', () => {
+  describe('/addroletouser', () => {
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
         this.skip();

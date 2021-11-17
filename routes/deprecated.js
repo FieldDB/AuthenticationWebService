@@ -117,37 +117,38 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * Finally the returndata json is sent to the calling application via the
    * response.
    */
-  app.post('/changepassword', (req, res) => {
+  app.post('/changepassword', (req, res, next) => {
     const oldpassword = req.body.password;
     const { newpassword } = req.body;
     const { confirmpassword } = req.body;
     const { username } = req.body;
-    res.status(401);
+    // res.status(401);
     if (newpassword !== confirmpassword) {
-      res.send({
-        status: 406,
-        userFriendlyErrors: ['New passwords do not match, please try again.'],
-      });
+      const err = new Error('New passwords do not match, please try again.');
+      err.status = 406;
+      next(err);
       return;
     }
-    authenticationfunctions.setPassword(oldpassword, newpassword, username, (err, user, info) => {
-      const returndata = {};
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.setPassword ${util.inspect(err)}`);
-        returndata.userFriendlyErrors = [info.message];
-      }
-      if (!user) {
-        returndata.userFriendlyErrors = [info.message];
-      } else {
+    userFunctions.setPassword({
+      oldpassword,
+      newpassword,
+      username,
+    })
+      .then(({ user, info }) => {
+        const returndata = {};
         returndata.user = user;
         returndata.info = [info.message];
         res.status(200);
         req.log.debug(`${new Date()} Returning success: ${util.inspect(user)}`);
-      }
-      res.send(returndata);
-    });
+        res.send(returndata);
+      })
+      .catch((err) => {
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+        // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.setPassword ${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = [info.message];
+        next(err);
+      });
   });
   app.get('/changepassword', (req, res) => {
     res.send({});
@@ -327,7 +328,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       return userFunctions.addRoleToUser({
         req,
       })
-      .catch(next);
+        .catch(next);
     })
       .then((userPermissionSet) => {
         const info = userPermissionSet.map((userPermission) => {
