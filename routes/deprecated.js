@@ -29,27 +29,27 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       password: req.body.password,
       req,
     })
-    .then(({ user, info }) => {
-      const returndata = {};
-      if (!user) {
-        returndata.userFriendlyErrors = [info.message];
-      } else {
-        returndata.user = user;
-        delete returndata.user.password;
-        delete returndata.user.serverlogs;
-        returndata.info = [info.message];
-        if (req && req.syncDetails) {
-          returndata.info.unshift('Preferences saved.');
-        }
+      .then(({ user, info }) => {
+        const returndata = {};
+        if (!user) {
+          returndata.userFriendlyErrors = [info.message];
+        } else {
+          returndata.user = user;
+          delete returndata.user.password;
+          delete returndata.user.serverlogs;
+          returndata.info = [info.message];
+          if (req && req.syncDetails) {
+            returndata.info.unshift('Preferences saved.');
+          }
         // req.log.debug(new Date() + " Returning the existing user as json:\n" + util.inspect(user));
-      }
-      req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
-      res.send(returndata);
-    })
-    .catch((err) => {
-      req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
-      next(err);
-    });
+        }
+        req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
+        res.send(returndata);
+      })
+      .catch((err) => {
+        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
+        next(err);
+      });
   });
 
   app.get('/login', (req, res) => {
@@ -220,39 +220,39 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       res.send(returndata);
     });
   });
+
   app.post('/corpusteamwhichrequiresvalidauthentication', (req, res) => {
     const returndata = {};
-    authenticationfunctions.authenticateUser(req.body.username, req.body.password, req, (err, user, info) => {
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
-        returndata.userFriendlyErrors = [info.message];
-        res.send(returndata);
-        return;
+    userFunctions.authenticateUser({
+      username: req.body.username,
+      password: req.body.password,
+      req,
+    }).then(({ user, info }) => userFunctions.fetchCorpusPermissions({
+      req,
+    }).then(({ users, info: fetchPermsInfo }) => {
+      returndata.users = users;
+      returndata.info = [fetchPermsInfo.message];
+      // returndata.userFriendlyErrors = ["Faking an error to test"];
+      // req.log.debug(new Date() + " Returning response:\n" + util.inspect(returndata));
+      req.log.debug(`${new Date()} Returning the list of reader users on this corpus as json:`);
+      if (returndata && returndata.users) {
+        req.log.debug(util.inspect(returndata.users.readers));
       }
-      authenticationfunctions.fetchCorpusPermissions(req, (fetchPermsErr, users, fetchPermsInfo) => {
-        if (fetchPermsErr) {
-          res.status(cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400);
-          returndata.status = cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400;
-          req.log.debug(`${new Date()} There was an err in the authenticationfunctions.fetchCorpusPermissions:\n${util.inspect(fetchPermsErr)}`);
-          returndata.userFriendlyErrors = [fetchPermsInfo.message];
-        }
-        if (!users) {
-          returndata.userFriendlyErrors = [fetchPermsInfo.message];
-        } else {
-          returndata.users = users;
-          returndata.info = [fetchPermsInfo.message];
-          // returndata.userFriendlyErrors = ["Faking an error to test"];
-        }
-        // req.log.debug(new Date() + " Returning response:\n" + util.inspect(returndata));
-        req.log.debug(`${new Date()} Returning the list of reader users on this corpus as json:`);
-        if (returndata && returndata.users) {
-          req.log.debug(util.inspect(returndata.users.readers));
-        }
-        res.send(returndata);
+      res.send(returndata);
+    }))
+      .catch((err) => {
+      // res.status(cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400);
+      // returndata.status = cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400;
+      // req.log.debug(`${new Date()} There was an err in the authenticationfunctions.fetchCorpusPermissions:\n${util.inspect(fetchPermsErr)}`);
+      // returndata.userFriendlyErrors = [fetchPermsInfo.message];
+
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+        // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = [info.message];
+        // res.send(returndata);
+        next(err);
       });
-    });
   });
   app.get('/corpusteam', (req, res) => {
     res.send({});
@@ -392,71 +392,70 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * Responds to requests for adding a corpus to a user, if successful replies with the dbname of the new corpus in a string and a corpusaded = true
    */
   app.post('/newcorpus', (req, res, next) => {
-    authenticationfunctions.authenticateUser(req.body.username, req.body.password, req, (err, user, info) => {
+    userFunctions.authenticateUser({
+      username: req.body.username,
+      password: req.body.password,
+      req,
+    }).then(({ user, info }) => {
       const returndata = {};
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
-        returndata.userFriendlyErrors = [`Unable to create your corpus. ${info.message}`];
+      req.body.newCorpusTitle = req.body.newCorpusTitle || req.body.newCorpusName;
+      if (!req.body.newCorpusTitle) {
+        res.status(412);
+        returndata.status = 412;
+        returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: newCorpusTitle'];
         res.send(returndata);
         return;
       }
-      if (!user) {
-        returndata.userFriendlyErrors = [info.message];
-        res.send(returndata);
-      } else {
-        req.body.newCorpusTitle = req.body.newCorpusTitle || req.body.newCorpusName;
-        if (!req.body.newCorpusTitle) {
-          res.status(412);
-          returndata.status = 412;
-          returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: newCorpusTitle'];
-          res.send(returndata);
-          return;
-        }
-        req.body.appbrand = req.body.appbrand || req.body.brand || req.body.serverCode || req.body.serverLabel;
-        req.log.debug(` Creating a corpus withbranding ${req.body.appbrand}`);
-        const connection = Connection.defaultConnection(req.body.appbrand);
-        connection.title = req.body.newCorpusTitle;
-        connection.dbname = `${req.body.username}-${connection.titleAsUrl}`;
-        req.log.debug('Connection', connection);
-        // Add a new corpus for the user
-        corpus.createNewCorpus({
-          username: req.body.username,
-          title: req.body.newCorpusTitle,
-          connection,
-        }, (err, corpus, info) => {
-          if (err) {
-            res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-            returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-            req.log.debug(`${new Date()} There was an error in corpus.createNewCorpus`);
-            returndata.userFriendlyErrors = [info.message]; // ["There was an error creating your corpus. " + req.body.newCorpusTitle];
-            if (err.statusCode || err.status === 302) {
-              returndata.corpusadded = true;
-              returndata.corpusexisted = true;
-              returndata.connection = connection;
-            }
-          }
-          if (!corpus) {
-            returndata.userFriendlyErrors = [info.message]; // ["There was an error creating your corpus. " + req.body.newCorpusTitle];
-          } else {
+      req.body.appbrand = req.body.appbrand || req.body.brand || req.body.serverCode || req.body.serverLabel;
+      req.log.debug(` Creating a corpus withbranding ${req.body.appbrand}`);
+      const connection = Connection.defaultConnection(req.body.appbrand);
+      connection.title = req.body.newCorpusTitle;
+      connection.dbname = `${req.body.username}-${connection.titleAsUrl}`;
+      req.log.debug('Connection', connection);
+      // Add a new corpus for the user
+      corpus.createNewCorpus({
+        username: req.body.username,
+        title: req.body.newCorpusTitle,
+        connection,
+      }, (err, corpus, info) => {
+        if (err) {
+          res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+          returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+          req.log.debug(`${new Date()} There was an error in corpus.createNewCorpus`);
+          returndata.userFriendlyErrors = [info.message]; // ["There was an error creating your corpus. " + req.body.newCorpusTitle];
+          if (err.statusCode || err.status === 302) {
             returndata.corpusadded = true;
-            returndata.info = [`Corpus ${corpus.title} created successfully.`];
-            returndata.corpus = corpus;
+            returndata.corpusexisted = true;
             returndata.connection = connection;
-            // returndata.info = [ info.message ];
-            req.log.debug(`${new Date()} Returning corpus added okay:\n`);
           }
-          req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
-          res.send(returndata);
-        });
-      }
-    });
+        }
+        if (!corpus) {
+          returndata.userFriendlyErrors = [info.message]; // ["There was an error creating your corpus. " + req.body.newCorpusTitle];
+        } else {
+          returndata.corpusadded = true;
+          returndata.info = [`Corpus ${corpus.title} created successfully.`];
+          returndata.corpus = corpus;
+          returndata.connection = connection;
+          // returndata.info = [ info.message ];
+          req.log.debug(`${new Date()} Returning corpus added okay:\n`);
+        }
+        req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
+        res.send(returndata);
+      });
+    })
+      .catch((err) => {
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+        // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = [`Unable to create your corpus. ${info.message}`];
+        // res.send(returndata);
+        next(err);
+      });
   });
   /**
-     * Responds to requests for adding a user in a role to a corpus, if successful replies with corpusadded =true and an info string containgin the roles
-     TODO return something useful as json
-     */
+   * Responds to requests for adding a user in a role to a corpus, if successful replies with corpusadded =true and an info string containgin the roles
+   TODO return something useful as json
+   */
   app.post('/updateroles', (req, res, next) => {
     /* convert spreadhseet data into data which the addroletouser api can read */
     req.body.userRoleInfo = req.body.userRoleInfo || {};

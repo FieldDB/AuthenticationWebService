@@ -1226,6 +1226,17 @@ describe('/ deprecated', () => {
         })
         .then((res) => {
           debug('register testuser7', res.body);
+
+          return supertest(authWebService)
+            .post('/register')
+            .set('x-request-id', `${requestId}-addroletouser`)
+            .send({
+              username: 'testuser9',
+              password: 'test',
+            });
+        })
+        .then((res) => {
+          debug('register testuser9', res.body);
         });
     });
 
@@ -1242,9 +1253,47 @@ describe('/ deprecated', () => {
         ]);
       }));
 
-    it('should create a corpus', () => supertest(authWebService)
+    it('should create a corpus', () => {
+      const newCorpusUnique = Date.now();
+      console.log('newCorpusUnique', newCorpusUnique);
+      const expectedDBName = `testuser9-testing_v3_32_01${newCorpusUnique}`;
+      return supertest(authWebService)
+        .post('/newcorpus')
+        .set('x-request-id', `${requestId}-newcorpus`)
+        .send({
+          username: 'testuser9',
+          password: 'test',
+          newCorpusName: `Testing v3.32.01${newCorpusUnique}`,
+        })
+        .then((res) => {
+          debug(JSON.stringify(res.body));
+          expect(res.status).to.equal(200);
+          expect(res.body.corpusadded).to.equal(true);
+
+          return supertest('http://testuser9:test@localhost:5984')
+            .get(`/${expectedDBName}/_design/lexicon/_view/lexiconNodes`)
+          // .set('x-request-id', requestId + '-newcorpus')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug(JSON.stringify(res.body));
+          if (res.status === 200) {
+            expect(res.status).to.equal(200, 'should replicate the lexicon');
+            expect(res.body).to.deep.equal({
+              rows: [{
+                key: null,
+                value: 5,
+              }],
+            }, 'should replicate the lexicon');
+          } else {
+            expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
+          }
+        });
+    });
+
+    it('should not complain if the user tries to recreate a corpus', () => supertest(authWebService)
       .post('/newcorpus')
-      .set('x-request-id', `${requestId}-newcorpus`)
+      .set('x-request-id', `${requestId}-recreatecorpus`)
       .send({
         username: 'testuser6',
         password: 'test',
