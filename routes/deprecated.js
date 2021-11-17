@@ -465,49 +465,49 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     addroletouser(req, res, next);
   });
   /**
-     * Responds to requests for adding a user in a role to a corpus, if successful replies with corpusadded =true and an info string containgin the roles
-     TODO return something useful as json
-     */
+   * Responds to requests for adding a user in a role to a corpus, if successful replies with corpusadded =true and an info string containgin the roles
+   TODO return something useful as json
+   */
   app.post('/updaterolesdeprecateddoesnotsupportemailingusers', (req, res, next) => {
-    authenticationfunctions.authenticateUser(req.body.username, req.body.password, req, (err, user, info) => {
+    userFunctions.authenticateUser({
+      username: req.body.username,
+      password: req.body.password,
+      req,
+    }).then(({ user, info }) => {
       const returndata = {
         depcrecated: true,
       };
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
-        returndata.userFriendlyErrors = 'Please supply a username and password to ensure this is you.';
+      returndata.corpusadded = true;
+      returndata.info = [info.message];
+      // Update user roles for corpus
+      corpus.updateRoles(req, (err, roles, info) => {
+        if (err) {
+          res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+          returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+          req.log.debug(`${new Date()} There was an error in corpus.updateRoles\n`);
+          returndata.userFriendlyErrors = [info.message];
+        }
+        if (!roles) {
+          returndata.userFriendlyErrors = ['There was an error updating the user roles.'];
+        } else {
+          returndata.corpusadded = true;
+          returndata.info = [`User roles updated successfully for ${roles}`];
+          //  returndata.info = [ info.message ];
+          req.log.debug(`${new Date()} Returning corpus role added okay:\n`);
+        }
+        req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
         res.send(returndata);
-        return;
-      }
-      if (!user) {
-        returndata.userFriendlyErrors = [info.message];
-      } else {
-        returndata.corpusadded = true;
-        returndata.info = [info.message];
-        // Update user roles for corpus
-        corpus.updateRoles(req, (err, roles, info) => {
-          if (err) {
-            res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-            returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-            req.log.debug(`${new Date()} There was an error in corpus.updateRoles\n`);
-            returndata.userFriendlyErrors = [info.message];
-          }
-          if (!roles) {
-            returndata.userFriendlyErrors = ['There was an error updating the user roles.'];
-          } else {
-            returndata.corpusadded = true;
-            returndata.info = [`User roles updated successfully for ${roles}`];
-            //  returndata.info = [ info.message ];
-            req.log.debug(`${new Date()} Returning corpus role added okay:\n`);
-          }
-          req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
-          res.send(returndata);
-        });
-      }
+      });
     });
-  });
+  })
+    .catch((err) => {
+    // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+    // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+      req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
+      // returndata.userFriendlyErrors = 'Please supply a username and password to ensure this is you.';
+      // res.send(returndata);
+      next(err);
+    });
   // app.get('/', function(req, res, next) {
   //  res.send({
   //      info: "Service is running normally."
