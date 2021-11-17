@@ -23,7 +23,7 @@ const {
 const originalLocalhosts = replay._localhosts;
 replay.fixtures = path.join(__dirname, '../fixtures/replay');
 
-describe.only('lib/user', () => {
+describe('lib/user', () => {
   before(() => {
     replay._localhosts = new Set(['127.0.0.1', '::1']);
     debug('before replay localhosts', replay._localhosts);
@@ -63,46 +63,51 @@ describe.only('lib/user', () => {
         expect(err.message).to.contain('Client didnt define the dbname to modify');
       }));
 
-    it('should return info about what was changed', () => addRoleToUser({
-      req: {
-        body: {
-          username: 'testuser4',
-          password: 'test',
-          connection: {
-            dbname: 'testuser4-firstcorpus',
+    it('should return info about what was changed', function it() {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      return addRoleToUser({
+        req: {
+          body: {
+            username: 'testuser4',
+            password: 'test',
+            connection: {
+              dbname: 'testuser4-firstcorpus',
+            },
+            users: [{
+              username: 'testingprototype',
+              add: ['reader', 'commenter'],
+              remove: ['admin', 'writer'],
+            }],
           },
-          users: [{
-            username: 'testingprototype',
-            add: ['reader', 'commenter'],
-            remove: ['admin', 'writer'],
-          }],
         },
-      },
-    })
-      .then((result) => {
+      })
+        .then((result) => {
         // console.log('result', result);
-        expect(result).to.deep.equal([{
-          add: [
-            'testuser4-firstcorpus_reader',
-            'testuser4-firstcorpus_commenter',
-          ],
-          after: [
-            'reader',
-            'commenter',
-          ],
-          before: [
-            'reader',
-            'commenter',
-          ],
-          message: 'User testingprototype now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
-          remove: [
-            'testuser4-firstcorpus_admin',
-            'testuser4-firstcorpus_writer',
-          ],
-          status: 200,
-          username: 'testingprototype',
-        }]);
-      }));
+          expect(result).to.deep.equal([{
+            add: [
+              'testuser4-firstcorpus_reader',
+              'testuser4-firstcorpus_commenter',
+            ],
+            after: [
+              'reader',
+              'commenter',
+            ],
+            before: [
+              'reader',
+              'commenter',
+            ],
+            message: 'User testingprototype now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
+            remove: [
+              'testuser4-firstcorpus_admin',
+              'testuser4-firstcorpus_writer',
+            ],
+            status: 200,
+            username: 'testingprototype',
+          }]);
+        });
+    });
   });
 
   describe('authenticateUser', () => {
@@ -542,7 +547,7 @@ describe.only('lib/user', () => {
   describe('verifyPassword', () => {
     it('should reject with an error', () => verifyPassword()
       .catch((err) => {
-        expect(err.message).to.contain('Cannot read properties of undefined');
+        expect(err.message).to.contain('Cannot read propert');
       }));
 
     it('should verify a password', () => {
