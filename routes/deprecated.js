@@ -172,22 +172,23 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * Finally the returndata json is sent to the calling application via the
    * response.
    */
-  app.post('/forgotpassword', (req, res) => {
+  app.post('/forgotpassword', (req, res, next) => {
     const { email } = req.body;
-    authenticationfunctions.forgotPassword(email, (err, forgotPasswordResults, info) => {
-      const returndata = {};
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.setPassword ${util.inspect(err)}`);
-        returndata.userFriendlyErrors = [info.message];
-      } else {
+    userFunctions.forgotPassword({ email })
+      .then(({ forgotPasswordResults, info }) => {
+        const returndata = {};
         returndata.info = [info.message];
-        // res.status(200);
         req.log.debug(`${new Date()} Returning forgotpassword success: ${util.inspect(returndata)}`);
-      }
-      res.send(returndata);
-    });
+        res.status(200);
+        res.send(returndata);
+      })
+      .catch((err) => {
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+        // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        debug(`${new Date()} There was an error in the authenticationfunctions.setPassword ${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = [info.message];
+        next(err);
+      });
   });
   app.get('/forgotpassword', (req, res) => {
     res.send({});

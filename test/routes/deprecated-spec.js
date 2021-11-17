@@ -479,7 +479,12 @@ describe.only('/ deprecated', () => {
           });
       })
       .then((res) => {
-        expect(res.body).to.deep.equal({ status: 500, userFriendlyErrors: [' The server was unable to send you an email, your password has not been reset. Please report this 2823'] });
+        expect(res.body).to.deep.equal({
+          message: 'Internal server error',
+          stack: res.body.stack,
+          status: 500,
+          userFriendlyErrors: ['The server was unable to send you an email, your password has not been reset. Please report this 2823'],
+        });
       }));
 
     it('should refuse to send a password reset if neither email nor username was provided', () => supertest(authWebService)

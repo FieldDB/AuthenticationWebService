@@ -27,6 +27,7 @@ const errorHandler = function (err, req, res, next) {
       stack: err.stack,
       url: err.url,
       details: err.details,
+      userFriendlyErrors: err.userFriendlyErrors,
     };
     if (data.details && data.details.url) {
       delete data.details.url;
@@ -80,6 +81,8 @@ const errorHandler = function (err, req, res, next) {
   } else if (err.code === 'DEPTH_ZERO_SELF_SIGNED_CERT') {
     // see also https://github.com/request/request/issues/418
     data.userFriendlyErrors = ['Server erred, please report this 23829'];
+  } else if (err.status && err.userFriendlyErrors && err.userFriendlyErrors[0] && err.userFriendlyErrors[0].includes('Please report this')) {
+    data.userFriendlyErrors = data.userFriendlyErrors;
   } else {
     data.userFriendlyErrors = ['Server erred, please report this 816'];
   }
