@@ -382,7 +382,7 @@ describe('lib/user', () => {
         }).to.deep.equal({
           message: 'User notauser does not exist',
           status: 401,
-          userFriendlyErrors: ['Username or password is invalid. Please try again'],
+          userFriendlyErrors: ['Username or password is invalid. Please try again.'],
         });
 
         expect(stack).to.contain('lib/user.js');

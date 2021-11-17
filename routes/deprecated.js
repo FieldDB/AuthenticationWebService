@@ -4,6 +4,7 @@ const util = require('util');
 
 const authenticationfunctions = require('../lib/userauthentication.js');
 const corpus = require('../lib/corpus');
+const userFunctions = require('../lib/user.js');
 
 const cleanErrorStatus = function cleanErrorStatus(status) {
   if (status) {
@@ -22,15 +23,14 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * Responds to requests for login, if sucessful replies with the user's details
    * as json
    */
-  app.post('/login', (req, res) => {
-    authenticationfunctions.authenticateUser(req.body.username, req.body.password, req, (err, user, info) => {
+  app.post('/login', (req, res, next) => {
+    userFunctions.authenticateUser({
+      username: req.body.username,
+      password: req.body.password,
+      req,
+    })
+    .then(({ user, info }) => {
       const returndata = {};
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
-        returndata.userFriendlyErrors = [info.message];
-      }
       if (!user) {
         returndata.userFriendlyErrors = [info.message];
       } else {
@@ -45,8 +45,13 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       }
       req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
       res.send(returndata);
+    })
+    .catch((err) => {
+      req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
+      next(err);
     });
   });
+
   app.get('/login', (req, res) => {
     res.send({
       info: 'Service is running normally.',
