@@ -195,33 +195,29 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * Responds to requests for a list of team members on a corpus, if successful replies with a list of
    * usernames as json
    */
-  app.post('/corpusteam', (req, res) => {
+  app.post('/corpusteam', (req, res, next) => {
     const returndata = {};
     req.body.dbname = req.body.dbname || req.body.pouchname;
-    authenticationfunctions.fetchCorpusPermissions(req, (err, users, info) => {
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.fetchCorpusPermissions:\n${util.inspect(err)}`);
-        returndata.userFriendlyErrors = [info.message];
-      }
-      if (!users) {
-        returndata.userFriendlyErrors = [info.message];
-      } else {
-        returndata.users = users;
-        returndata.info = [info.message];
-        // returndata.userFriendlyErrors = ["Faking an error to test"];
-      }
+    userFunctions.fetchCorpusPermissions({
+      req,
+    }).then(({ rolesAndUsers, info }) => {
+      returndata.users = rolesAndUsers;
+      returndata.info = [info.message];
+      // returndata.userFriendlyErrors = ["Faking an error to test"];
       // req.log.debug(new Date() + " Returning response:\n" + util.inspect(returndata));
-      req.log.debug(`${new Date()} Returning the list of reader users on this corpus as json:`);
-      if (returndata && returndata.users) {
-        req.log.debug(util.inspect(returndata.users.readers));
-      }
+      req.log.debug(returndata.users.readers, `${new Date()} Returning the list of reader users on this corpus as json:`);
       res.send(returndata);
-    });
+    })
+      .catch((err) => {
+      // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+      // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.fetchCorpusPermissions:\n${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = [info.message];
+        next(err);
+      });
   });
 
-  app.post('/corpusteamwhichrequiresvalidauthentication', (req, res) => {
+  app.post('/corpusteamwhichrequiresvalidauthentication', (req, res, next) => {
     const returndata = {};
     userFunctions.authenticateUser({
       username: req.body.username,
