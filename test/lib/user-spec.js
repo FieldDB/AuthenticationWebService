@@ -398,7 +398,6 @@ describe('lib/user', () => {
       .catch(({
         message,
         status,
-        userFriendlyErrors,
         stack,
       }) => {
         expect({

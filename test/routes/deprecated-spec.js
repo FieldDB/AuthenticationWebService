@@ -555,52 +555,42 @@ describe('/ deprecated', () => {
               email: '',
             });
         })
-        .then((res) => {
-          return supertest(authWebService)
-            .post('/register')
-            .set('x-request-id', `${requestId}-before-addroletouser`)
-            .send({
-              username: 'testuser41',
-              password: 'test',
-              email: '',
-            });
-        })
-        .then((res) => {
-          return supertest(authWebService)
-            .post('/register')
-            .set('x-request-id', `${requestId}-before-newcorpus`)
-            .send({
-              username: 'testuser5',
-              password: 'test',
-            });
-        })
-        .then((res) => {
-          return supertest(authWebService)
-            .post('/register')
-            .set('x-request-id', `${requestId}-before-newcorpus`)
-            .send({
-              username: 'testuser6',
-              password: 'test',
-            });
-        })
-        .then((res) => {
-          return supertest(authWebService)
-            .post('/register')
-            .set('x-request-id', `${requestId}-before-newcorpus`)
-            .send({
-              username: 'testuser7',
-              password: 'test',
-            });
-        })
-        .then((res) => {
-          return supertest(authWebService)
-            .post('/register')
-            .set('x-request-id', `${requestId}-before-addroletouser`)
-            .send({
-              username: 'testuser10',
-              password: 'test',
-            });
-        })
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-addroletouser`)
+          .send({
+            username: 'testuser41',
+            password: 'test',
+            email: '',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-newcorpus`)
+          .send({
+            username: 'testuser5',
+            password: 'test',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-newcorpus`)
+          .send({
+            username: 'testuser6',
+            password: 'test',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-newcorpus`)
+          .send({
+            username: 'testuser7',
+            password: 'test',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-addroletouser`)
+          .send({
+            username: 'testuser10',
+            password: 'test',
+          }))
         .then((res) => {
           debug('register testuser10', res.body);
         });
@@ -998,22 +988,14 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             ok: true,
             name: 'testuser7',
-            roles: [
-              'jenkins-firstcorpus_reader',
-              'jenkins-firstcorpus_commenter',
-              'testuser7-firstcorpus_admin',
-              'testuser7-firstcorpus_writer',
-              'testuser7-firstcorpus_reader',
-              'testuser7-firstcorpus_commenter',
-              'public-firstcorpus_reader',
-              'fielddbuser',
-              'user',
-              'testuser7-georgian_admin',
-              'testuser7-georgian_writer',
-              'testuser7-georgian_reader',
-              'testuser7-georgian_commenter',
-            ],
-          }, 'should have roles');
+            roles: res.body.roles,
+          }, 'should succeed');
+
+          const roles = res.body.roles.filter((role) => role.includes('jenkins-firstcorpus'));
+          expect(roles).to.deep.equal([
+            'jenkins-firstcorpus_reader',
+            'jenkins-firstcorpus_commenter',
+          ], 'should have roles');
         });
     });
   });
