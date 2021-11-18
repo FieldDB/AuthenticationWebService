@@ -728,7 +728,7 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body.info[0]).to.contain(
             'User testingprototype now has reader commenter access to jenkins-firstcorpus',
-          );
+          JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/login')
             .set('x-request-id', `${requestId}-addroletouser-remove-confirm`)
@@ -846,7 +846,7 @@ describe('/ deprecated', () => {
           expect(res.body.info).to.deep.equal([
             'User testingspreadsheet now has reader exporter access to jenkins-firstcorpus',
             'User testingprototype now has writer access to jenkins-firstcorpus',
-          ]);
+          ], JSON.stringify(res.body));
 
           return supertest('http://testingprototype:test@localhost:5984')
             .post('/_session')
