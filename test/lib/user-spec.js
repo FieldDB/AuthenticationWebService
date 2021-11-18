@@ -82,6 +82,7 @@ describe('lib/user', () => {
               remove: ['admin', 'writer'],
             }],
           },
+          id: 'addRoleToUser',
         },
       })
         .then((result) => {
@@ -145,18 +146,22 @@ describe('lib/user', () => {
         });
     });
 
-    it('should handle invalid password who have an email address', () => authenticateUser({
-      username: 'testinguserwithemail',
-      password: 'wrongpassword',
-    })
-      .catch((err) => {
-        const { message, status, userFriendlyErrors } = err;
-        expect(message).to.equal('Username or password is invalid. Please try again.');
-        expect(status).to.equal(401);
-        expect(userFriendlyErrors).to.deep.equal([
-          'Username or password is invalid. Please try again. You have tried to log in too many times. The server was unable to send you an email, your password has not been reset. Please report this 2823',
-        ]);
-      }));
+    it('should handle invalid password who have an email address', function () {
+      this.retries(8);
+      return;
+      authenticateUser({
+        username: 'testinguserwithemail',
+        password: 'wrongpassword',
+      })
+        .catch((err) => {
+          const { message, status, userFriendlyErrors } = err;
+          expect(message).to.equal('Username or password is invalid. Please try again.');
+          expect(status).to.equal(401);
+          expect(userFriendlyErrors).to.deep.equal([
+            'Username or password is invalid. Please try again. You have tried to log in too many times. The server was unable to send you an email, your password has not been reset. Please report this 2823',
+          ]);
+        });
+    });
 
     it('should detect non ascii usernames', () => authenticateUser({
       username: 'Jen kins',
@@ -438,6 +443,7 @@ describe('lib/user', () => {
           password: 'phoneme',
           username: 'yourusernamegoeshere',
         },
+        id: 'registerNewUser-default',
       },
     })
       .then((result) => {
@@ -455,6 +461,7 @@ describe('lib/user', () => {
           password: 'phoneme',
           username: 'aa',
         },
+        id: 'registerNewUser-too-short',
       },
     })
       .then((result) => {
@@ -470,6 +477,7 @@ describe('lib/user', () => {
           password: 'phoneme',
           username: 'Jen kins',
         },
+        id: 'registerNewUser-not-ascii',
       },
     })
       .then((result) => {
@@ -487,6 +495,7 @@ describe('lib/user', () => {
           password: 'shouldntregister',
           username: 'jenkins',
         },
+        id: 'registerNewUser-existing',
       },
     })
       .then((result) => {

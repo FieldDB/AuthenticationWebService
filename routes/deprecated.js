@@ -76,7 +76,6 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * response.
    */
   app.post('/register', (req, res, next) => userFunctions.registerNewUser({
-    localOrNot: 'local',
     req,
   })
     .then(({ user, info } = {}) => {
@@ -131,6 +130,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       oldpassword,
       newpassword,
       username,
+      req,
     })
       .then(({ user, info }) => {
         const returndata = {};
@@ -172,7 +172,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    */
   app.post('/forgotpassword', (req, res, next) => {
     const { email } = req.body;
-    userFunctions.forgotPassword({ email })
+    userFunctions.forgotPassword({ email, req })
       .then(({ info }) => {
         const returndata = {};
         returndata.info = [info.message];

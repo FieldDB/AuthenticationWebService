@@ -13,7 +13,7 @@ const cleanErrorStatus = function (status) {
 const errorHandler = function (err, req, res, next) {
   let data;
   const { NODE_ENV } = process.env;
-  console.log(`errorHandler ${NODE_ENV} ${req.url}`, err);
+  debug(`errorHandler ${NODE_ENV} ${req.url}`, err);
 
   if (res.headersSent) {
     console.warn('This request has already been replied to', err);
