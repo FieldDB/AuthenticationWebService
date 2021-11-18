@@ -26,6 +26,8 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     userFunctions.authenticateUser({
       username: req.body.username,
       password: req.body.password,
+      syncDetails: req.body.syncDetails,
+      syncUserDetails: req.body.syncUserDetails,
       req,
     })
       .then(({ user, info }) => {

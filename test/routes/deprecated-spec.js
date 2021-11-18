@@ -484,7 +484,7 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body).to.deep.equal({
           message: 'Internal server error',
-          stack: res.body.stack,
+          // stack: res.body.stack,
           status: 500,
           userFriendlyErrors: ['The server was unable to send you an email, your password has not been reset. Please report this 2823'],
         });
