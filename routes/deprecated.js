@@ -1,6 +1,5 @@
 const { Connection } = require('fielddb/api/corpus/Connection');
 const debug = require('debug')('route:deprecated');
-const util = require('util');
 
 const corpus = require('../lib/corpus');
 const userFunctions = require('../lib/user');
@@ -42,13 +41,13 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
           if (req && req.syncDetails) {
             returndata.info.unshift('Preferences saved.');
           }
-        // req.log.debug(new Date() + " Returning the existing user as json:\n" + util.inspect(user));
+        // req.log.debug(new Date() + " Returning the existing user as json:\n" + JSON.stringify(user));
         }
-        req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
+        req.log.debug(returndata, `${new Date()} Returning response`);
         res.send(returndata);
       })
       .catch((err) => {
-        req.log.debug(`${new Date()} There was an error in the userFunctions.authenticateUser:\n${util.inspect(err)}`);
+        req.log.debug(err, `${new Date()} There was an error in the userFunctions.authenticateUser`);
         next(err);
       });
   });
@@ -84,7 +83,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       const returndata = {};
       returndata.user = user;
       returndata.info = [info.message];
-      req.log.debug(`${new Date()} Returning the newly built user: ${util.inspect(user)}`);
+      req.log.debug(user, `${new Date()} Returning the newly built user:`);
       res.send(returndata);
     })
     .catch((err) => {
@@ -139,13 +138,13 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         returndata.user = user;
         returndata.info = [info.message];
         res.status(200);
-        req.log.debug(`${new Date()} Returning success: ${util.inspect(user)}`);
+        req.log.debug(user, `${new Date()} Returning success`);
         res.send(returndata);
       })
       .catch((err) => {
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the userFunctions.setPassword ${util.inspect(err)}`);
+        req.log.debug(err, `${new Date()} There was an error in the userFunctions.setPassword`);
         // returndata.userFriendlyErrors = [info.message];
         next(err);
       });
@@ -178,14 +177,14 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       .then(({ info }) => {
         const returndata = {};
         returndata.info = [info.message];
-        req.log.debug(`${new Date()} Returning forgotpassword success: ${util.inspect(returndata)}`);
+        req.log.debug(returndata, `${new Date()} Returning forgotpassword success`);
         res.status(200);
         res.send(returndata);
       })
       .catch((err) => {
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        debug(`${new Date()} There was an error in the userFunctions.setPassword ${util.inspect(err)}`);
+        debug(err, `${new Date()} There was an error in the userFunctions.setPassword`);
         // returndata.userFriendlyErrors = [info.message];
         next(err);
       });
@@ -206,14 +205,14 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       returndata.users = rolesAndUsers;
       returndata.info = [info.message];
       // returndata.userFriendlyErrors = ["Faking an error to test"];
-      // req.log.debug(new Date() + " Returning response:\n" + util.inspect(returndata));
+      // req.log.debug(new Date() + " Returning response:\n" + JSON.stringify(returndata));
       req.log.debug(returndata.users.readers, `${new Date()} Returning the list of reader users on this corpus as json:`);
       res.send(returndata);
     })
       .catch((err) => {
       // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
       // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the userFunctions.fetchCorpusPermissions:\n${util.inspect(err)}`);
+        req.log.debug(err, `${new Date()} There was an error in the userFunctions.fetchCorpusPermissions`);
         // returndata.userFriendlyErrors = [info.message];
         next(err);
       });
@@ -231,10 +230,10 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       returndata.users = users;
       returndata.info = [fetchPermsInfo.message];
       // returndata.userFriendlyErrors = ["Faking an error to test"];
-      // req.log.debug(new Date() + " Returning response:\n" + util.inspect(returndata));
+      // req.log.debug(new Date() + " Returning response:\n" + JSON.stringify(returndata));
       req.log.debug(`${new Date()} Returning the list of reader users on this corpus as json:`);
       if (returndata && returndata.users) {
-        req.log.debug(util.inspect(returndata.users.readers));
+        req.log.debug(returndata.users.readers, 'readers');
       }
       res.send(returndata);
     }))
@@ -242,12 +241,12 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       // res.status(cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400);
       // returndata.status = cleanErrorStatus(fetchPermsErr.statusCode || fetchPermsErr.status) || 400;
       // req.log.debug(`${new Date()} There was an err in the
-      // userFunctions.fetchCorpusPermissions:\n${util.inspect(fetchPermsErr)}`);
+      // userFunctions.fetchCorpusPermissions:\n${JSON.stringify(fetchPermsErr)}`);
       // returndata.userFriendlyErrors = [fetchPermsInfo.message];
 
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the userFunctions.authenticateUser:\n${util.inspect(err)}`);
+        req.log.debug(err, `${new Date()} There was an error in the userFunctions.authenticateUser`);
         // returndata.userFriendlyErrors = [info.message];
         // res.send(returndata);
         next(err);
@@ -358,12 +357,13 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
 
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 500);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 500;
-        // req.log.debug(`${new Date()} There was an error in the userFunctions.addRoleToUser:\n${util.inspect(err)}`);
+        // req.log.debug(`${new Date()} There was an error in the
+        // userFunctions.addRoleToUser:\n${JSON.stringify(err)}`);
         // returndata.userFriendlyErrors = info;
 
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the userFunctions.authenticateUser:\n${util.inspect(err)}`);
+        req.log.debug(err, `${new Date()} There was an error in the userFunctions.authenticateUser`);
         // returndata.userFriendlyErrors = [info.message];
         // res.send(returndata);
         next(err);
@@ -379,14 +379,19 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * in a string and a corpusaded = true
    */
   app.post('/newcorpus', (req, res, next) => {
+    const newCorpusTitle = req.body.newCorpusTitle || req.body.newCorpusName;
+    const connection = Connection.defaultConnection(req.body.appbrand);
+    connection.title = newCorpusTitle;
+    connection.dbname = `${req.body.username}-${connection.titleAsUrl}`;
+    req.log.debug('Connection', connection);
+
     userFunctions.authenticateUser({
       username: req.body.username,
       password: req.body.password,
       req,
     }).then(() => {
       const returndata = {};
-      req.body.newCorpusTitle = req.body.newCorpusTitle || req.body.newCorpusName;
-      if (!req.body.newCorpusTitle) {
+      if (!newCorpusTitle) {
         res.status(412);
         returndata.status = 412;
         returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: newCorpusTitle'];
@@ -395,47 +400,53 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       }
       req.body.appbrand = req.body.appbrand || req.body.brand || req.body.serverCode || req.body.serverLabel;
       req.log.debug(` Creating a corpus withbranding ${req.body.appbrand}`);
-      const connection = Connection.defaultConnection(req.body.appbrand);
-      connection.title = req.body.newCorpusTitle;
-      connection.dbname = `${req.body.username}-${connection.titleAsUrl}`;
-      req.log.debug('Connection', connection);
+
       // Add a new corpus for the user
-      corpus.createNewCorpus({
+      return corpus.createNewCorpus({
         username: req.body.username,
-        title: req.body.newCorpusTitle,
+        title: connection.title,
         connection,
-      }, (err, createdCorpus, info) => {
-        if (err) {
-          res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-          returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-          req.log.debug(`${new Date()} There was an error in corpus.createNewCorpus`);
-          returndata.userFriendlyErrors = [info.message];
-          // ["There was an error creating your corpus. " + req.body.newCorpusTitle];
-          if (err.statusCode || err.status === 302) {
-            returndata.corpusadded = true;
-            returndata.corpusexisted = true;
-            returndata.connection = connection;
-          }
-        }
-        if (!createdCorpus) {
+        req,
+      });
+    })
+      .then(({ corpusDetails, info }) => {
+        const returndata = {};
+
+        if (!corpusDetails) {
           returndata.userFriendlyErrors = [info.message];
           // ["There was an error creating your corpus. " + req.body.newCorpusTitle];
         } else {
           returndata.corpusadded = true;
-          returndata.info = [`Corpus ${createdCorpus.title} created successfully.`];
-          returndata.corpus = createdCorpus;
+          returndata.info = [`Corpus ${corpusDetails.title} created successfully.`];
+          returndata.corpus = corpusDetails;
           returndata.connection = connection;
           // returndata.info = [ info.message ];
           req.log.debug(`${new Date()} Returning corpus added okay:\n`);
         }
-        req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
+        req.log.debug(returndata, `${new Date()} Returning response`);
         res.send(returndata);
-      });
-    })
+      })
       .catch((err) => {
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+        //   returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        //   req.log.debug(`${new Date()} There was an error in corpus.createNewCorpus`);
+        //   returndata.userFriendlyErrors = [info.message];
+        //   // ["There was an error creating your corpus. " + req.body.newCorpusTitle];
+        if (err.statusCode || err.status === 302) {
+          const returndata = {
+            corpusadded: true,
+            corpusexisted: true,
+            connection,
+            userFriendlyErrors: err.userFriendlyErrors,
+          };
+          res.status(302);
+          res.send(returndata);
+          return;
+        }
+
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the userFunctions.authenticateUser:\n${util.inspect(err)}`);
+        req.log.debug(err, `${new Date()} There was an error in the userFunctions.authenticateUser`);
         // returndata.userFriendlyErrors = [`Unable to create your corpus. ${info.message}`];
         // res.send(returndata);
         next(err);
@@ -504,14 +515,14 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
           //  returndata.info = [ info.message ];
           req.log.debug(`${new Date()} Returning corpus role added okay:\n`);
         }
-        req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
+        req.log.debug(returndata, `${new Date()} Returning response`);
         res.send(returndata);
       });
     })
       .catch((err) => {
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the userFunctions.authenticateUser:\n${util.inspect(err)}`);
+        req.log.debug(err, `${new Date()} There was an error in the userFunctions.authenticateUser`);
         // returndata.userFriendlyErrors = 'Please supply a username and password to ensure this is you.';
         // res.send(returndata);
         next(err);

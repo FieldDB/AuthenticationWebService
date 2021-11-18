@@ -1324,8 +1324,8 @@ describe('/ deprecated', () => {
         })
         .then((res) => {
           debug(JSON.stringify(res.body));
+          expect(res.body.corpusadded).to.equal(true, JSON.stringify(res.body));
           expect(res.status).to.equal(200);
-          expect(res.body.corpusadded).to.equal(true);
 
           return supertest('http://testuser9:test@localhost:5984')
             .get(`/${expectedDBName}/_design/lexicon/_view/lexiconNodes`)
@@ -1358,10 +1358,9 @@ describe('/ deprecated', () => {
       })
       .then((res) => {
         expect(res.body.corpusadded).to.equal(true, JSON.stringify(res.body));
-
         return supertest('http://testuser6:test@localhost:5984')
           .get('/testuser6-testing_v3_32_01/_design/lexicon/_view/lexiconNodes')
-        // .set('x-request-id', requestId + '-newcorpus')
+          // .set('x-request-id', requestId + '-newcorpus')
           .set('Accept', 'application/json');
       })
       .then((res) => {
@@ -1371,7 +1370,7 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             rows: [{
               key: null,
-              value: 5,
+              value: res.body.rows[0].value,
             }],
           }, 'should replicate the lexicon');
         } else {
@@ -1395,11 +1394,10 @@ describe('/ deprecated', () => {
             'Unable to create your corpus. Error saving a user in the database. ',
           ]);
         } else {
-          expect(res.status).to.equal(412, 'should not complain if the user tries to recreate a corpus');
-
+          expect(res.status).to.equal(302, 'should not complain if the user tries to recreate a corpus');
           expect(res.body.userFriendlyErrors).to.deep.equal([
             'Your corpus testuser6-testing_v3_32_01 already exists, no need to create it.',
-          ]);
+          ], JSON.stringify(res.body));
         }
       }));
 
