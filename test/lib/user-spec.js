@@ -47,6 +47,9 @@ describe('lib/user', () => {
       newConnection: {
         dbname: 'testuser2-firstcorpus',
       },
+      req: {
+        id: 'addCorpusToUser'
+      }
     })
       .then(({
         info,
@@ -122,6 +125,9 @@ describe('lib/user', () => {
 
     it('should require a password', () => authenticateUser({
       username: 'lingllama',
+      req: {
+        id: 'authenticateUser-missing-password',
+      }
     })
       .catch(({ message, status, userFriendlyErrors }) => {
         expect(message).to.equal('Password was not specified. undefined');
@@ -136,6 +142,9 @@ describe('lib/user', () => {
       return authenticateUser({
         username: 'jenkins',
         password: 'wrongpassword',
+      req: {
+        id: 'authenticateUser-wrong-password',
+      }
       })
         .catch(({ message, status, userFriendlyErrors }) => {
           expect(message).to.equal('Username or password is invalid. Please try again.');
@@ -152,6 +161,9 @@ describe('lib/user', () => {
       authenticateUser({
         username: 'testinguserwithemail',
         password: 'wrongpassword',
+      req: {
+        id: 'authenticateUser-wrong-password-with-email',
+      }
       })
         .catch((err) => {
           const { message, status, userFriendlyErrors } = err;
@@ -166,6 +178,9 @@ describe('lib/user', () => {
     it('should detect non ascii usernames', () => authenticateUser({
       username: 'Jen kins',
       password: 'phoneme',
+      req: {
+        id: 'authenticateUser-non-ascii',
+      }
     })
       .catch(({ message, status, userFriendlyErrors }) => {
         expect(message).to.equal('username is not safe for db names');
@@ -180,6 +195,10 @@ describe('lib/user', () => {
       return authenticateUser({
         username: 'testuser5',
         password: 'test',
+
+      req: {
+        id: 'authenticateUser-success',
+      }
       })
         .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -211,6 +230,10 @@ describe('lib/user', () => {
             dbname: 'testuser-two',
           }],
         },
+
+      req: {
+        id: 'authenticateUser-sync',
+      }
       })
         .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -336,6 +359,9 @@ describe('lib/user', () => {
 
     it('should find lingllama', () => findByEmail({
       email: 'lingllama@example.org',
+      req: {
+        id: 'findByEmail',
+      },
     })
       .then((result) => {
         expect(result.users.map(({ username, email }) => ({ username, email }))).to.deep.equal([{
@@ -356,6 +382,9 @@ describe('lib/user', () => {
 
     it('should look up a username', () => findByUsername({
       username: 'lingllama',
+      req: {
+        id: 'findByUsername',
+      }
     })
       .then(({
         user,
@@ -396,6 +425,9 @@ describe('lib/user', () => {
 
     it('should handle disabled users', () => findByUsername({
       username: 'testingdisabledusers',
+      req: {
+        id: 'findByUsername-disabled',
+      }
     })
       .catch(({
         message,
@@ -425,6 +457,9 @@ describe('lib/user', () => {
 
     it('should send password reset emails', () => forgotPassword({
       email: 'myemail@example.com',
+      req: {
+        id: 'forgotPassword-reset',
+      },
     })
       .catch((err) => {
         expect(err.message).to.equal('The mail configuration is missing a user, this server cant send email.');
@@ -550,6 +585,9 @@ describe('lib/user', () => {
       return saveUpdateUserToDatabase({
         password: 'phoneme',
         user: expectedUser,
+        req: {
+          id: 'saveUpdateUserToDatabase-sample',
+        },
       })
         .then(({ user, info }) => {
           expect(user).to.equal(expectedUser);
@@ -569,6 +607,9 @@ describe('lib/user', () => {
       return saveUpdateUserToDatabase({
         password: 'phoneme',
         user: expectedUser,
+        req: {
+          id: 'saveUpdateUserToDatabase-conflict',
+        },
       })
         .then((result) => {
           expect(result).to.equal('should not get here');
@@ -595,6 +636,9 @@ describe('lib/user', () => {
         oldpassword: 'test',
         password: 'test',
         username: 'testuser3',
+        req: {
+          id: 'setPassword'
+        }
       })
         .then(({ user, info }) => {
           expect(user.username).to.equal('testuser3');
