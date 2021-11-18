@@ -742,9 +742,10 @@ describe('/ deprecated', () => {
             });
         })
         .then((res) => {
-          expect(res.body.info?.[0]).to.contain(
+          expect(res.body && res.body.info && res.body.info[0]).to.contain(
             'User testuser5 now has reader commenter access to jenkins-firstcorpus',
-          JSON.stringify(res.body));
+            JSON.stringify(res.body),
+          );
           return supertest(authWebService)
             .post('/login')
             .set('x-request-id', `${requestId}-addroletouser-remove-confirm`)
@@ -984,10 +985,10 @@ describe('/ deprecated', () => {
               'public-firstcorpus_reader',
               'fielddbuser',
               'user',
-              "testuser7-georgian_admin",
-        "testuser7-georgian_writer",
-        "testuser7-georgian_reader",
-        "testuser7-georgian_commenter",
+              'testuser7-georgian_admin',
+              'testuser7-georgian_writer',
+              'testuser7-georgian_reader',
+              'testuser7-georgian_commenter',
             ],
           }, 'should have roles');
         });
@@ -1088,7 +1089,7 @@ describe('/ deprecated', () => {
               username: 'testuser2',
               remove: ['jenkins-firstcorpus_all'],
               add: [],
-              before: res.body.users?.[0]?.before,
+              before: (res.body.users && res.body.users[0]) ? res.body.users[0].before : undefined,
               after: [],
               status: 200,
               message: 'User testuser2 was removed from the jenkins-firstcorpus team.',

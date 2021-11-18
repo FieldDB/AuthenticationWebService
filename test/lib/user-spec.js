@@ -71,49 +71,47 @@ describe('lib/user', () => {
      * re-record instructions
      * - remove body because has a date time in serverLogs
      */
-    it('should return info about what was changed', function it() {
-      return addRoleToUser({
-        req: {
-          body: {
-            username: 'testuser4',
-            password: 'test',
-            connection: {
-              dbname: 'testuser4-firstcorpus',
-            },
-            users: [{
-              username: 'testuser8',
-              add: ['reader', 'commenter'],
-              remove: ['admin', 'writer'],
-            }],
+    it('should return info about what was changed', () => addRoleToUser({
+      req: {
+        body: {
+          username: 'testuser4',
+          password: 'test',
+          connection: {
+            dbname: 'testuser4-firstcorpus',
           },
-          id: 'addRoleToUser',
-        },
-      })
-        .then((result) => {
-        // console.log('result', result);
-          expect(result).to.deep.equal([{
-            add: [
-              'testuser4-firstcorpus_reader',
-              'testuser4-firstcorpus_commenter',
-            ],
-            after: [
-              'reader',
-              'commenter',
-            ],
-            before: [
-              'reader',
-              'commenter',
-            ],
-            message: 'User testuser8 now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
-            remove: [
-              'testuser4-firstcorpus_admin',
-              'testuser4-firstcorpus_writer',
-            ],
-            status: 200,
+          users: [{
             username: 'testuser8',
-          }]);
-        });
-    });
+            add: ['reader', 'commenter'],
+            remove: ['admin', 'writer'],
+          }],
+        },
+        id: 'addRoleToUser',
+      },
+    })
+      .then((result) => {
+        // console.log('result', result);
+        expect(result).to.deep.equal([{
+          add: [
+            'testuser4-firstcorpus_reader',
+            'testuser4-firstcorpus_commenter',
+          ],
+          after: [
+            'reader',
+            'commenter',
+          ],
+          before: [
+            'reader',
+            'commenter',
+          ],
+          message: 'User testuser8 now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
+          remove: [
+            'testuser4-firstcorpus_admin',
+            'testuser4-firstcorpus_writer',
+          ],
+          status: 200,
+          username: 'testuser8',
+        }]);
+      }));
   });
 
   describe('authenticateUser', () => {
@@ -140,22 +138,20 @@ describe('lib/user', () => {
      * re-record instructions
      * - remove body because has a date time in serverLogs
      */
-    it('should handle invalid password', function it() {
-      return authenticateUser({
-        username: 'testuser8',
-        password: 'wrongpassword',
-        req: {
-          id: 'authenticateUser-wrong-password',
-        },
-      })
-        .catch(({ message, status, userFriendlyErrors }) => {
-          expect(message).to.equal('Username or password is invalid. Please try again.');
-          expect(status).to.equal(401);
-          expect(userFriendlyErrors).to.deep.equal([
-            'Username or password is invalid. Please try again. You have 3 more attempts before a temporary password will be emailed to your registration email (if you provided one).'
-          ]);
-        });
-    });
+    it('should handle invalid password', () => authenticateUser({
+      username: 'testuser8',
+      password: 'wrongpassword',
+      req: {
+        id: 'authenticateUser-wrong-password',
+      },
+    })
+      .catch(({ message, status, userFriendlyErrors }) => {
+        expect(message).to.equal('Username or password is invalid. Please try again.');
+        expect(status).to.equal(401);
+        expect(userFriendlyErrors).to.deep.equal([
+          'Username or password is invalid. Please try again. You have 3 more attempts before a temporary password will be emailed to your registration email (if you provided one).',
+        ]);
+      }));
 
     it('should handle invalid password who have an email address', function () {
       this.retries(8);
@@ -193,61 +189,57 @@ describe('lib/user', () => {
      * re-record instructions
      * - remove body because has a date time in serverLogs
      */
-    it('should authenticate', function it() {
-      return authenticateUser({
-        username: 'testuser5',
-        password: 'test',
+    it('should authenticate', () => authenticateUser({
+      username: 'testuser5',
+      password: 'test',
 
-        req: {
-          id: 'authenticateUser-success',
-        },
-      })
-        .then((result) => {
+      req: {
+        id: 'authenticateUser-success',
+      },
+    })
+      .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
-          expect(result.user._rev).not.to.equal(undefined);
-          const lastLogin = result.user.serverlogs
-            .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
-          const lastLoginMs = new Date(lastLogin).getTime();
-          const expectedDate = Date.now();
-          debug('lastLogin', lastLogin, lastLoginMs);
-          debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
-          expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
-        });
-    });
+        expect(result.user._rev).not.to.equal(undefined);
+        const lastLogin = result.user.serverlogs
+          .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
+        const lastLoginMs = new Date(lastLogin).getTime();
+        const expectedDate = Date.now();
+        debug('lastLogin', lastLogin, lastLoginMs);
+        debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
+        expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
+      }));
 
-    it('should sync user details', function it() {
-      return authenticateUser({
-        username: 'testuser6',
-        password: 'test',
-        syncDetails: true,
-        syncUserDetails: {
-          newCorpora: [{
-            dbname: 'testuser-firstcorpus',
-          }, {
-            dbname: 'testanotheruser-a_corpus',
-          }, {
-            dbname: 'testuser-two',
-          }],
-        },
+    it('should sync user details', () => authenticateUser({
+      username: 'testuser6',
+      password: 'test',
+      syncDetails: true,
+      syncUserDetails: {
+        newCorpora: [{
+          dbname: 'testuser-firstcorpus',
+        }, {
+          dbname: 'testanotheruser-a_corpus',
+        }, {
+          dbname: 'testuser-two',
+        }],
+      },
 
-        req: {
-          id: 'authenticateUser-sync',
-        },
-      })
-        .then((result) => {
+      req: {
+        id: 'authenticateUser-sync',
+      },
+    })
+      .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
-          expect(result.user._rev).not.to.equal(undefined);
-          expect(result.newCorpora).to.equal(undefined);
-          expect(result.syncUserDetails).to.equal(undefined);
-          const lastLogin = result.user.serverlogs
-            .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
-          const lastLoginMs = new Date(lastLogin).getTime();
-          const expectedDate = Date.now();
-          debug('lastLogin', lastLogin, lastLoginMs);
-          debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
-          expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
-        });
-    });
+        expect(result.user._rev).not.to.equal(undefined);
+        expect(result.newCorpora).to.equal(undefined);
+        expect(result.syncUserDetails).to.equal(undefined);
+        const lastLogin = result.user.serverlogs
+          .successfulLogins[result.user.serverlogs.successfulLogins.length - 1];
+        const lastLoginMs = new Date(lastLogin).getTime();
+        const expectedDate = Date.now();
+        debug('lastLogin', lastLogin, lastLoginMs);
+        debug('expectedDate', expectedDate, expectedDate - lastLoginMs);
+        expect(expectedDate - lastLoginMs).below(100, 'last login should have been logged by this test');
+      }));
   });
 
   describe('createNewCorpusesIfDontExist', () => {
@@ -628,30 +620,28 @@ describe('lib/user', () => {
         expect(err.message).to.equal('Please provide a username');
       }));
 
-    it('should change a password both for auth and corpus', function it() {
-      return setPassword({
-        newpassword: 'test',
-        oldpassword: 'test',
-        password: 'test',
-        username: 'testuser3',
-        req: {
-          id: 'setPassword',
-        },
-      })
-        .then(({ user, info }) => {
-          expect(user.username).to.equal('testuser3');
-          // eslint-disable-next-line no-underscore-dangle
-          expect(user._id).not.to.equal(undefined);
-          // eslint-disable-next-line no-underscore-dangle
-          expect(user._rev).not.to.equal(undefined);
-          expect(user.hash).not.to.equal(undefined);
-          expect(user.salt).to.equal(undefined);
+    it('should change a password both for auth and corpus', () => setPassword({
+      newpassword: 'test',
+      oldpassword: 'test',
+      password: 'test',
+      username: 'testuser3',
+      req: {
+        id: 'setPassword',
+      },
+    })
+      .then(({ user, info }) => {
+        expect(user.username).to.equal('testuser3');
+        // eslint-disable-next-line no-underscore-dangle
+        expect(user._id).not.to.equal(undefined);
+        // eslint-disable-next-line no-underscore-dangle
+        expect(user._rev).not.to.equal(undefined);
+        expect(user.hash).not.to.equal(undefined);
+        expect(user.salt).to.equal(undefined);
 
-          expect(info).to.deep.equal({
-            message: 'Your password has succesfully been updated.',
-          });
+        expect(info).to.deep.equal({
+          message: 'Your password has succesfully been updated.',
         });
-    });
+      }));
   });
 
   describe('sortByUsername', () => {
