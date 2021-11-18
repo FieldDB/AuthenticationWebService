@@ -110,7 +110,7 @@ describe('/ deprecated', () => {
         if (res.body.userFriendlyErrors) {
           expect(res.body.userFriendlyErrors).to.deep.equal([
             'Username anonymouswordclouduser1401365327719 already exists, try a different username.',
-          ]);
+          ], JSON.stringify(res.body));
         } else {
           debug(JSON.stringify(res.body));
           expect(res.body.user.username).to.equal('anonymouswordclouduser1401365327719');
@@ -153,7 +153,7 @@ describe('/ deprecated', () => {
         if (res.body.userFriendlyErrors) {
           expect(res.body.userFriendlyErrors).to.deep.equal([
             'Username jenkins already exists, try a different username.',
-          ]);
+          ], JSON.stringify(res.body));
         } else {
           debug(JSON.stringify(res.body));
           expect(res.body.user.username).to.equal('jenkins');
@@ -489,7 +489,6 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body).to.deep.equal({
           message: 'Internal server error',
-          stack: res.body.stack,
           status: 500,
           userFriendlyErrors: ['The server was unable to send you an email, your password has not been reset. Please report this 2823'],
         });
@@ -570,6 +569,17 @@ describe('/ deprecated', () => {
         })
         .then((res) => {
           debug('register testuser41', res.body);
+
+          return supertest(authWebService)
+            .post('/register')
+            .set('x-request-id', `${requestId}-before-addroletouser`)
+            .send({
+              username: 'testuser10',
+              password: 'test',
+            });
+        })
+        .then((res) => {
+          debug('register testuser10', res.body);
         });
     });
 
@@ -677,7 +687,7 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body.info).to.deep.equal([
             'User testuser6 was removed from the jenkins-firstcorpus team.',
-          ]);
+          ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/login')
             .set('x-request-id', `${requestId}-addroletouser-confirm`)
@@ -819,7 +829,7 @@ describe('/ deprecated', () => {
                 dbname: 'jenkins-firstcorpus',
               },
               users: [{
-                username: 'testuser9',
+                username: 'testuser10',
                 remove: ['all'],
               }],
             });
@@ -827,8 +837,8 @@ describe('/ deprecated', () => {
         .then((res) => {
           debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
-            'User testuser9 was removed from the jenkins-firstcorpus team.',
-          ]);
+            'User testuser10 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/addroletouser')
             .set('x-request-id', `${requestId}-after-addroletouser-many`)
@@ -839,7 +849,7 @@ describe('/ deprecated', () => {
                 dbname: 'jenkins-firstcorpus',
               },
               users: [{
-                username: 'testuser9',
+                username: 'testuser10',
                 add: ['reader', 'exporter'],
                 remove: ['admin', 'writer'],
               }, {
@@ -850,7 +860,7 @@ describe('/ deprecated', () => {
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testuser9 now has reader exporter access to jenkins-firstcorpus',
+            'User testuser10 now has reader exporter access to jenkins-firstcorpus',
             'User testuser4 now has writer access to jenkins-firstcorpus',
           ], JSON.stringify(res.body));
 
@@ -879,7 +889,7 @@ describe('/ deprecated', () => {
             ],
           }, 'should have roles');
 
-          return supertest('http://testuser9:test@localhost:5984')
+          return supertest('http://testuser10:test@localhost:5984')
             .get('/_session')
             .set('x-request-id', `${requestId}-addroletouser-session-many`)
             .set('Accept', 'application/json');
@@ -889,13 +899,13 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
-              name: 'testuser9',
+              name: 'testuser10',
               roles: ['jenkins-firstcorpus_reader',
                 'jenkins-firstcorpus_exporter',
-                'testuser9-firstcorpus_admin',
-                'testuser9-firstcorpus_writer',
-                'testuser9-firstcorpus_reader',
-                'testuser9-firstcorpus_commenter',
+                'testuser10-firstcorpus_admin',
+                'testuser10-firstcorpus_writer',
+                'testuser10-firstcorpus_reader',
+                'testuser10-firstcorpus_commenter',
                 'public-firstcorpus_reader',
                 'fielddbuser',
                 'user',
@@ -924,14 +934,14 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
+            username: 'testuser7',
             remove: ['all'],
           }],
         })
         .then((res) => {
           debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
-            'User testingprototype was removed from the jenkins-firstcorpus team.',
+            'User testuser7 was removed from the jenkins-firstcorpus team.',
           ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/addroletouser')
@@ -942,20 +952,20 @@ describe('/ deprecated', () => {
               connection: {
                 dbname: 'jenkins-firstcorpus',
               },
-              userToAddToRole: 'testingprototype',
+              userToAddToRole: 'testuser7',
               roles: ['reader', 'commenter'],
             });
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype now has reader commenter access to jenkins-firstcorpus',
+            'User testuser7 now has reader commenter access to jenkins-firstcorpus',
           ], JSON.stringify(res.body));
 
-          return supertest('http://testingprototype:test@localhost:5984')
+          return supertest('http://testuser7:test@localhost:5984')
             .post('/_session')
             .set('x-request-id', `${requestId}-addroletouser-session-backbone`)
             .send({
-              name: 'testingprototype',
+              name: 'testuser7',
               password: 'test',
             })
             .set('Accept', 'application/json');
@@ -963,17 +973,21 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body).to.deep.equal({
             ok: true,
-            name: 'testingprototype',
+            name: 'testuser7',
             roles: [
               'jenkins-firstcorpus_reader',
               'jenkins-firstcorpus_commenter',
-              'testingprototype-firstcorpus_admin',
-              'testingprototype-firstcorpus_writer',
-              'testingprototype-firstcorpus_reader',
-              'testingprototype-firstcorpus_commenter',
+              'testuser7-firstcorpus_admin',
+              'testuser7-firstcorpus_writer',
+              'testuser7-firstcorpus_reader',
+              'testuser7-firstcorpus_commenter',
               'public-firstcorpus_reader',
               'fielddbuser',
               'user',
+              "testuser7-georgian_admin",
+        "testuser7-georgian_writer",
+        "testuser7-georgian_reader",
+        "testuser7-georgian_commenter",
             ],
           }, 'should have roles');
         });
@@ -1139,7 +1153,7 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body.userFriendlyErrors).to.deep.equal([
           'Unauthorized, you are not a member of this corpus team.',
-        ]);
+        ], JSON.stringify(res.body));
       }));
 
     it('should accept corpusteam requests from the backbone app', () => supertest(authWebService)
@@ -1157,17 +1171,17 @@ describe('/ deprecated', () => {
         expect(res.body.users.readers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.writers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.admins).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.notonteam.length).above(0);
         expect(res.body.users.allusers.length).above(0);
@@ -1205,17 +1219,17 @@ describe('/ deprecated', () => {
         expect(res.body.users.readers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.writers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.admins).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.notonteam.length).above(0);
         expect(res.body.users.allusers.length).above(0);
@@ -1436,7 +1450,7 @@ describe('/ deprecated', () => {
       })
       .then((res) => {
         debug(JSON.stringify(res.body));
-        expect(res.body.user.corpora.length).above(1);
+        expect(res.body.user.corpora.length >= 1).to.equal(true, JSON.stringify(res.body.user.corpora));
         expect(res.body.user.newCorpora.length).to.equal(3);
 
         return supertest('http://testuser8:test@localhost:5984')
