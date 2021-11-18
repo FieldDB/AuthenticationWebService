@@ -27,6 +27,7 @@ const errorHandler = function (err, req, res, next) {
       stack: err.stack,
       url: err.url,
       details: err.details,
+      userFriendlyErrors: err.userFriendlyErrors,
     };
     if (data.details && data.details.url) {
       delete data.details.url;
@@ -49,23 +50,23 @@ const errorHandler = function (err, req, res, next) {
     data.status = 500;
     data.userFriendlyErrors = ['Server timed out, please try again later'];
   } else if (data.status === 502) {
-    data.status = 500;
     data.userFriendlyErrors = ['Server erred, please report this 36339'];
   } else if (data.status === 401) {
-    data.status = 500;
-    data.userFriendlyErrors = ['Server erred, please report this 7234'];
+    data.userFriendlyErrors = err.userFriendlyErrors || ['Server erred, please report this 7234'];
   } else if (data.status === 404) {
-    data.status = 404;
     data.userFriendlyErrors = err.userFriendlyErrors || [data.message];
   } else if (data.status === 403) {
-    data.status = 403;
+    data.userFriendlyErrors = err.userFriendlyErrors || [data.message];
+  } else if (data.status === 406) {
+    data.userFriendlyErrors = err.userFriendlyErrors || [data.message];
+  } else if (data.status === 409) {
+    data.userFriendlyErrors = err.userFriendlyErrors || [data.message];
+  } else if (data.status === 412) {
     data.userFriendlyErrors = err.userFriendlyErrors || [data.message];
   } else if (err.message === 'Code is not authorized') {
     data.status = 403;
-    data.message = data.message;
     data.userFriendlyErrors = err.userFriendlyErrors || [data.message];
   } else if (err.message === 'Missing parameter: `state`') {
-    data.message = data.message;
     data.userFriendlyErrors = err.userFriendlyErrors || [data.message];
   } else if (err.message === 'Client id or Client Secret is invalid') {
     data.status = 403;
@@ -78,6 +79,8 @@ const errorHandler = function (err, req, res, next) {
   } else if (err.code === 'DEPTH_ZERO_SELF_SIGNED_CERT') {
     // see also https://github.com/request/request/issues/418
     data.userFriendlyErrors = ['Server erred, please report this 23829'];
+  } else if (err.status && err.userFriendlyErrors && err.userFriendlyErrors[0] && err.userFriendlyErrors[0].includes('Please report this')) {
+    data.userFriendlyErrors = err.userFriendlyErrors;
   } else {
     data.userFriendlyErrors = ['Server erred, please report this 816'];
   }
@@ -85,10 +88,10 @@ const errorHandler = function (err, req, res, next) {
   res.status(data.status);
 
   if (data.status >= 500) {
-    data.stack = data.stack ? data.stack.toString() : undefined;
+    // data.stack = data.stack ? data.stack.toString() : undefined;
     data.message = 'Internal server error';
     if (BUNYAN_LOG_LEVEL !== 'FATAL') {
-      console.log(`${new Date()}There was an unexpected error ${process.env.NODE_ENV}${req.url}`, err);
+      console.log(`${new Date()}There was an unexpected error ${process.env.NODE_ENV} ${req.url}`, err);
     }
   } else {
     data.message = err.message;

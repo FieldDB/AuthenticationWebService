@@ -69,7 +69,6 @@ describe('middleware/error-handler', () => {
         sinon.assert.calledWith(res.status, 500);
         sinon.assert.calledWith(res.json, {
           message: 'Internal server error',
-          stack: undefined,
           status: 500,
           userFriendlyErrors: ['Server erred, please report this 816'],
         });

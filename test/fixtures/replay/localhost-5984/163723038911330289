@@ -1,0 +1,16 @@
+GET /test1637230388552-firstcorpus/_design/lexicon/_view/lexiconNodes
+accept-encoding: gzip, deflate
+accept: application/json
+authorization: Basic dGVzdDE2MzcyMzAzODg1NTI6dGVzdA==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "50O4KL02ORY64D7T5TL162K0U"
+date: Thu, 18 Nov 2021 10:13:09 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"rows":[
+{"key":null,"value":6}
+]}

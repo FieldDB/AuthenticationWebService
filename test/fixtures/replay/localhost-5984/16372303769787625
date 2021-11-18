@@ -1,0 +1,15 @@
+POST /_replicate
+accept-encoding: gzip, deflate
+accept: application/json
+content-type: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"source\":\"https://public:none@corpusdev.example.org/new_theuserscouch\",\"target\":{\"url\":\"http://admin:none@localhost:5984/theuserscouch\"},\"create_target\":true}
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Thu, 18 Nov 2021 10:12:57 GMT
+content-type: application/json
+content-length: 420
+cache-control: must-revalidate
+
+{"ok":true,"no_changes":true,"session_id":"d585c1331aa16eb10e42048b3a3bc071","source_last_seq":1,"replication_id_version":3,"history":[{"session_id":"d585c1331aa16eb10e42048b3a3bc071","start_time":"Thu, 18 Nov 2021 01:42:00 GMT","end_time":"Thu, 18 Nov 2021 01:42:01 GMT","start_last_seq":0,"end_last_seq":1,"recorded_seq":1,"missing_checked":1,"missing_found":1,"docs_read":1,"docs_written":1,"doc_write_failures":0}]}

@@ -27,7 +27,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run lint || echo "Lint failed"
+    - run: npm run lint:ci || echo "Lint failed"
     - run: DEBUG=replay* npm run coverage
 
     - name: Coveralls
@@ -35,6 +35,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - run: npm run docker:test
+    - run: DEBUG='none' npm run docker:test
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}

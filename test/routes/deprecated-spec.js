@@ -20,76 +20,84 @@ describe('/ deprecated', () => {
   });
 
   describe('/register', () => {
-    it('should register a new user', () => supertest(authWebService)
-      .post('/register')
-      .set('x-request-id', `${requestId}-register`)
-      .send({
-        username: 'testingv3_32',
-        password: 'test',
-      })
-      .then((res) => {
-        if (res.body.userFriendlyErrors) {
-          expect(res.body.userFriendlyErrors).to.deep.equal([
-            'Username testingv3_32 already exists, try a different username.',
-          ]);
-        } else {
-          debug(JSON.stringify(res.body));
-          expect(res.body.user.username).to.equal('testingv3_32');
-          expect(res.body.user.appbrand).to.equal(undefined);
-        }
+    /**
+     * re-record instructions
+     * - remove body because the body contains date created timestamps
+     * - update username to equal the recorded username
+     */
+    it('should register a new user', () => {
+      const username = process.env.REPLAY ? `test${Date.now()}` : 'test1637230388552';
+      return supertest(authWebService)
+        .post('/register')
+        .set('x-request-id', `${requestId}-register-new`)
+        .send({
+          username,
+          password: 'test',
+        })
+        .then((res) => {
+          if (res.body.userFriendlyErrors) {
+            // expect(res.body.userFriendlyErrors).to.deep.equal([
+            //   `Username ${username} already exists, try a different username.`,
+            // ]);
+          } else {
+            debug(JSON.stringify(res.body));
+            expect(res.body.user.username).to.equal(username);
+            expect(res.body.user.appbrand).to.equal('');
+          }
 
-        return supertest('http://testingv3_32:test@localhost:5984')
-          .get('/_session')
-          .set('x-request-id', `${requestId}-register`)
-          .set('Accept', 'application/json');
-      })
-      .then((res) => {
-        debug(JSON.stringify(res.body));
-        expect(res.status).to.equal(200, 'should have roles');
-        expect(res.body).to.deep.equal({
-          ok: true,
-          userCtx: {
-            name: 'testingv3_32',
-            roles: [
-              'testingv3_32-firstcorpus_admin',
-              'testingv3_32-firstcorpus_writer',
-              'testingv3_32-firstcorpus_reader',
-              'testingv3_32-firstcorpus_commenter',
-              'public-firstcorpus_reader',
-              'fielddbuser',
-              'user',
-            ],
-          },
-          info: {
-            authentication_db: '_users',
-            authentication_handlers: ['oauth', 'cookie', 'default'],
-            authenticated: 'default',
-          },
-        }, 'should have roles');
-
-        return supertest('http://testingv3_32:test@localhost:5984')
-          .get('/testingv3_32-firstcorpus/_design/lexicon/_view/lexiconNodes')
-        // .set('x-request-id', requestId + '-register')
-          .set('Accept', 'application/json');
-      })
-      .then((res) => {
-        if (res.status === 200) {
+          return supertest(`http://${username}:test@localhost:5984`)
+            .get('/_session')
+            .set('x-request-id', `${requestId}-register-new`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
           debug(JSON.stringify(res.body));
-          expect(res.status).to.equal(200, 'should replicate the lexicon');
+          expect(res.status).to.equal(200, 'should have roles');
           expect(res.body).to.deep.equal({
-            rows: [{
-              key: null,
-              value: 6,
-            }],
-          }, 'should replicate the lexicon');
-        } else {
-          expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
-        }
-      }));
+            ok: true,
+            userCtx: {
+              name: username,
+              roles: [
+                `${username}-firstcorpus_admin`,
+                `${username}-firstcorpus_writer`,
+                `${username}-firstcorpus_reader`,
+                `${username}-firstcorpus_commenter`,
+                'public-firstcorpus_reader',
+                'fielddbuser',
+                'user',
+              ],
+            },
+            info: {
+              authentication_db: '_users',
+              authentication_handlers: ['oauth', 'cookie', 'default'],
+              authenticated: 'default',
+            },
+          }, 'should have roles');
+
+          return supertest(`http://${username}:test@localhost:5984`)
+            .get(`/${username}-firstcorpus/_design/lexicon/_view/lexiconNodes`)
+          // .set('x-request-id', requestId + '-register')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            debug(JSON.stringify(res.body));
+            expect(res.status).to.equal(200, 'should replicate the lexicon');
+            expect(res.body).to.deep.equal({
+              rows: [{
+                key: null,
+                value: 6,
+              }],
+            }, 'should replicate the lexicon');
+          } else {
+            expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
+          }
+        });
+    });
 
     it('should register wordcloud users if not already registered', () => supertest(authWebService)
       .post('/register')
-      .set('x-request-id', `${requestId}-register`)
+      .set('x-request-id', `${requestId}-register-wordcloud`)
       .send({
         username: 'anonymouswordclouduser1401365327719',
         password: 'testtest',
@@ -102,7 +110,7 @@ describe('/ deprecated', () => {
         if (res.body.userFriendlyErrors) {
           expect(res.body.userFriendlyErrors).to.deep.equal([
             'Username anonymouswordclouduser1401365327719 already exists, try a different username.',
-          ]);
+          ], JSON.stringify(res.body));
         } else {
           debug(JSON.stringify(res.body));
           expect(res.body.user.username).to.equal('anonymouswordclouduser1401365327719');
@@ -112,7 +120,7 @@ describe('/ deprecated', () => {
 
     it('should register phophlo users if not already registered', () => supertest(authWebService)
       .post('/register')
-      .set('x-request-id', `${requestId}-register`)
+      .set('x-request-id', `${requestId}-register-phophlo`)
       .send({
         username: 'testingphophlo',
         password: 'test',
@@ -135,7 +143,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to register existing names', () => supertest(authWebService)
       .post('/register')
-      .set('x-request-id', `${requestId}-register`)
+      .set('x-request-id', `${requestId}-register-existing`)
       .send({
         username: 'jenkins',
         password: 'phoneme',
@@ -145,7 +153,7 @@ describe('/ deprecated', () => {
         if (res.body.userFriendlyErrors) {
           expect(res.body.userFriendlyErrors).to.deep.equal([
             'Username jenkins already exists, try a different username.',
-          ]);
+          ], JSON.stringify(res.body));
         } else {
           debug(JSON.stringify(res.body));
           expect(res.body.user.username).to.equal('jenkins');
@@ -155,7 +163,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to register short usernames', () => supertest(authWebService)
       .post('/register')
-      .set('x-request-id', `${requestId}-register`)
+      .set('x-request-id', `${requestId}-register-short`)
       .send({
         username: 'ba',
         password: 'phoneme',
@@ -163,6 +171,31 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body.userFriendlyErrors).to.deep.equal([
           'Please choose a longer username `ba` is too short.',
+        ]);
+      }));
+
+    it('should refuse to register non ascii usernames', () => supertest(authWebService)
+      .post('/register')
+      .set('x-request-id', `${requestId}-register-non-ascii`)
+      .send({
+        username: 'ნინო ბერიძე',
+        password: 'phoneme',
+      })
+      .then((res) => {
+        expect(res.body.userFriendlyErrors).to.deep.equal([
+          "Please use '' instead (the username you have chosen isn't very safe for urls, which means your corpora would be potentially inaccessible in old browsers)",
+        ]);
+      }));
+
+    it('should require a username', () => supertest(authWebService)
+      .post('/register')
+      .set('x-request-id', `${requestId}-register-missing`)
+      .send({
+        password: 'phoneme',
+      })
+      .then((res) => {
+        expect(res.body.userFriendlyErrors).to.deep.equal([
+          'Please provide a username',
         ]);
       }));
   });
@@ -176,7 +209,7 @@ describe('/ deprecated', () => {
 
       return supertest(authWebService)
         .post('/register')
-        .set('x-request-id', `${requestId}-login`)
+        .set('x-request-id', `${requestId}-before-login-disabled`)
         .send({
           username: 'testingdisabledusers',
           password: 'test',
@@ -200,7 +233,7 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-login`)
+            .set('x-request-id', `${requestId}-before-login-prototype`)
             .send({
               username: 'testingprototype',
               password: 'test',
@@ -212,7 +245,7 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-login`)
+            .set('x-request-id', `${requestId}-before-login-spreadsheet`)
             .send({
               username: 'testingspreadsheet',
               password: 'test',
@@ -225,7 +258,7 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-login`)
+            .set('x-request-id', `${requestId}-before-login-lingllama`)
             .send({
               username: 'lingllama',
               password: 'phoneme',
@@ -250,7 +283,7 @@ describe('/ deprecated', () => {
 
     it('should handle invalid username', () => supertest(authWebService)
       .post('/login')
-      .set('x-request-id', `${requestId}-login`)
+      .set('x-request-id', `${requestId}-login-invalid`)
       .send({
         username: 'testinglogin',
         password: 'test',
@@ -269,7 +302,7 @@ describe('/ deprecated', () => {
 
       return supertest(authWebService)
         .post('/login')
-        .set('x-request-id', `${requestId}-login`)
+        .set('x-request-id', `${requestId}-login-wrongpassword`)
         .send({
           username: 'testingprototype',
           password: 'wrongpassword',
@@ -283,7 +316,7 @@ describe('/ deprecated', () => {
 
     it('should handle valid password', () => supertest(authWebService)
       .post('/login')
-      .set('x-request-id', `${requestId}-login`)
+      .set('x-request-id', `${requestId}-login-successfully`)
       .send({
         username: 'testingspreadsheet',
         password: 'test',
@@ -301,7 +334,7 @@ describe('/ deprecated', () => {
 
     it('should tell users why they are disabled', () => supertest(authWebService)
       .post('/login')
-      .set('x-request-id', `${requestId}-login`)
+      .set('x-request-id', `${requestId}-login-disabled`)
       .send({
         username: 'testingdisabledusers',
         password: 'test',
@@ -312,9 +345,9 @@ describe('/ deprecated', () => {
         ]);
       }));
 
-    it('should suggest a vaid username', () => supertest(authWebService)
+    it('should suggest a valid username', () => supertest(authWebService)
       .post('/login')
-      .set('x-request-id', `${requestId}-login`)
+      .set('x-request-id', `${requestId}-login-non-ascii`)
       .send({
         username: 'Jênk iлs',
         password: 'phoneme',
@@ -327,7 +360,7 @@ describe('/ deprecated', () => {
 
     it('should support ქართული usernames', () => supertest(authWebService)
       .post('/login')
-      .set('x-request-id', `${requestId}-login`)
+      .set('x-request-id', `${requestId}-login-kartuli`)
       .send({
         username: 'ნინო ბერიძე',
         password: 'phoneme',
@@ -364,7 +397,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to changepassword if the confirm password doesnt match', () => supertest(authWebService)
       .post('/changepassword')
-      .set('x-request-id', `${requestId}-changepassword`)
+      .set('x-request-id', `${requestId}-changepassword-mismatch`)
       .send({
         username: 'jenkins',
         password: 'phoneme',
@@ -379,7 +412,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to changepassword if the new password is missing', () => supertest(authWebService)
       .post('/changepassword')
-      .set('x-request-id', `${requestId}-changepassword`)
+      .set('x-request-id', `${requestId}-changepassword-missing`)
       .send({
         username: 'jenkins',
         password: 'phoneme',
@@ -392,11 +425,29 @@ describe('/ deprecated', () => {
   });
 
   describe('/forgotpassword', () => {
+    before(function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      this.timeout(10000);
+
+      return supertest(authWebService)
+        .post('/register')
+        .set('x-request-id', `${requestId}-before-forgotpassword`)
+        .send({
+          username: 'testinguserwithemail',
+          password: 'test',
+          email: 'myemail@example.com',
+        })
+        .then((res) => {
+          debug('register testinguserwithemail', res.body);
+        });
+    });
     it('should refuse forgotpassword if the user hasnt tried to login (ie doesnt know their username)', () => supertest(authWebService)
       .post('/login')
-      .set('x-request-id', `${requestId}-forgotpassword`)
+      .set('x-request-id', `${requestId}-forgotpassword-hasnt-tried`)
       .send({
-        username: 'testinguserwithemail',
+        username: 'testinguserwhohasnttriedtologin',
         password: 'test',
       })
       .then((res) => {
@@ -406,21 +457,46 @@ describe('/ deprecated', () => {
 
         return supertest(authWebService)
           .post('/forgotpassword')
-          .set('x-request-id', `${requestId}-forgotpassword`)
+          .set('x-request-id', `${requestId}-forgotpassword-hasnt-tried`)
           .send({
-            email: 'myemail@example.com',
+            email: 'myotheremail@example.com',
           });
       })
       .then((res) => {
         debug(JSON.stringify(res.body));
         expect(res.body.userFriendlyErrors).to.deep.equal([
-          'Sorry, there are no users who have failed to login who have the email you provided myemail@example.com. You cannot request a temporary password until you have at least tried to login once with your correct username. If you are not able to guess your username please contact us for assistance.',
+          'Sorry, there are no users who have failed to login who have the email you provided myotheremail@example.com. You cannot request a temporary password until you have at least tried to login once with your correct username. If you are not able to guess your username please contact us for assistance.',
         ]);
+      }));
+
+    it('should support forgotpassword if the user has tried to login with the correct username', () => supertest(authWebService)
+      .post('/login')
+      .set('x-request-id', `${requestId}-forgotpassword`)
+      .send({
+        username: 'testinguserwithemail',
+        password: 'wrongpassword',
+      })
+      .then((res) => {
+        expect(res.body.userFriendlyErrors).length(1);
+
+        return supertest(authWebService)
+          .post('/forgotpassword')
+          .set('x-request-id', `${requestId}-forgotpassword-wrongpassword`)
+          .send({
+            email: 'myemail@example.com',
+          });
+      })
+      .then((res) => {
+        expect(res.body).to.deep.equal({
+          message: 'Internal server error',
+          status: 500,
+          userFriendlyErrors: ['The server was unable to send you an email, your password has not been reset. Please report this 2823'],
+        });
       }));
 
     it('should refuse to send a password reset if neither email nor username was provided', () => supertest(authWebService)
       .post('/forgotpassword')
-      .set('x-request-id', `${requestId}-forgotpassword`)
+      .set('x-request-id', `${requestId}-forgotpassword-missing`)
       .send({})
       .then((res) => {
         expect(res.body.userFriendlyErrors).to.deep.equal([
@@ -438,7 +514,7 @@ describe('/ deprecated', () => {
 
       return supertest(authWebService)
         .post('/register')
-        .set('x-request-id', `${requestId}-addroletouser`)
+        .set('x-request-id', `${requestId}-before-addroletouser`)
         .send({
           username: 'testuser1',
           password: 'test',
@@ -448,7 +524,7 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-before-addroletouser`)
             .send({
               username: 'testuser2',
               password: 'test',
@@ -460,7 +536,7 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-before-addroletouser`)
             .send({
               username: 'testuser3',
               password: 'test',
@@ -472,33 +548,57 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-before-addroletouser`)
             .send({
               username: 'testuser4',
               password: 'test',
               email: '',
             });
         })
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-addroletouser`)
+          .send({
+            username: 'testuser41',
+            password: 'test',
+            email: '',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-newcorpus`)
+          .send({
+            username: 'testuser5',
+            password: 'test',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-newcorpus`)
+          .send({
+            username: 'testuser6',
+            password: 'test',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-newcorpus`)
+          .send({
+            username: 'testuser7',
+            password: 'test',
+          }))
+        .then((res) => supertest(authWebService)
+          .post('/register')
+          .set('x-request-id', `${requestId}-before-addroletouser`)
+          .send({
+            username: 'testuser10',
+            password: 'test',
+          }))
         .then((res) => {
-          debug('register testuser4', res.body);
-
-          return supertest(authWebService)
-            .post('/register')
-            .set('x-request-id', `${requestId}-addroletouser`)
-            .send({
-              username: 'testuser41',
-              password: 'test',
-              email: '',
-            });
-        })
-        .then((res) => {
-          debug('register testuser41', res.body);
+          debug('register testuser10', res.body);
         });
     });
 
     it('should refuse to addroletouser if the user doesnt authenticate at the same time', () => supertest(authWebService)
       .post('/addroletouser')
-      .set('x-request-id', `${requestId}-addroletouser`)
+      .set('x-request-id', `${requestId}-addroletouser-missing-password`)
       .send({
         username: 'jenkins',
       })
@@ -510,7 +610,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to addroletouser if the corpus is missing', () => supertest(authWebService)
       .post('/addroletouser')
-      .set('x-request-id', `${requestId}-addroletouser`)
+      .set('x-request-id', `${requestId}-addroletouser-missing-corpus`)
       .send({
         username: 'testuser1',
         password: 'test',
@@ -523,7 +623,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to addroletouser if the user(s) to modify are missing', () => supertest(authWebService)
       .post('/addroletouser')
-      .set('x-request-id', `${requestId}-addroletouser`)
+      .set('x-request-id', `${requestId}-addroletouser-missing-users`)
       .send({
         username: 'testuser2',
         password: 'test',
@@ -539,7 +639,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to addroletouser if the roles to add and/or remove are missing', () => supertest(authWebService)
       .post('/addroletouser')
-      .set('x-request-id', `${requestId}-addroletouser`)
+      .set('x-request-id', `${requestId}-addroletouser-missing-roles`)
       .send({
         username: 'testuser3',
         password: 'test',
@@ -558,7 +658,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to add non-existant users to the corpus', () => supertest(authWebService)
       .post('/addroletouser')
-      .set('x-request-id', `${requestId}-addroletouser`)
+      .set('x-request-id', `${requestId}-addroletouser-non-user`)
       .send({
         username: 'testuser41',
         password: 'test',
@@ -572,9 +672,11 @@ describe('/ deprecated', () => {
         }],
       })
       .then((res) => {
+        debug('response res.body', res.body);
         expect(res.body.userFriendlyErrors).to.deep.equal([
-          'You can\'t add userdoesntexist to this corpus, their username was unrecognized. User not found.',
+          'Unable to add userdoesntexist to this corpus. User not found.',
         ]);
+        expect(res.status).to.equal(404);
       }));
 
     it('should be able to remove all roles from a user', function () {
@@ -583,7 +685,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-addroletouser`)
+        .set('x-request-id', `${requestId}-prep-addroletouser`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -591,25 +693,25 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
+            username: 'testuser6',
             remove: ['all'],
           }],
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype was removed from the jenkins-firstcorpus team.',
-          ]);
+            'User testuser6 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/login')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-confirm`)
             .send({
-              username: 'testingprototype',
+              username: 'testuser6',
               password: 'test',
             });
         })
         .then((res) => {
           const response = JSON.stringify(res.body);
-          expect(response).to.contain('testingprototype-firstcorpus');
+          expect(response).to.contain('testuser6-firstcorpus');
           expect(response).not.to.contain('jenkins-firstcorpus');
         });
     });
@@ -620,7 +722,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-addroletouser`)
+        .set('x-request-id', `${requestId}-prep-addroletouser-remove`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -628,34 +730,54 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
-            add: ['reader', 'commenter'],
-            remove: ['admin', 'writer'],
+            username: 'testuser5',
+            remove: ['all'],
           }],
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype now has reader commenter access to jenkins-firstcorpus',
-          ]);
+            'User testuser5 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
+          return supertest(authWebService)
+            .post('/addroletouser')
+            .set('x-request-id', `${requestId}-addroletouser-remove`)
+            .send({
+              username: 'jenkins',
+              password: 'phoneme',
+              connection: {
+                dbname: 'jenkins-firstcorpus',
+              },
+              users: [{
+                username: 'testuser5',
+                add: ['reader', 'commenter'],
+                remove: ['admin', 'writer'],
+              }],
+            });
+        })
+        .then((res) => {
+          expect(res.body && res.body.info && res.body.info[0]).to.contain(
+            'User testuser5 now has reader commenter access to jenkins-firstcorpus',
+            JSON.stringify(res.body),
+          );
           return supertest(authWebService)
             .post('/login')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-remove-confirm`)
             .send({
-              username: 'testingprototype',
+              username: 'testuser5',
               password: 'test',
             });
         })
         .then((res) => {
           const response = JSON.stringify(res.body);
           debug('response', response);
-          expect(response).to.contain('testingprototype-firstcorpus');
+          expect(response).to.contain('testuser5-firstcorpus');
           expect(response).to.contain('jenkins-firstcorpus');
 
-          return supertest('http://testingprototype:test@localhost:5984')
+          return supertest('http://testuser5:test@localhost:5984')
             .get('/_session')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-session-confirm`)
             .send({
-              name: 'testingprototype',
+              name: 'testuser5',
               password: 'test',
             })
             .set('Accept', 'application/json');
@@ -666,14 +788,14 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
-              name: 'testingprototype',
+              name: 'testuser5',
               roles: [
                 'jenkins-firstcorpus_reader',
                 'jenkins-firstcorpus_commenter',
-                'testingprototype-firstcorpus_admin',
-                'testingprototype-firstcorpus_writer',
-                'testingprototype-firstcorpus_reader',
-                'testingprototype-firstcorpus_commenter',
+                'testuser5-firstcorpus_admin',
+                'testuser5-firstcorpus_writer',
+                'testuser5-firstcorpus_reader',
+                'testuser5-firstcorpus_commenter',
                 'public-firstcorpus_reader',
                 'fielddbuser',
                 'user',
@@ -694,7 +816,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-addroletouser`)
+        .set('x-request-id', `${requestId}-prep-addroletouser-many`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -702,18 +824,18 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
+            username: 'testuser4',
             remove: ['all'],
           }],
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype was removed from the jenkins-firstcorpus team.',
-          ]);
+            'User testuser4 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
 
           return supertest(authWebService)
             .post('/addroletouser')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-many`)
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -721,7 +843,7 @@ describe('/ deprecated', () => {
                 dbname: 'jenkins-firstcorpus',
               },
               users: [{
-                username: 'testingspreadsheet',
+                username: 'testuser10',
                 remove: ['all'],
               }],
             });
@@ -729,11 +851,11 @@ describe('/ deprecated', () => {
         .then((res) => {
           debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
-            'User testingspreadsheet was removed from the jenkins-firstcorpus team.',
-          ]);
+            'User testuser10 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/addroletouser')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-after-addroletouser-many`)
             .send({
               username: 'jenkins',
               password: 'phoneme',
@@ -741,26 +863,26 @@ describe('/ deprecated', () => {
                 dbname: 'jenkins-firstcorpus',
               },
               users: [{
-                username: 'testingspreadsheet',
+                username: 'testuser10',
                 add: ['reader', 'exporter'],
                 remove: ['admin', 'writer'],
               }, {
-                username: 'testingprototype',
+                username: 'testuser4',
                 add: ['writer'],
               }],
             });
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingspreadsheet now has reader exporter access to jenkins-firstcorpus',
-            'User testingprototype now has writer access to jenkins-firstcorpus',
-          ]);
+            'User testuser10 now has reader exporter access to jenkins-firstcorpus',
+            'User testuser4 now has writer access to jenkins-firstcorpus',
+          ], JSON.stringify(res.body));
 
-          return supertest('http://testingprototype:test@localhost:5984')
+          return supertest('http://testuser4:test@localhost:5984')
             .post('/_session')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-session-many`)
             .send({
-              name: 'testingprototype',
+              name: 'testuser4',
               password: 'test',
             })
             .set('Accept', 'application/json');
@@ -768,22 +890,22 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body).to.deep.equal({
             ok: true,
-            name: 'testingprototype',
+            name: 'testuser4',
             roles: [
               'jenkins-firstcorpus_writer',
-              'testingprototype-firstcorpus_admin',
-              'testingprototype-firstcorpus_writer',
-              'testingprototype-firstcorpus_reader',
-              'testingprototype-firstcorpus_commenter',
+              'testuser4-firstcorpus_admin',
+              'testuser4-firstcorpus_writer',
+              'testuser4-firstcorpus_reader',
+              'testuser4-firstcorpus_commenter',
               'public-firstcorpus_reader',
               'fielddbuser',
               'user',
             ],
           }, 'should have roles');
 
-          return supertest('http://testingspreadsheet:test@localhost:5984')
+          return supertest('http://testuser10:test@localhost:5984')
             .get('/_session')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-session-many`)
             .set('Accept', 'application/json');
         })
         .then((res) => {
@@ -791,13 +913,13 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
-              name: 'testingspreadsheet',
+              name: 'testuser10',
               roles: ['jenkins-firstcorpus_reader',
                 'jenkins-firstcorpus_exporter',
-                'testingspreadsheet-firstcorpus_admin',
-                'testingspreadsheet-firstcorpus_writer',
-                'testingspreadsheet-firstcorpus_reader',
-                'testingspreadsheet-firstcorpus_commenter',
+                'testuser10-firstcorpus_admin',
+                'testuser10-firstcorpus_writer',
+                'testuser10-firstcorpus_reader',
+                'testuser10-firstcorpus_commenter',
                 'public-firstcorpus_reader',
                 'fielddbuser',
                 'user',
@@ -818,7 +940,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-addroletouser`)
+        .set('x-request-id', `${requestId}-prep-addroletouser-backbone`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -826,38 +948,38 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
+            username: 'testuser7',
             remove: ['all'],
           }],
         })
         .then((res) => {
           debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
-            'User testingprototype was removed from the jenkins-firstcorpus team.',
-          ]);
+            'User testuser7 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/addroletouser')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-backbone`)
             .send({
               username: 'jenkins',
               password: 'phoneme',
               connection: {
                 dbname: 'jenkins-firstcorpus',
               },
-              userToAddToRole: 'testingprototype',
+              userToAddToRole: 'testuser7',
               roles: ['reader', 'commenter'],
             });
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype now has reader commenter access to jenkins-firstcorpus',
-          ]);
+            'User testuser7 now has reader commenter access to jenkins-firstcorpus',
+          ], JSON.stringify(res.body));
 
-          return supertest('http://testingprototype:test@localhost:5984')
+          return supertest('http://testuser7:test@localhost:5984')
             .post('/_session')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-addroletouser-session-backbone`)
             .send({
-              name: 'testingprototype',
+              name: 'testuser7',
               password: 'test',
             })
             .set('Accept', 'application/json');
@@ -865,19 +987,15 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body).to.deep.equal({
             ok: true,
-            name: 'testingprototype',
-            roles: [
-              'jenkins-firstcorpus_reader',
-              'jenkins-firstcorpus_commenter',
-              'testingprototype-firstcorpus_admin',
-              'testingprototype-firstcorpus_writer',
-              'testingprototype-firstcorpus_reader',
-              'testingprototype-firstcorpus_commenter',
-              'public-firstcorpus_reader',
-              'fielddbuser',
-              'user',
-            ],
-          }, 'should have roles');
+            name: 'testuser7',
+            roles: res.body.roles,
+          }, 'should succeed');
+
+          const roles = res.body.roles.filter((role) => role.includes('jenkins-firstcorpus'));
+          expect(roles).to.deep.equal([
+            'jenkins-firstcorpus_reader',
+            'jenkins-firstcorpus_commenter',
+          ], 'should have roles');
         });
     });
   });
@@ -889,7 +1007,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-updateroles`)
+        .set('x-request-id', `${requestId}-prep-updateroles-spreadsheet`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -897,7 +1015,7 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingspreadsheet',
+            username: 'testuser1',
             remove: ['all'],
           }],
         })
@@ -905,26 +1023,26 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser1',
               remove: ['jenkins-firstcorpus_all'],
               add: [],
               before: res.body.users[0].before,
               after: [],
               status: 200,
-              message: 'User testingspreadsheet was removed from the jenkins-firstcorpus team.',
+              message: 'User testuser1 was removed from the jenkins-firstcorpus team.',
             }],
-            info: ['User testingspreadsheet was removed from the jenkins-firstcorpus team.'],
+            info: ['User testuser1 was removed from the jenkins-firstcorpus team.'],
           });
 
           return supertest(authWebService)
             .post('/updateroles')
-            .set('x-request-id', `${requestId}-updateroles`)
+            .set('x-request-id', `${requestId}-updateroles-spreadsheet`)
             .send({
               username: 'jenkins',
               password: 'phoneme',
               serverCode: 'localhost',
               userRoleInfo: {
-                usernameToModify: 'testingspreadsheet',
+                usernameToModify: 'testuser1',
                 dbname: 'jenkins-firstcorpus',
                 admin: false,
                 writer: true,
@@ -938,15 +1056,15 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser1',
               remove: [],
               add: ['jenkins-firstcorpus_writer', 'jenkins-firstcorpus_reader', 'jenkins-firstcorpus_commenter'],
               before: [],
               after: ['writer', 'reader', 'commenter'],
               status: 200,
-              message: 'User testingspreadsheet now has writer reader commenter access to jenkins-firstcorpus',
+              message: 'User testuser1 now has writer reader commenter access to jenkins-firstcorpus',
             }],
-            info: ['User testingspreadsheet now has writer reader commenter access to jenkins-firstcorpus'],
+            info: ['User testuser1 now has writer reader commenter access to jenkins-firstcorpus'],
           });
         });
     });
@@ -957,7 +1075,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-updateroles`)
+        .set('x-request-id', `${requestId}-prep-updateroles-spreadsheet`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -965,7 +1083,7 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingspreadsheet',
+            username: 'testuser2',
             remove: ['all'],
           }],
         })
@@ -973,27 +1091,27 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser2',
               remove: ['jenkins-firstcorpus_all'],
               add: [],
-              before: res.body.users[0].before,
+              before: (res.body.users && res.body.users[0]) ? res.body.users[0].before : undefined,
               after: [],
               status: 200,
-              message: 'User testingspreadsheet was removed from the jenkins-firstcorpus team.',
+              message: 'User testuser2 was removed from the jenkins-firstcorpus team.',
             }],
-            info: ['User testingspreadsheet was removed from the jenkins-firstcorpus team.'],
-          });
+            info: ['User testuser2 was removed from the jenkins-firstcorpus team.'],
+          }, JSON.stringify(res.body));
 
           return supertest(authWebService)
             .post('/updateroles')
-            .set('x-request-id', `${requestId}-updateroles`)
+            .set('x-request-id', `${requestId}-updateroles-spreadsheet`)
             .send({
               username: 'jenkins',
               password: 'phoneme',
               serverCode: 'localhost',
               dbname: 'jenkins-firstcorpus',
               users: [{
-                username: 'testingspreadsheet',
+                username: 'testuser2',
                 add: ['writer', 'commenter', 'reader'],
                 remove: ['admin'],
               }],
@@ -1004,7 +1122,7 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser2',
               remove: [
                 'jenkins-firstcorpus_admin',
               ],
@@ -1020,9 +1138,9 @@ describe('/ deprecated', () => {
                 'reader',
               ],
               status: 200,
-              message: 'User testingspreadsheet now has writer commenter reader access to jenkins-firstcorpus',
+              message: 'User testuser2 now has writer commenter reader access to jenkins-firstcorpus',
             }],
-            info: ['User testingspreadsheet now has writer commenter reader access to jenkins-firstcorpus'],
+            info: ['User testuser2 now has writer commenter reader access to jenkins-firstcorpus'],
           });
         });
     });
@@ -1031,7 +1149,7 @@ describe('/ deprecated', () => {
   describe('/corpusteam', () => {
     it('should refuse to tell a corpusteam details if the username is not a valid user', () => supertest(authWebService)
       .post('/corpusteam')
-      .set('x-request-id', `${requestId}-corpusteam`)
+      .set('x-request-id', `${requestId}-corpusteam-not-user`)
       .send({
         username: 'testingspreadshee',
         connection: {
@@ -1041,12 +1159,12 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body.userFriendlyErrors).to.deep.equal([
           'Unauthorized, you are not a member of this corpus team.',
-        ]);
+        ], JSON.stringify(res.body));
       }));
 
     it('should accept corpusteam requests from the backbone app', () => supertest(authWebService)
       .post('/corpusteam')
-      .set('x-request-id', `${requestId}-corpusteam`)
+      .set('x-request-id', `${requestId}-corpusteam-backbone`)
       .send({
         username: 'jenkins',
         password: 'phoneme',
@@ -1059,17 +1177,17 @@ describe('/ deprecated', () => {
         expect(res.body.users.readers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.writers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.admins).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.notonteam.length).above(0);
         expect(res.body.users.allusers.length).above(0);
@@ -1077,7 +1195,7 @@ describe('/ deprecated', () => {
 
     it('should refuse to tell a corpusteam details if the username is a valid user but not on that team', () => supertest(authWebService)
       .post('/corpusteam')
-      .set('x-request-id', `${requestId}-corpusteam`)
+      .set('x-request-id', `${requestId}-corpusteam-not-on-team`)
       .send({
         username: 'testuser2',
         password: 'test',
@@ -1094,7 +1212,7 @@ describe('/ deprecated', () => {
 
     it('should accept corpusteam requests from the spreadsheet app', () => supertest(authWebService)
       .post('/corpusteam')
-      .set('x-request-id', `${requestId}-corpusteam`)
+      .set('x-request-id', `${requestId}-corpusteam-spreadsheet`)
       .send({
         username: 'jenkins',
         password: 'phoneme',
@@ -1107,17 +1225,17 @@ describe('/ deprecated', () => {
         expect(res.body.users.readers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.writers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.admins).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
-        }]);
+        }], JSON.stringify(res.body));
 
         expect(res.body.users.notonteam.length).above(0);
         expect(res.body.users.allusers.length).above(0);
@@ -1133,7 +1251,7 @@ describe('/ deprecated', () => {
 
       return supertest(authWebService)
         .post('/register')
-        .set('x-request-id', `${requestId}-addroletouser`)
+        .set('x-request-id', `${requestId}-before-newcorpus`)
         .send({
           username: 'testuser5',
           password: 'test',
@@ -1143,7 +1261,7 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-before-newcorpus`)
             .send({
               username: 'testuser6',
               password: 'test',
@@ -1154,7 +1272,7 @@ describe('/ deprecated', () => {
 
           return supertest(authWebService)
             .post('/register')
-            .set('x-request-id', `${requestId}-addroletouser`)
+            .set('x-request-id', `${requestId}-before-newcorpus`)
             .send({
               username: 'testuser7',
               password: 'test',
@@ -1162,12 +1280,23 @@ describe('/ deprecated', () => {
         })
         .then((res) => {
           debug('register testuser7', res.body);
+
+          return supertest(authWebService)
+            .post('/register')
+            .set('x-request-id', `${requestId}-before-newcorpus`)
+            .send({
+              username: 'testuser9',
+              password: 'test',
+            });
+        })
+        .then((res) => {
+          debug('register testuser9', res.body);
         });
     });
 
     it('should refuse newcorpus if the title is not specified', () => supertest(authWebService)
       .post('/newcorpus')
-      .set('x-request-id', `${requestId}-newcorpus`)
+      .set('x-request-id', `${requestId}-newcorpus-missing-title`)
       .send({
         username: 'testuser5',
         password: 'test',
@@ -1178,9 +1307,47 @@ describe('/ deprecated', () => {
         ]);
       }));
 
-    it('should create a corpus', () => supertest(authWebService)
+    it('should create a corpus', () => {
+      const newCorpusUnique = Date.now();
+      console.log('newCorpusUnique', newCorpusUnique);
+      const expectedDBName = `testuser9-testing_v3_32_01${newCorpusUnique}`;
+      return supertest(authWebService)
+        .post('/newcorpus')
+        .set('x-request-id', `${requestId}-newcorpus`)
+        .send({
+          username: 'testuser9',
+          password: 'test',
+          newCorpusName: `Testing v3.32.01${newCorpusUnique}`,
+        })
+        .then((res) => {
+          debug(JSON.stringify(res.body));
+          expect(res.status).to.equal(200);
+          expect(res.body.corpusadded).to.equal(true);
+
+          return supertest('http://testuser9:test@localhost:5984')
+            .get(`/${expectedDBName}/_design/lexicon/_view/lexiconNodes`)
+          // .set('x-request-id', requestId + '-newcorpus')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug(JSON.stringify(res.body));
+          if (res.status === 200) {
+            expect(res.status).to.equal(200, 'should replicate the lexicon');
+            expect(res.body).to.deep.equal({
+              rows: [{
+                key: null,
+                value: 5,
+              }],
+            }, 'should replicate the lexicon');
+          } else {
+            expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
+          }
+        });
+    });
+
+    it('should not complain if the user tries to recreate a corpus', () => supertest(authWebService)
       .post('/newcorpus')
-      .set('x-request-id', `${requestId}-newcorpus`)
+      .set('x-request-id', `${requestId}-prep-newcorpus-recreatecorpus`)
       .send({
         username: 'testuser6',
         password: 'test',
@@ -1211,7 +1378,7 @@ describe('/ deprecated', () => {
 
         return supertest(authWebService)
           .post('/newcorpus')
-          .set('x-request-id', `${requestId}-newcorpus`)
+          .set('x-request-id', `${requestId}-newcorpus-recreatecorpus`)
           .send({
             username: 'testuser6',
             password: 'test',
@@ -1236,7 +1403,7 @@ describe('/ deprecated', () => {
 
     it('should create a branded corpus', () => supertest(authWebService)
       .post('/newcorpus')
-      .set('x-request-id', `${requestId}-newcorpus`)
+      .set('x-request-id', `${requestId}-newcorpus-branded`)
       .send({
         username: 'testuser7',
         password: 'test',
@@ -1258,7 +1425,7 @@ describe('/ deprecated', () => {
       this.timeout(10000);
       return supertest(authWebService)
         .post('/register')
-        .set('x-request-id', `${requestId}-addroletouser`)
+        .set('x-request-id', `${requestId}-prep-syncDetails`)
         .send({
           username: 'testuser8',
           password: 'test',
@@ -1289,12 +1456,12 @@ describe('/ deprecated', () => {
       })
       .then((res) => {
         debug(JSON.stringify(res.body));
-        expect(res.body.user.corpora.length).to.equal(1);
+        expect(res.body.user.corpora.length >= 1).to.equal(true, JSON.stringify(res.body.user.corpora));
         expect(res.body.user.newCorpora.length).to.equal(3);
 
         return supertest('http://testuser8:test@localhost:5984')
           .get('/someoneelsesdb-shouldnt_be_creatable')
-          .set('x-request-id', `${requestId}-syncDetails`)
+          .set('x-request-id', `${requestId}-syncDetails-after`)
           .set('Accept', 'application/json');
       })
       .then((res) => {
@@ -1302,7 +1469,7 @@ describe('/ deprecated', () => {
 
         return supertest('http://testuser8:test@localhost:5984')
           .get('/testuser8-an_offline_corpus_created_in_the_prototype/_design/deprecated/_view/corpora')
-        // .set('x-request-id', requestId + '-syncDetails')
+          // .set('x-request-id', requestId + '-syncDetails')
           .set('Accept', 'application/json');
       })
       .then((res) => {

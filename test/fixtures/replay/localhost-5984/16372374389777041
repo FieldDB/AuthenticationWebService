@@ -1,0 +1,13 @@
+DELETE /_users/org.couchdb.user%3Atestuser3?rev=1-9113ecefbf047c65abf015f9730d1858
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "2-84dc346f1504e2dd820e51eb3f82905f"
+date: Thu, 18 Nov 2021 12:10:38 GMT
+content-type: text/plain; charset=utf-8
+content-length: 89
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:testuser3","rev":"2-84dc346f1504e2dd820e51eb3f82905f"}
