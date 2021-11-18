@@ -489,7 +489,7 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body).to.deep.equal({
           message: 'Internal server error',
-          // stack: res.body.stack,
+          stack: res.body.stack,
           status: 500,
           userFriendlyErrors: ['The server was unable to send you an email, your password has not been reset. Please report this 2823'],
         });
@@ -651,8 +651,9 @@ describe('/ deprecated', () => {
       .then((res) => {
         debug('response res.body', res.body);
         expect(res.body.userFriendlyErrors).to.deep.equal([
-          'You can\'t add userdoesntexist to this corpus, their username was unrecognized. User not found.',
+          'Unable to add userdoesntexist to this corpus. User not found.',
         ]);
+        expect(res.status).to.equal(404);
       }));
 
     it('should be able to remove all roles from a user', function () {
@@ -669,25 +670,25 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
+            username: 'testuser6',
             remove: ['all'],
           }],
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype was removed from the jenkins-firstcorpus team.',
+            'User testuser6 was removed from the jenkins-firstcorpus team.',
           ]);
           return supertest(authWebService)
             .post('/login')
             .set('x-request-id', `${requestId}-addroletouser-confirm`)
             .send({
-              username: 'testingprototype',
+              username: 'testuser6',
               password: 'test',
             });
         })
         .then((res) => {
           const response = JSON.stringify(res.body);
-          expect(response).to.contain('testingprototype-firstcorpus');
+          expect(response).to.contain('testuser6-firstcorpus');
           expect(response).not.to.contain('jenkins-firstcorpus');
         });
     });
@@ -706,14 +707,14 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
+            username: 'testuser5',
             remove: ['all'],
           }],
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype was removed from the jenkins-firstcorpus team.',
-          ]);
+            'User testuser5 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/addroletouser')
             .set('x-request-id', `${requestId}-addroletouser-remove`)
@@ -724,35 +725,35 @@ describe('/ deprecated', () => {
                 dbname: 'jenkins-firstcorpus',
               },
               users: [{
-                username: 'testingprototype',
+                username: 'testuser5',
                 add: ['reader', 'commenter'],
                 remove: ['admin', 'writer'],
               }],
             });
         })
         .then((res) => {
-          expect(res.body.info[0]).to.contain(
-            'User testingprototype now has reader commenter access to jenkins-firstcorpus',
+          expect(res.body.info?.[0]).to.contain(
+            'User testuser5 now has reader commenter access to jenkins-firstcorpus',
           JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/login')
             .set('x-request-id', `${requestId}-addroletouser-remove-confirm`)
             .send({
-              username: 'testingprototype',
+              username: 'testuser5',
               password: 'test',
             });
         })
         .then((res) => {
           const response = JSON.stringify(res.body);
           debug('response', response);
-          expect(response).to.contain('testingprototype-firstcorpus');
+          expect(response).to.contain('testuser5-firstcorpus');
           expect(response).to.contain('jenkins-firstcorpus');
 
-          return supertest('http://testingprototype:test@localhost:5984')
+          return supertest('http://testuser5:test@localhost:5984')
             .get('/_session')
             .set('x-request-id', `${requestId}-addroletouser-session-confirm`)
             .send({
-              name: 'testingprototype',
+              name: 'testuser5',
               password: 'test',
             })
             .set('Accept', 'application/json');
@@ -763,14 +764,14 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
-              name: 'testingprototype',
+              name: 'testuser5',
               roles: [
                 'jenkins-firstcorpus_reader',
                 'jenkins-firstcorpus_commenter',
-                'testingprototype-firstcorpus_admin',
-                'testingprototype-firstcorpus_writer',
-                'testingprototype-firstcorpus_reader',
-                'testingprototype-firstcorpus_commenter',
+                'testuser5-firstcorpus_admin',
+                'testuser5-firstcorpus_writer',
+                'testuser5-firstcorpus_reader',
+                'testuser5-firstcorpus_commenter',
                 'public-firstcorpus_reader',
                 'fielddbuser',
                 'user',
@@ -799,14 +800,14 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingprototype',
+            username: 'testuser4',
             remove: ['all'],
           }],
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingprototype was removed from the jenkins-firstcorpus team.',
-          ]);
+            'User testuser4 was removed from the jenkins-firstcorpus team.',
+          ], JSON.stringify(res.body));
 
           return supertest(authWebService)
             .post('/addroletouser')
@@ -818,7 +819,7 @@ describe('/ deprecated', () => {
                 dbname: 'jenkins-firstcorpus',
               },
               users: [{
-                username: 'testingspreadsheet',
+                username: 'testuser9',
                 remove: ['all'],
               }],
             });
@@ -826,7 +827,7 @@ describe('/ deprecated', () => {
         .then((res) => {
           debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
-            'User testingspreadsheet was removed from the jenkins-firstcorpus team.',
+            'User testuser9 was removed from the jenkins-firstcorpus team.',
           ]);
           return supertest(authWebService)
             .post('/addroletouser')
@@ -838,26 +839,26 @@ describe('/ deprecated', () => {
                 dbname: 'jenkins-firstcorpus',
               },
               users: [{
-                username: 'testingspreadsheet',
+                username: 'testuser9',
                 add: ['reader', 'exporter'],
                 remove: ['admin', 'writer'],
               }, {
-                username: 'testingprototype',
+                username: 'testuser4',
                 add: ['writer'],
               }],
             });
         })
         .then((res) => {
           expect(res.body.info).to.deep.equal([
-            'User testingspreadsheet now has reader exporter access to jenkins-firstcorpus',
-            'User testingprototype now has writer access to jenkins-firstcorpus',
+            'User testuser9 now has reader exporter access to jenkins-firstcorpus',
+            'User testuser4 now has writer access to jenkins-firstcorpus',
           ], JSON.stringify(res.body));
 
-          return supertest('http://testingprototype:test@localhost:5984')
+          return supertest('http://testuser4:test@localhost:5984')
             .post('/_session')
             .set('x-request-id', `${requestId}-addroletouser-session-many`)
             .send({
-              name: 'testingprototype',
+              name: 'testuser4',
               password: 'test',
             })
             .set('Accept', 'application/json');
@@ -865,20 +866,20 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body).to.deep.equal({
             ok: true,
-            name: 'testingprototype',
+            name: 'testuser4',
             roles: [
               'jenkins-firstcorpus_writer',
-              'testingprototype-firstcorpus_admin',
-              'testingprototype-firstcorpus_writer',
-              'testingprototype-firstcorpus_reader',
-              'testingprototype-firstcorpus_commenter',
+              'testuser4-firstcorpus_admin',
+              'testuser4-firstcorpus_writer',
+              'testuser4-firstcorpus_reader',
+              'testuser4-firstcorpus_commenter',
               'public-firstcorpus_reader',
               'fielddbuser',
               'user',
             ],
           }, 'should have roles');
 
-          return supertest('http://testingspreadsheet:test@localhost:5984')
+          return supertest('http://testuser9:test@localhost:5984')
             .get('/_session')
             .set('x-request-id', `${requestId}-addroletouser-session-many`)
             .set('Accept', 'application/json');
@@ -888,13 +889,13 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
-              name: 'testingspreadsheet',
+              name: 'testuser9',
               roles: ['jenkins-firstcorpus_reader',
                 'jenkins-firstcorpus_exporter',
-                'testingspreadsheet-firstcorpus_admin',
-                'testingspreadsheet-firstcorpus_writer',
-                'testingspreadsheet-firstcorpus_reader',
-                'testingspreadsheet-firstcorpus_commenter',
+                'testuser9-firstcorpus_admin',
+                'testuser9-firstcorpus_writer',
+                'testuser9-firstcorpus_reader',
+                'testuser9-firstcorpus_commenter',
                 'public-firstcorpus_reader',
                 'fielddbuser',
                 'user',
@@ -931,7 +932,7 @@ describe('/ deprecated', () => {
           debug('res.body', res.body);
           expect(res.body.info).to.deep.equal([
             'User testingprototype was removed from the jenkins-firstcorpus team.',
-          ]);
+          ], JSON.stringify(res.body));
           return supertest(authWebService)
             .post('/addroletouser')
             .set('x-request-id', `${requestId}-addroletouser-backbone`)
@@ -948,7 +949,7 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body.info).to.deep.equal([
             'User testingprototype now has reader commenter access to jenkins-firstcorpus',
-          ]);
+          ], JSON.stringify(res.body));
 
           return supertest('http://testingprototype:test@localhost:5984')
             .post('/_session')
@@ -986,7 +987,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-prep-updateroles-spreadsheed`)
+        .set('x-request-id', `${requestId}-prep-updateroles-spreadsheet`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -994,7 +995,7 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingspreadsheet',
+            username: 'testuser1',
             remove: ['all'],
           }],
         })
@@ -1002,26 +1003,26 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser1',
               remove: ['jenkins-firstcorpus_all'],
               add: [],
               before: res.body.users[0].before,
               after: [],
               status: 200,
-              message: 'User testingspreadsheet was removed from the jenkins-firstcorpus team.',
+              message: 'User testuser1 was removed from the jenkins-firstcorpus team.',
             }],
-            info: ['User testingspreadsheet was removed from the jenkins-firstcorpus team.'],
+            info: ['User testuser1 was removed from the jenkins-firstcorpus team.'],
           });
 
           return supertest(authWebService)
             .post('/updateroles')
-            .set('x-request-id', `${requestId}-updateroles-spreadsheed`)
+            .set('x-request-id', `${requestId}-updateroles-spreadsheet`)
             .send({
               username: 'jenkins',
               password: 'phoneme',
               serverCode: 'localhost',
               userRoleInfo: {
-                usernameToModify: 'testingspreadsheet',
+                usernameToModify: 'testuser1',
                 dbname: 'jenkins-firstcorpus',
                 admin: false,
                 writer: true,
@@ -1035,15 +1036,15 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser1',
               remove: [],
               add: ['jenkins-firstcorpus_writer', 'jenkins-firstcorpus_reader', 'jenkins-firstcorpus_commenter'],
               before: [],
               after: ['writer', 'reader', 'commenter'],
               status: 200,
-              message: 'User testingspreadsheet now has writer reader commenter access to jenkins-firstcorpus',
+              message: 'User testuser1 now has writer reader commenter access to jenkins-firstcorpus',
             }],
-            info: ['User testingspreadsheet now has writer reader commenter access to jenkins-firstcorpus'],
+            info: ['User testuser1 now has writer reader commenter access to jenkins-firstcorpus'],
           });
         });
     });
@@ -1062,7 +1063,7 @@ describe('/ deprecated', () => {
             dbname: 'jenkins-firstcorpus',
           },
           users: [{
-            username: 'testingspreadsheet',
+            username: 'testuser2',
             remove: ['all'],
           }],
         })
@@ -1070,16 +1071,16 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser2',
               remove: ['jenkins-firstcorpus_all'],
               add: [],
-              before: res.body.users[0].before,
+              before: res.body.users?.[0]?.before,
               after: [],
               status: 200,
-              message: 'User testingspreadsheet was removed from the jenkins-firstcorpus team.',
+              message: 'User testuser2 was removed from the jenkins-firstcorpus team.',
             }],
-            info: ['User testingspreadsheet was removed from the jenkins-firstcorpus team.'],
-          });
+            info: ['User testuser2 was removed from the jenkins-firstcorpus team.'],
+          }, JSON.stringify(res.body));
 
           return supertest(authWebService)
             .post('/updateroles')
@@ -1090,7 +1091,7 @@ describe('/ deprecated', () => {
               serverCode: 'localhost',
               dbname: 'jenkins-firstcorpus',
               users: [{
-                username: 'testingspreadsheet',
+                username: 'testuser2',
                 add: ['writer', 'commenter', 'reader'],
                 remove: ['admin'],
               }],
@@ -1101,7 +1102,7 @@ describe('/ deprecated', () => {
           expect(res.body).to.deep.equal({
             roleadded: true,
             users: [{
-              username: 'testingspreadsheet',
+              username: 'testuser2',
               remove: [
                 'jenkins-firstcorpus_admin',
               ],
@@ -1117,9 +1118,9 @@ describe('/ deprecated', () => {
                 'reader',
               ],
               status: 200,
-              message: 'User testingspreadsheet now has writer commenter reader access to jenkins-firstcorpus',
+              message: 'User testuser2 now has writer commenter reader access to jenkins-firstcorpus',
             }],
-            info: ['User testingspreadsheet now has writer commenter reader access to jenkins-firstcorpus'],
+            info: ['User testuser2 now has writer commenter reader access to jenkins-firstcorpus'],
           });
         });
     });
@@ -1435,7 +1436,7 @@ describe('/ deprecated', () => {
       })
       .then((res) => {
         debug(JSON.stringify(res.body));
-        expect(res.body.user.corpora.length).to.equal(1);
+        expect(res.body.user.corpora.length).above(1);
         expect(res.body.user.newCorpora.length).to.equal(3);
 
         return supertest('http://testuser8:test@localhost:5984')
