@@ -255,6 +255,9 @@ describe('lib/user', () => {
       corpora: [{
         dbname: 'testanotheruser-a_corpus',
       }],
+      req: {
+        id: 'createNewCorpusesIfDontExist-anothers'
+      }
     })
       .then((result) => {
         expect(result).to.deep.equal([{
@@ -273,6 +276,9 @@ describe('lib/user', () => {
       }, {
         dbname: 'testuser-two',
       }],
+      req: {
+        id: 'createNewCorpusesIfDontExist'
+      }
     })
       .then((result) => {
         expect(result).to.deep.equal([{
