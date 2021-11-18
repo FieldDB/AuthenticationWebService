@@ -1,0 +1,14 @@
+POST /_replicate
+content-type: application/json
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"source\":\"new_testing_corpus\",\"target\":\"test1637230388552-firstcorpus\"}
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Thu, 18 Nov 2021 10:13:08 GMT
+content-type: text/plain; charset=utf-8
+content-length: 409
+cache-control: must-revalidate
+
+{"ok":true,"session_id":"881278fc9f34fb7ab125c9f1ddc6c279","source_last_seq":10,"replication_id_version":3,"history":[{"session_id":"881278fc9f34fb7ab125c9f1ddc6c279","start_time":"Thu, 18 Nov 2021 10:13:08 GMT","end_time":"Thu, 18 Nov 2021 10:13:08 GMT","start_last_seq":0,"end_last_seq":10,"recorded_seq":10,"missing_checked":11,"missing_found":11,"docs_read":11,"docs_written":11,"doc_write_failures":0}]}

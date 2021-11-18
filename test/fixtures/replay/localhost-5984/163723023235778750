@@ -1,0 +1,14 @@
+GET /new_user_activity_feed/_design/blockNonContribAdminWrites
+accept-encoding: gzip, deflate
+accept: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "10-494c05a9d1f18fb1d1393e63a86d6ca2"
+date: Thu, 18 Nov 2021 10:10:32 GMT
+content-type: application/json
+content-length: 695
+cache-control: must-revalidate
+
+{"_id":"_design/blockNonContribAdminWrites","_rev":"10-494c05a9d1f18fb1d1393e63a86d6ca2","language":"javascript","views":{},"validate_doc_update":"function(new_doc, old_doc, userCtx) {   var reconstructedUser = userCtx.db.replace('-activity_feed', '');    var userCanWrite = false;    if (userCtx.name === reconstructedUser) {     userCanWrite = true;   }    /* permit replication by admins */   if (userCtx.roles.indexOf('admin') > -1) {     userCanWrite = true;   }   if (userCtx.roles.indexOf('_admin') > -1) {     userCanWrite = true;   }    if (!userCanWrite) {     throw ({       'forbidden': 'Not Authorized, you are the owner of this activity feed: ' + reconstructedUser     });   } }"}
