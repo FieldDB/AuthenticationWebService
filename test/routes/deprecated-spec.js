@@ -679,6 +679,10 @@ describe('/ deprecated', () => {
         expect(res.status).to.equal(404);
       }));
 
+    it.skip('should refuse to add users to the corpus if the user is not an admin', () => {
+
+    });
+
     it('should be able to remove all roles from a user', function () {
       if (process.env.REPLAY !== 'bloody') {
         this.skip();
@@ -1222,23 +1226,23 @@ describe('/ deprecated', () => {
       .then((res) => {
         debug(JSON.stringify(res.body));
 
-        expect(res.body.users.readers).to.deep.equal([{
+        expect(res.body.users && res.body.users.readers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
         }], JSON.stringify(res.body));
 
-        expect(res.body.users.writers).to.deep.equal([{
+        expect(res.body.users && res.body.users.writers).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
         }], JSON.stringify(res.body));
 
-        expect(res.body.users.admins).to.deep.equal([{
+        expect(res.body.users && res.body.users.admins).to.deep.equal([{
           username: 'jenkins',
           gravatar: 'ab63a76362c3972ac83d5cb8830fdb51',
         }], JSON.stringify(res.body));
 
-        expect(res.body.users.notonteam.length).above(0);
-        expect(res.body.users.allusers.length).above(0);
+        expect(res.body.users && res.body.users.notonteam.length).above(0);
+        expect(res.body.users && res.body.users.allusers.length).above(0);
       }));
   });
 
@@ -1354,8 +1358,7 @@ describe('/ deprecated', () => {
         newCorpusName: 'Testing v3.32.01',
       })
       .then((res) => {
-        debug(JSON.stringify(res.body));
-        expect(res.body.corpusadded).to.equal(true);
+        expect(res.body.corpusadded).to.equal(true, JSON.stringify(res.body));
 
         return supertest('http://testuser6:test@localhost:5984')
           .get('/testuser6-testing_v3_32_01/_design/lexicon/_view/lexiconNodes')
@@ -1411,8 +1414,7 @@ describe('/ deprecated', () => {
         newCorpusName: 'Georgian',
       })
       .then((res) => {
-        debug(JSON.stringify(res.body));
-        expect(res.body.corpusadded).to.equal(true);
+        expect(res.body.corpusadded).to.equal(true, JSON.stringify(res.body));
         expect(res.body.connection.brandLowerCase).to.equal('georgiantogether');
       }));
   });
@@ -1456,7 +1458,7 @@ describe('/ deprecated', () => {
       })
       .then((res) => {
         debug(JSON.stringify(res.body));
-        expect(res.body.user.corpora.length >= 1).to.equal(true, JSON.stringify(res.body.user.corpora));
+        expect(res.body.user.corpora && res.body.user.corpora.length >= 1).to.equal(true, JSON.stringify(res.body.user.corpora));
         expect(res.body.user.newCorpora.length).to.equal(3);
 
         return supertest('http://testuser8:test@localhost:5984')
