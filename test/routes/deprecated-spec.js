@@ -556,8 +556,6 @@ describe('/ deprecated', () => {
             });
         })
         .then((res) => {
-          debug('register testuser4', res.body);
-
           return supertest(authWebService)
             .post('/register')
             .set('x-request-id', `${requestId}-before-addroletouser`)
@@ -568,8 +566,33 @@ describe('/ deprecated', () => {
             });
         })
         .then((res) => {
-          debug('register testuser41', res.body);
-
+          return supertest(authWebService)
+            .post('/register')
+            .set('x-request-id', `${requestId}-before-newcorpus`)
+            .send({
+              username: 'testuser5',
+              password: 'test',
+            });
+        })
+        .then((res) => {
+          return supertest(authWebService)
+            .post('/register')
+            .set('x-request-id', `${requestId}-before-newcorpus`)
+            .send({
+              username: 'testuser6',
+              password: 'test',
+            });
+        })
+        .then((res) => {
+          return supertest(authWebService)
+            .post('/register')
+            .set('x-request-id', `${requestId}-before-newcorpus`)
+            .send({
+              username: 'testuser7',
+              password: 'test',
+            });
+        })
+        .then((res) => {
           return supertest(authWebService)
             .post('/register')
             .set('x-request-id', `${requestId}-before-addroletouser`)
