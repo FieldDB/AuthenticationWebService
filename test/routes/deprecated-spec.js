@@ -9,7 +9,7 @@ const originalLocalhosts = replay._localhosts;
 const requestId = 'deprecated-spec';
 replay.fixtures = path.join(__dirname, '/../fixtures/replay');
 
-describe.only('/ deprecated', () => {
+describe('/ deprecated', () => {
   before(() => {
     replay._localhosts = new Set(['127.0.0.1', '::1']);
     debug('before replay localhosts', replay._localhosts);
@@ -20,72 +20,75 @@ describe.only('/ deprecated', () => {
   });
 
   describe('/register', () => {
-    it('should register a new user', () => supertest(authWebService)
-      .post('/register')
-      .set('x-request-id', `${requestId}-register`)
-      .send({
-        username: 'testingv3_32',
-        password: 'test',
-      })
-      .then((res) => {
-        if (res.body.userFriendlyErrors) {
-          expect(res.body.userFriendlyErrors).to.deep.equal([
-            'Username testingv3_32 already exists, try a different username.',
-          ]);
-        } else {
-          debug(JSON.stringify(res.body));
-          expect(res.body.user.username).to.equal('testingv3_32');
-          expect(res.body.user.appbrand).to.equal(undefined);
-        }
+    it('should register a new user', () => {
+      const username = `test${Date.now()}`;
+      return supertest(authWebService)
+        .post('/register')
+        .set('x-request-id', `${requestId}-register`)
+        .send({
+          username,
+          password: 'test',
+        })
+        .then((res) => {
+          if (res.body.userFriendlyErrors) {
+            expect(res.body.userFriendlyErrors).to.deep.equal([
+              'Username testingv3_32 already exists, try a different username.',
+            ]);
+          } else {
+            debug(JSON.stringify(res.body));
+            expect(res.body.user.username).to.equal(username);
+            expect(res.body.user.appbrand).to.equal('');
+          }
 
-        return supertest('http://testingv3_32:test@localhost:5984')
-          .get('/_session')
-          .set('x-request-id', `${requestId}-register`)
-          .set('Accept', 'application/json');
-      })
-      .then((res) => {
-        debug(JSON.stringify(res.body));
-        expect(res.status).to.equal(200, 'should have roles');
-        expect(res.body).to.deep.equal({
-          ok: true,
-          userCtx: {
-            name: 'testingv3_32',
-            roles: [
-              'testingv3_32-firstcorpus_admin',
-              'testingv3_32-firstcorpus_writer',
-              'testingv3_32-firstcorpus_reader',
-              'testingv3_32-firstcorpus_commenter',
-              'public-firstcorpus_reader',
-              'fielddbuser',
-              'user',
-            ],
-          },
-          info: {
-            authentication_db: '_users',
-            authentication_handlers: ['oauth', 'cookie', 'default'],
-            authenticated: 'default',
-          },
-        }, 'should have roles');
-
-        return supertest('http://testingv3_32:test@localhost:5984')
-          .get('/testingv3_32-firstcorpus/_design/lexicon/_view/lexiconNodes')
-        // .set('x-request-id', requestId + '-register')
-          .set('Accept', 'application/json');
-      })
-      .then((res) => {
-        if (res.status === 200) {
+          return supertest(`http://${username}:test@localhost:5984`)
+            .get('/_session')
+            .set('x-request-id', `${requestId}-register`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
           debug(JSON.stringify(res.body));
-          expect(res.status).to.equal(200, 'should replicate the lexicon');
+          expect(res.status).to.equal(200, 'should have roles');
           expect(res.body).to.deep.equal({
-            rows: [{
-              key: null,
-              value: 6,
-            }],
-          }, 'should replicate the lexicon');
-        } else {
-          expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
-        }
-      }));
+            ok: true,
+            userCtx: {
+              name: username,
+              roles: [
+                `${username}-firstcorpus_admin`,
+                `${username}-firstcorpus_writer`,
+                `${username}-firstcorpus_reader`,
+                `${username}-firstcorpus_commenter`,
+                'public-firstcorpus_reader',
+                'fielddbuser',
+                'user',
+              ],
+            },
+            info: {
+              authentication_db: '_users',
+              authentication_handlers: ['oauth', 'cookie', 'default'],
+              authenticated: 'default',
+            },
+          }, 'should have roles');
+
+          return supertest(`http://${username}:test@localhost:5984`)
+            .get(`/${username}-firstcorpus/_design/lexicon/_view/lexiconNodes`)
+          // .set('x-request-id', requestId + '-register')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            debug(JSON.stringify(res.body));
+            expect(res.status).to.equal(200, 'should replicate the lexicon');
+            expect(res.body).to.deep.equal({
+              rows: [{
+                key: null,
+                value: 6,
+              }],
+            }, 'should replicate the lexicon');
+          } else {
+            expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
+          }
+        });
+    });
 
     it('should register wordcloud users if not already registered', () => supertest(authWebService)
       .post('/register')

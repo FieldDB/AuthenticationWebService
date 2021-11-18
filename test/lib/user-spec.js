@@ -12,6 +12,7 @@ const {
   findByEmail,
   findByUsername,
   forgotPassword,
+  registerNewUser,
   sampleUsers,
   saveUpdateUserToDatabase,
   setPassword,
@@ -423,6 +424,102 @@ describe('lib/user', () => {
       .catch((err) => {
         expect(err.message).to.equal('The mail configuration is missing a user, this server cant send email.');
       }));
+  });
+
+  describe('registerNewUser', () => {
+    it('should reject with an error', () => registerNewUser()
+      .catch((err) => {
+        expect(err.message).to.contain('Please provide a username');
+      }));
+
+    it('should warn if the user is the default user', () => registerNewUser({
+      req: {
+        body: {
+          password: 'phoneme',
+          username: 'yourusernamegoeshere',
+        },
+      },
+    })
+      .then((result) => {
+        expect(result).to.equal('should not get here');
+      })
+      .catch(({ userFriendlyErrors }) => {
+        expect(userFriendlyErrors).to.deep.equal([
+          'Please type a username instead of yourusernamegoeshere.',
+        ]);
+      }));
+
+    it('should warn if the username is too short', () => registerNewUser({
+      req: {
+        body: {
+          password: 'phoneme',
+          username: 'aa',
+        },
+      },
+    })
+      .then((result) => {
+        expect(result).to.equal('should not get here');
+      })
+      .catch(({ message }) => {
+        expect(message).to.equal('Please choose a longer username `aa` is too short.');
+      }));
+
+    it('should warn if the username is not ascii', () => registerNewUser({
+      req: {
+        body: {
+          password: 'phoneme',
+          username: 'Jen kins',
+        },
+      },
+    })
+      .then((result) => {
+        expect(result).to.equal('should not get here');
+      })
+      .catch(({ userFriendlyErrors }) => {
+        expect(userFriendlyErrors).to.deep.equal([
+          'Please use \'jenkins\' instead (the username you have chosen isn\'t very safe for urls, which means your corpora would be potentially inaccessible in old browsers)',
+        ]);
+      }));
+
+    it('should not register an existing username', () => registerNewUser({
+      req: {
+        body: {
+          password: 'shouldntregister',
+          username: 'jenkins',
+        },
+      },
+    })
+      .then((result) => {
+        expect(JSON.stringify(result)).to.equal('should not get here');
+      })
+      .catch((error) => {
+        console.log('error', error);
+        expect(error.message).to.equal('Username jenkins already exists, try a different username.');
+      }));
+
+    it('should register wordcloud users', () => {
+      const username = `anonymouswordclouduser${Date.now()}`;
+      return registerNewUser({
+        req: {
+          body: {
+            username,
+            password: 'testtest',
+            email: '',
+            firstname: '',
+            lastname: '',
+            appbrand: 'ilanguagecloud',
+          },
+          id: 'registerNewUser-anonymouswordcloud',
+          log: {
+            error: () => {},
+            warn: () => {},
+          },
+        },
+      })
+        .then(({ user }) => {
+          expect(user.username).to.equal(username);
+        });
+    });
   });
 
   describe('sampleUsers', () => {

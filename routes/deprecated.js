@@ -76,24 +76,28 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    * Finally the returndata json is sent to the calling application via the
    * response.
    */
-  app.post('/register', (req, res) => {
-    authenticationfunctions.registerNewUser('local', req, (err, user, info) => {
-      const returndata = {};
-      if (err) {
-        res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-        returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.registerNewUser`, err, info);
-        returndata.userFriendlyErrors = [info.message];
-      }
-      if (!user) {
-        returndata.userFriendlyErrors = [info.message];
-      } else {
+  app.post('/register', (req, res, next) => {
+    console.log('registerNewUser');
+    return userFunctions.registerNewUser({
+      localOrNot: 'local',
+      req,
+    })
+      .then(({ user, info } = {}) => {
+        console.log('got the user back', info);
+
+        const returndata = {};
         returndata.user = user;
         returndata.info = [info.message];
         req.log.debug(`${new Date()} Returning the newly built user: ${util.inspect(user)}`);
-      }
-      res.send(returndata);
-    });
+        res.send(returndata);
+      })
+      .catch((err) => {
+      // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+      // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        console.log(`${new Date()} There was an error in the authenticationfunctions.registerNewUser`, err);
+        // returndata.userFriendlyErrors = [info.message];
+        next(err);
+      });
   });
   app.get('/register', (req, res) => {
     res.send({});
@@ -498,21 +502,21 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         req.log.debug(`${new Date()} Returning response:\n${util.inspect(returndata)}`);
         res.send(returndata);
       });
-    });
-  })
-    .catch((err) => {
-    // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
-    // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-      req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
-      // returndata.userFriendlyErrors = 'Please supply a username and password to ensure this is you.';
-      // res.send(returndata);
-      next(err);
-    });
-  // app.get('/', function(req, res, next) {
-  //  res.send({
-  //      info: "Service is running normally."
-  //  });
-  // });
-  debug('Added depcrecated routes');
+    })
+      .catch((err) => {
+        // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
+        // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
+        req.log.debug(`${new Date()} There was an error in the authenticationfunctions.authenticateUser:\n${util.inspect(err)}`);
+        // returndata.userFriendlyErrors = 'Please supply a username and password to ensure this is you.';
+        // res.send(returndata);
+        next(err);
+      });
+    // app.get('/', function(req, res, next) {
+    //  res.send({
+    //      info: "Service is running normally."
+    //  });
+    // });
+    debug('Added depcrecated routes');
+  });
 };
 exports.addDeprecatedRoutes = addDeprecatedRoutes;
