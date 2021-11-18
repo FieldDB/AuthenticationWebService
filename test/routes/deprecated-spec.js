@@ -693,7 +693,7 @@ describe('/ deprecated', () => {
       }
       return supertest(authWebService)
         .post('/addroletouser')
-        .set('x-request-id', `${requestId}-addroletouser-remove`)
+        .set('x-request-id', `${requestId}-prep-addroletouser-remove`)
         .send({
           username: 'jenkins',
           password: 'phoneme',
@@ -702,12 +702,31 @@ describe('/ deprecated', () => {
           },
           users: [{
             username: 'testingprototype',
-            add: ['reader', 'commenter'],
-            remove: ['admin', 'writer'],
+            remove: ['all'],
           }],
         })
         .then((res) => {
-          expect(res.body.info[0]).to.deep.contain(
+          expect(res.body.info).to.deep.equal([
+            'User testingprototype was removed from the jenkins-firstcorpus team.',
+          ]);
+          return supertest(authWebService)
+            .post('/addroletouser')
+            .set('x-request-id', `${requestId}-addroletouser-remove`)
+            .send({
+              username: 'jenkins',
+              password: 'phoneme',
+              connection: {
+                dbname: 'jenkins-firstcorpus',
+              },
+              users: [{
+                username: 'testingprototype',
+                add: ['reader', 'commenter'],
+                remove: ['admin', 'writer'],
+              }],
+            });
+        })
+        .then((res) => {
+          expect(res.body.info[0]).to.contain(
             'User testingprototype now has reader commenter access to jenkins-firstcorpus',
           );
           return supertest(authWebService)
