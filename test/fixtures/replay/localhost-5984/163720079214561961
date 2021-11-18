@@ -1,0 +1,14 @@
+GET /new_corpus_activity_feed/_design/blockNonContribAdminWrites
+accept-encoding: gzip, deflate
+accept: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "10-b15f67c4c0be3c465eda51fddee80478"
+date: Thu, 18 Nov 2021 01:59:52 GMT
+content-type: application/json
+content-length: 1232
+cache-control: must-revalidate
+
+{"_id":"_design/blockNonContribAdminWrites","_rev":"10-b15f67c4c0be3c465eda51fddee80478","language":"javascript","views":{},"validate_doc_update":"function(new_doc, old_doc, userCtx) {\n  var corpusdb = userCtx.db.replace('-activity_feed', '');\n\n  var userCanWrite = false;\n  /* let anyone with any role create an activity in the corpus, not necessary write to it */\n  if (userCtx.roles.indexOf(corpusdb + '_writer') > -1) {\n    userCanWrite = true;\n  }\n  if (userCtx.roles.indexOf(corpusdb + '_commenter') > -1) {\n    userCanWrite = true;\n  }\n  if (userCtx.roles.indexOf(corpusdb + '_reader') > -1) {\n    userCanWrite = true;\n  }\n  if (userCtx.roles.indexOf(corpusdb + '_admin') > -1) {\n    userCanWrite = true;\n  }\n\n  /* permit replication by admins */\n  if (userCtx.roles.indexOf('admin') > -1) {\n    userCanWrite = true;\n  }\n  if (userCtx.roles.indexOf('_admin') > -1) {\n    userCanWrite = true;\n  }\n\n  if (!userCanWrite) {\n    throw ({\n      'forbidden': 'Not Authorized to save an activity to this corpus, you are not a member of ' + corpusdb + ', you will have to ask ' + corpusdb.replace(/-.*/, '') + ' to add you as a member. You currently have these roles: ' + userCtx.roles\n    });\n  }\n};"}

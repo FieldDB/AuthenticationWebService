@@ -1,0 +1,14 @@
+GET /_session
+accept-encoding: gzip, deflate
+x-request-id: deprecated-spec-register-new
+accept: application/json
+authorization: Basic dGVzdDE2MzcyMDExNzczOTE6dGVzdA==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Thu, 18 Nov 2021 02:06:17 GMT
+content-type: application/json
+content-length: 387
+cache-control: must-revalidate
+
+{"ok":true,"userCtx":{"name":"test1637201177391","roles":["test1637201177391-firstcorpus_admin","test1637201177391-firstcorpus_writer","test1637201177391-firstcorpus_reader","test1637201177391-firstcorpus_commenter","public-firstcorpus_reader","fielddbuser","user"]},"info":{"authentication_db":"_users","authentication_handlers":["oauth","cookie","default"],"authenticated":"default"}}

@@ -1,0 +1,14 @@
+PUT /test1637201177391-firstcorpus-activity_feed/_security
+content-type: application/json
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"admins\":{\"names\":[],\"roles\":[\"fielddbadmin\"]},\"members\":{\"names\":[],\"roles\":[\"test1637201177391-firstcorpus_reader\",\"test1637201177391-firstcorpus_writer\",\"test1637201177391-firstcorpus_commenter\"]}}
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Thu, 18 Nov 2021 02:06:17 GMT
+content-type: text/plain; charset=utf-8
+content-length: 12
+cache-control: must-revalidate
+
+{"ok":true}

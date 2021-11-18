@@ -1,0 +1,14 @@
+POST /_replicate
+content-type: application/json
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"source\":\"new_lexicon\",\"target\":\"test1637201177391-firstcorpus\"}
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Thu, 18 Nov 2021 02:06:17 GMT
+content-type: text/plain; charset=utf-8
+content-length: 402
+cache-control: must-revalidate
+
+{"ok":true,"session_id":"2c3dceb3bbcef91923c9c30d5e7bf9d5","source_last_seq":1,"replication_id_version":3,"history":[{"session_id":"2c3dceb3bbcef91923c9c30d5e7bf9d5","start_time":"Thu, 18 Nov 2021 02:06:17 GMT","end_time":"Thu, 18 Nov 2021 02:06:17 GMT","start_last_seq":0,"end_last_seq":1,"recorded_seq":1,"missing_checked":2,"missing_found":2,"docs_read":2,"docs_written":2,"doc_write_failures":0}]}
