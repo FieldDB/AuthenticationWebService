@@ -555,7 +555,7 @@ describe('/ deprecated', () => {
               email: '',
             });
         })
-        .then((res) => supertest(authWebService)
+        .then(() => supertest(authWebService)
           .post('/register')
           .set('x-request-id', `${requestId}-before-addroletouser`)
           .send({
@@ -563,28 +563,28 @@ describe('/ deprecated', () => {
             password: 'test',
             email: '',
           }))
-        .then((res) => supertest(authWebService)
+        .then(() => supertest(authWebService)
           .post('/register')
           .set('x-request-id', `${requestId}-before-newcorpus`)
           .send({
             username: 'testuser5',
             password: 'test',
           }))
-        .then((res) => supertest(authWebService)
+        .then(() => supertest(authWebService)
           .post('/register')
           .set('x-request-id', `${requestId}-before-newcorpus`)
           .send({
             username: 'testuser6',
             password: 'test',
           }))
-        .then((res) => supertest(authWebService)
+        .then(() => supertest(authWebService)
           .post('/register')
           .set('x-request-id', `${requestId}-before-newcorpus`)
           .send({
             username: 'testuser7',
             password: 'test',
           }))
-        .then((res) => supertest(authWebService)
+        .then(() => supertest(authWebService)
           .post('/register')
           .set('x-request-id', `${requestId}-before-addroletouser`)
           .send({
@@ -1313,7 +1313,6 @@ describe('/ deprecated', () => {
 
     it('should create a corpus', () => {
       const newCorpusUnique = Date.now();
-      console.log('newCorpusUnique', newCorpusUnique);
       const expectedDBName = `testuser9-testing_v3_32_01${newCorpusUnique}`;
       return supertest(authWebService)
         .post('/newcorpus')
