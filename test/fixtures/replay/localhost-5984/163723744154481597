@@ -1,0 +1,16 @@
+PUT /_users/org.couchdb.user%3Atest1637237441212
+content-type: application/json
+host: localhost:5984
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"_id\":\"org.couchdb.user:test1637237441212\",\"_rev\":\"1-e3d7a3d357ccbf1415e05f1b52e92305\",\"password_scheme\":\"pbkdf2\",\"iterations\":10,\"name\":\"test1637237441212\",\"roles\":[\"test1637237441212-firstcorpus_admin\",\"test1637237441212-firstcorpus_writer\",\"test1637237441212-firstcorpus_reader\",\"test1637237441212-firstcorpus_commenter\",\"public-firstcorpus_reader\",\"fielddbuser\",\"user\"],\"type\":\"user\",\"derived_key\":\"389a790237a28a1eba02ee569c51539f2714ea76\",\"salt\":\"e401c22d9150393c9efb899828b8c457\"}
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://localhost:5984/_users/org.couchdb.user:test1637237441212
+etag: "2-816de66e6a08783b8bbeda99fee2c09b"
+date: Thu, 18 Nov 2021 12:10:41 GMT
+content-type: text/plain; charset=utf-8
+content-length: 97
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:test1637237441212","rev":"2-816de66e6a08783b8bbeda99fee2c09b"}
