@@ -67,10 +67,11 @@ describe('lib/user', () => {
         expect(err.message).to.contain('Client didnt define the dbname to modify');
       }));
 
+    /**
+     * re-record instructions
+     * - remove body because has a date time in serverLogs
+     */
     it('should return info about what was changed', function it() {
-      if (process.env.REPLAY !== 'bloody') {
-        this.skip();
-      }
       return addRoleToUser({
         req: {
           body: {
@@ -80,7 +81,7 @@ describe('lib/user', () => {
               dbname: 'testuser4-firstcorpus',
             },
             users: [{
-              username: 'testingprototype',
+              username: 'testuser8',
               add: ['reader', 'commenter'],
               remove: ['admin', 'writer'],
             }],
@@ -103,13 +104,13 @@ describe('lib/user', () => {
               'reader',
               'commenter',
             ],
-            message: 'User testingprototype now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
+            message: 'User testuser8 now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
             remove: [
               'testuser4-firstcorpus_admin',
               'testuser4-firstcorpus_writer',
             ],
             status: 200,
-            username: 'testingprototype',
+            username: 'testuser8',
           }]);
         });
     });
@@ -135,12 +136,13 @@ describe('lib/user', () => {
         expect(userFriendlyErrors).to.deep.equal(['Please supply a password.']);
       }));
 
+    /**
+     * re-record instructions
+     * - remove body because has a date time in serverLogs
+     */
     it('should handle invalid password', function it() {
-      if (process.env.REPLAY !== 'bloody') {
-        this.skip();
-      }
       return authenticateUser({
-        username: 'jenkins',
+        username: 'testuser8',
         password: 'wrongpassword',
         req: {
           id: 'authenticateUser-wrong-password',
@@ -150,14 +152,13 @@ describe('lib/user', () => {
           expect(message).to.equal('Username or password is invalid. Please try again.');
           expect(status).to.equal(401);
           expect(userFriendlyErrors).to.deep.equal([
-            'Username or password is invalid. Please try again.',
+            'Username or password is invalid. Please try again. You have 3 more attempts before a temporary password will be emailed to your registration email (if you provided one).'
           ]);
         });
     });
 
     it('should handle invalid password who have an email address', function () {
       this.retries(8);
-      return;
       authenticateUser({
         username: 'testinguserwithemail',
         password: 'wrongpassword',
@@ -188,10 +189,11 @@ describe('lib/user', () => {
         expect(userFriendlyErrors).to.deep.equal(['Username or password is invalid. Maybe your username is jenkins?']);
       }));
 
+    /**
+     * re-record instructions
+     * - remove body because has a date time in serverLogs
+     */
     it('should authenticate', function it() {
-      if (process.env.REPLAY !== 'bloody') {
-        this.skip();
-      }
       return authenticateUser({
         username: 'testuser5',
         password: 'test',
@@ -214,9 +216,6 @@ describe('lib/user', () => {
     });
 
     it('should sync user details', function it() {
-      if (process.env.REPLAY !== 'bloody') {
-        this.skip();
-      }
       return authenticateUser({
         username: 'testuser6',
         password: 'test',
@@ -538,6 +537,11 @@ describe('lib/user', () => {
         expect(error.message).to.equal('Username jenkins already exists, try a different username.');
       }));
 
+    /**
+     * re-record instructions
+     * - remove body because the body contains timestamps
+     * - update username to equal the recorded username
+     */
     it('should register wordcloud users', () => {
       const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637231371832';
       return registerNewUser({
@@ -625,9 +629,6 @@ describe('lib/user', () => {
       }));
 
     it('should change a password both for auth and corpus', function it() {
-      if (process.env.REPLAY !== 'bloody') {
-        this.skip();
-      }
       return setPassword({
         newpassword: 'test',
         oldpassword: 'test',

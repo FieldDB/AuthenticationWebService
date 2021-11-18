@@ -20,6 +20,11 @@ describe('/ deprecated', () => {
   });
 
   describe('/register', () => {
+    /**
+     * re-record instructions
+     * - remove body because the body contains date created timestamps
+     * - update username to equal the recorded username
+     */
     it('should register a new user', () => {
       const username = process.env.REPLAY ? `test${Date.now()}` : 'test1637230388552';
       return supertest(authWebService)
