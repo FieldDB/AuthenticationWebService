@@ -21,7 +21,7 @@ describe('/ deprecated', () => {
 
   describe('/register', () => {
     it('should register a new user', () => {
-      const username = process.env.REPLAY ?`test${Date.now()}` : 'test1637201177391';
+      const username = process.env.REPLAY ? `test${Date.now()}` : 'test1637230388552';
       return supertest(authWebService)
         .post('/register')
         .set('x-request-id', `${requestId}-register-new`)

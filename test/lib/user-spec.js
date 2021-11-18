@@ -48,8 +48,8 @@ describe('lib/user', () => {
         dbname: 'testuser2-firstcorpus',
       },
       req: {
-        id: 'addCorpusToUser'
-      }
+        id: 'addCorpusToUser',
+      },
     })
       .then(({
         info,
@@ -127,7 +127,7 @@ describe('lib/user', () => {
       username: 'lingllama',
       req: {
         id: 'authenticateUser-missing-password',
-      }
+      },
     })
       .catch(({ message, status, userFriendlyErrors }) => {
         expect(message).to.equal('Password was not specified. undefined');
@@ -142,9 +142,9 @@ describe('lib/user', () => {
       return authenticateUser({
         username: 'jenkins',
         password: 'wrongpassword',
-      req: {
-        id: 'authenticateUser-wrong-password',
-      }
+        req: {
+          id: 'authenticateUser-wrong-password',
+        },
       })
         .catch(({ message, status, userFriendlyErrors }) => {
           expect(message).to.equal('Username or password is invalid. Please try again.');
@@ -161,9 +161,9 @@ describe('lib/user', () => {
       authenticateUser({
         username: 'testinguserwithemail',
         password: 'wrongpassword',
-      req: {
-        id: 'authenticateUser-wrong-password-with-email',
-      }
+        req: {
+          id: 'authenticateUser-wrong-password-with-email',
+        },
       })
         .catch((err) => {
           const { message, status, userFriendlyErrors } = err;
@@ -180,7 +180,7 @@ describe('lib/user', () => {
       password: 'phoneme',
       req: {
         id: 'authenticateUser-non-ascii',
-      }
+      },
     })
       .catch(({ message, status, userFriendlyErrors }) => {
         expect(message).to.equal('username is not safe for db names');
@@ -196,9 +196,9 @@ describe('lib/user', () => {
         username: 'testuser5',
         password: 'test',
 
-      req: {
-        id: 'authenticateUser-success',
-      }
+        req: {
+          id: 'authenticateUser-success',
+        },
       })
         .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -231,9 +231,9 @@ describe('lib/user', () => {
           }],
         },
 
-      req: {
-        id: 'authenticateUser-sync',
-      }
+        req: {
+          id: 'authenticateUser-sync',
+        },
       })
         .then((result) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -384,7 +384,7 @@ describe('lib/user', () => {
       username: 'lingllama',
       req: {
         id: 'findByUsername',
-      }
+      },
     })
       .then(({
         user,
@@ -413,11 +413,9 @@ describe('lib/user', () => {
         expect({
           message,
           status,
-          userFriendlyErrors,
         }).to.deep.equal({
           message: 'User notauser does not exist',
-          status: 401,
-          userFriendlyErrors: ['Username or password is invalid. Please try again.'],
+          status: 404,
         });
 
         expect(stack).to.contain('lib/user.js');
@@ -427,7 +425,7 @@ describe('lib/user', () => {
       username: 'testingdisabledusers',
       req: {
         id: 'findByUsername-disabled',
-      }
+      },
     })
       .catch(({
         message,
@@ -537,12 +535,11 @@ describe('lib/user', () => {
         expect(JSON.stringify(result)).to.equal('should not get here');
       })
       .catch((error) => {
-        console.log('error', error);
         expect(error.message).to.equal('Username jenkins already exists, try a different username.');
       }));
 
     it('should register wordcloud users', () => {
-      const username = `anonymouswordclouduser${Date.now()}`;
+      const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637231371832';
       return registerNewUser({
         req: {
           body: {
@@ -637,8 +634,8 @@ describe('lib/user', () => {
         password: 'test',
         username: 'testuser3',
         req: {
-          id: 'setPassword'
-        }
+          id: 'setPassword',
+        },
       })
         .then(({ user, info }) => {
           expect(user.username).to.equal('testuser3');
