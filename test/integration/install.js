@@ -169,6 +169,7 @@ describe('install', () => {
   });
 
   describe('new_corpus_activity_feed', () => {
+    // TODO add admin role to the admin user
     // unable to replicate the activity feeds
     // due to permissions so instead
     // replicating a db that contains both validate docs

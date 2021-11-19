@@ -51,8 +51,6 @@ describe('/ deprecated', () => {
             .set('Accept', 'application/json');
         })
         .then((res) => {
-          debug(JSON.stringify(res.body));
-          expect(res.status).to.equal(200, 'should have roles');
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
@@ -73,6 +71,7 @@ describe('/ deprecated', () => {
               authenticated: 'default',
             },
           }, 'should have roles');
+          expect(res.status).to.equal(200, JSON.stringify(res.body));
 
           return supertest(`http://${username}:test@localhost:5984`)
             .get(`/${username}-firstcorpus/_design/lexicon/_view/lexiconNodes`)
@@ -86,7 +85,7 @@ describe('/ deprecated', () => {
             expect(res.body).to.deep.equal({
               rows: [{
                 key: null,
-                value: 6,
+                value: 9,
               }],
             }, 'should replicate the lexicon');
           } else {
