@@ -389,7 +389,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       username: req.body.username,
       password: req.body.password,
       req,
-    }).then(() => {
+    }).then(({ user }) => {
       const returndata = {};
       if (!newCorpusTitle) {
         res.status(412);
@@ -406,6 +406,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         username: req.body.username,
         title: connection.title,
         connection,
+        user,
         req,
       });
     })

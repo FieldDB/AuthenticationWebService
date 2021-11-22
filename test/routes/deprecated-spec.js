@@ -42,7 +42,7 @@ describe('/ deprecated', () => {
           } else {
             debug(JSON.stringify(res.body));
             expect(res.body.user.username).to.equal(username);
-            expect(res.body.user.appbrand).to.equal('');
+            expect(res.body.user.appbrand).to.equal('beta');
           }
 
           return supertest(`http://${username}:test@localhost:5984`)
@@ -56,13 +56,13 @@ describe('/ deprecated', () => {
             userCtx: {
               name: username,
               roles: [
+                'beta_user', // used to be
+                'fielddbuser',
+                'public-firstcorpus_reader',
                 `${username}-firstcorpus_admin`,
                 `${username}-firstcorpus_writer`,
                 `${username}-firstcorpus_reader`,
                 `${username}-firstcorpus_commenter`,
-                'public-firstcorpus_reader',
-                'fielddbuser',
-                'user',
               ],
             },
             info: {
@@ -85,13 +85,16 @@ describe('/ deprecated', () => {
             expect(res.body).to.deep.equal({
               rows: [{
                 key: null,
-                value: 9,
+                value: 6,
               }],
             }, 'should replicate the lexicon');
           } else {
             expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
           }
         });
+      // TODO add more expectations
+      // - user activity feed
+      // - types of docs that should be created
     });
 
     it('should register wordcloud users if not already registered', () => supertest(authWebService)
@@ -1338,7 +1341,7 @@ describe('/ deprecated', () => {
             expect(res.body).to.deep.equal({
               rows: [{
                 key: null,
-                value: 5,
+                value: 6,
               }],
             }, 'should replicate the lexicon');
           } else {

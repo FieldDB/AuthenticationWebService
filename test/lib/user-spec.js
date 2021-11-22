@@ -256,6 +256,7 @@ describe('lib/user', () => {
         dbname: 'testanotheruser-a_corpus',
       }],
       req: {
+        body: {},
         id: 'createNewCorpusesIfDontExist-anothers',
       },
     })
@@ -277,6 +278,7 @@ describe('lib/user', () => {
         dbname: 'testuser-two',
       }],
       req: {
+        body: {},
         id: 'createNewCorpusesIfDontExist',
       },
     })
