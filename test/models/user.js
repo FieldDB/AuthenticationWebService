@@ -1,3 +1,4 @@
+const debug = require('debug')('test:models:user');
 const { expect } = require('chai');
 const { Sequelize } = require('sequelize');
 
@@ -490,8 +491,7 @@ describe('models/user', () => {
         newPassword: 123,
       };
       User.changePassword(info, (err) => {
-        // eslint-disable-next-line no-console
-        console.log('err', err);
+        debug('err', err);
         expect(err.message).to.equal('Illegal arguments: number, string');
 
         done();

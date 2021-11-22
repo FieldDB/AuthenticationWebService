@@ -1,4 +1,4 @@
-const debug = require('debug')('test:install');
+const debug = require('debug')('test:deprecated');
 const { expect } = require('chai');
 const path = require('path');
 const replay = require('replay');
