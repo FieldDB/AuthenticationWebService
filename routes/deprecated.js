@@ -468,7 +468,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       for (const role in req.body.userRoleInfo) {
         if (req.body.userRoleInfo.hasOwnProperty(role)) {
           if (req.body.userRoleInfo[role] && (role === 'admin' || role === 'writer' || role === 'reader' || role === 'commenter')) {
-            roles.push(role);
+            roles.push(`${req.body.userRoleInfo.dbname}_${role}`);
           }
         }
       }

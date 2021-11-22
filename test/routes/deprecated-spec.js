@@ -796,8 +796,6 @@ describe('/ deprecated', () => {
             userCtx: {
               name: 'testuser5',
               roles: [
-                'jenkins-firstcorpus_reader',
-                'jenkins-firstcorpus_commenter',
                 'testuser5-firstcorpus_admin',
                 'testuser5-firstcorpus_writer',
                 'testuser5-firstcorpus_reader',
@@ -805,6 +803,8 @@ describe('/ deprecated', () => {
                 'public-firstcorpus_reader',
                 'fielddbuser',
                 'user',
+                'jenkins-firstcorpus_reader',
+                'jenkins-firstcorpus_commenter',
               ],
             },
             info: {
@@ -898,7 +898,6 @@ describe('/ deprecated', () => {
             ok: true,
             name: 'testuser4',
             roles: [
-              'jenkins-firstcorpus_writer',
               'testuser4-firstcorpus_admin',
               'testuser4-firstcorpus_writer',
               'testuser4-firstcorpus_reader',
@@ -906,6 +905,7 @@ describe('/ deprecated', () => {
               'public-firstcorpus_reader',
               'fielddbuser',
               'user',
+              'jenkins-firstcorpus_writer',
             ],
           }, 'should have roles');
 
@@ -920,8 +920,7 @@ describe('/ deprecated', () => {
             ok: true,
             userCtx: {
               name: 'testuser10',
-              roles: ['jenkins-firstcorpus_reader',
-                'jenkins-firstcorpus_exporter',
+              roles: [
                 'testuser10-firstcorpus_admin',
                 'testuser10-firstcorpus_writer',
                 'testuser10-firstcorpus_reader',
@@ -929,6 +928,8 @@ describe('/ deprecated', () => {
                 'public-firstcorpus_reader',
                 'fielddbuser',
                 'user',
+                'jenkins-firstcorpus_reader',
+                'jenkins-firstcorpus_exporter',
               ],
             },
             info: {
