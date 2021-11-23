@@ -1,0 +1,15 @@
+GET /_users/org.couchdb.user%3Atestuser4
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: addRoleToUser
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "29-014389746a4ffd623bd287ab303fa16e"
+date: Tue, 23 Nov 2021 23:31:35 GMT
+content-type: application/json
+content-length: 476
+cache-control: must-revalidate
+
+{"_id":"org.couchdb.user:testuser4","_rev":"29-014389746a4ffd623bd287ab303fa16e","password_scheme":"pbkdf2","iterations":10,"name":"testuser4","roles":["beta_user","fielddbuser","jenkins-firstcorpus_writer","public-firstcorpus_reader","testuser4-firstcorpus_admin","testuser4-firstcorpus_commenter","testuser4-firstcorpus_reader","testuser4-firstcorpus_writer"],"type":"user","derived_key":"73cfe2d93656702897fba21163b7500240c6c95f","salt":"7a48398344e549dfa2e2603e495ed5f9"}

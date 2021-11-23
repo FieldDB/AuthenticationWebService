@@ -1,0 +1,17 @@
+POST /_users
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: 
+body: {\"_id\":\"org.couchdb.user:testuser4\",\"_rev\":\"29-014389746a4ffd623bd287ab303fa16e\",\"password_scheme\":\"pbkdf2\",\"iterations\":10,\"name\":\"testuser4\",\"roles\":[\"beta_user\",\"fielddbuser\",\"public-firstcorpus_reader\",\"testuser4-firstcorpus_admin\",\"testuser4-firstcorpus_commenter\",\"testuser4-firstcorpus_reader\",\"testuser4-firstcorpus_writer\"],\"type\":\"user\",\"derived_key\":\"73cfe2d93656702897fba21163b7500240c6c95f\",\"salt\":\"7a48398344e549dfa2e2603e495ed5f9\"}
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://localhost:5984/_users/org.couchdb.user:testuser4
+etag: "30-23cc6a20b2cbad3cb4243a5126930b74"
+date: Tue, 23 Nov 2021 23:31:43 GMT
+content-type: application/json
+content-length: 90
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:testuser4","rev":"30-23cc6a20b2cbad3cb4243a5126930b74"}

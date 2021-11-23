@@ -561,7 +561,7 @@ describe('/ deprecated', () => {
       if (process.env.REPLAY !== 'bloody') {
         // this.skip();
       }
-      this.timeout(15000);
+      this.timeout(19000);
 
       return supertest(authWebService)
         .post('/register')

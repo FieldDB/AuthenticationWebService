@@ -1,0 +1,22 @@
+GET /test1637710294972-testing_v3_32_011637710305460/_design/data/_view/by_type?group=true
+accept-encoding: gzip, deflate
+x-request-id: deprecated-spec-newcorpus
+accept: application/json
+authorization: Basic dGVzdDE2Mzc3MTAyOTQ5NzI6dGVzdA==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "6AA9A7H37YU2OTKJLOEOEVTID"
+date: Tue, 23 Nov 2021 23:31:47 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"rows":[
+{"key":"Corpus","value":1},
+{"key":"CorpusMask","value":1},
+{"key":"DataList","value":1},
+{"key":"Session","value":1},
+{"key":"Team","value":1},
+{"key":"UserMask","value":1}
+]}

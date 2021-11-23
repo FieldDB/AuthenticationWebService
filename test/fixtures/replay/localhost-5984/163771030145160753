@@ -1,0 +1,17 @@
+GET /test1637710294972-activity_feed/_design/activities/_view/activities
+accept-encoding: gzip, deflate
+x-request-id: deprecated-spec-register
+accept: application/json
+authorization: Basic dGVzdDE2Mzc3MTAyOTQ5NzI6dGVzdA==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "3KQS3OS4CIL3L1QC72AY95GPI"
+date: Tue, 23 Nov 2021 23:31:41 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":0,"offset":0,"rows":[
+
+]}

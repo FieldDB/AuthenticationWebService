@@ -1,0 +1,15 @@
+POST /_users
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: 
+body: {\"_id\":\"org.couchdb.user:testuser5\",\"_rev\":\"29-a50bef66c5af32bffb295a45d41a92e1\",\"password_scheme\":\"pbkdf2\",\"iterations\":10,\"name\":\"testuser5\",\"roles\":[\"beta_user\",\"fielddbuser\",\"jenkins-firstcorpus_commenter\",\"jenkins-firstcorpus_reader\",\"public-firstcorpus_reader\",\"testuser5-firstcorpus_admin\",\"testuser5-firstcorpus_commenter\",\"testuser5-firstcorpus_reader\",\"testuser5-firstcorpus_writer\"],\"type\":\"user\",\"derived_key\":\"61a96548451802e4520dfbae1bf79703f10b14e0\",\"salt\":\"332b07608910f4aa2417d6524530d06d\"}
+
+HTTP/1.1 409 Conflict
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 23 Nov 2021 23:31:43 GMT
+content-type: application/json
+content-length: 58
+cache-control: must-revalidate
+
+{"error":"conflict","reason":"Document update conflict."}

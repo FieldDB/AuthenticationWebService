@@ -1,0 +1,17 @@
+POST /_users
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: 
+body: {\"_id\":\"org.couchdb.user:testuser7\",\"_rev\":\"22-1b69d9e9867c8baf9446cd55cb496292\",\"password_scheme\":\"pbkdf2\",\"iterations\":10,\"name\":\"testuser7\",\"roles\":[\"beta_user\",\"fielddbuser\",\"public-firstcorpus_reader\",\"test1637687657135-kartuli_commenter\",\"test1637687657135-kartuli_reader\",\"test1637687792911-kartuli_commenter\",\"test1637687792911-kartuli_reader\",\"test1637688148080-kartuli_commenter\",\"test1637688148080-kartuli_reader\",\"test1637705321543-kartuli_commenter\",\"test1637705321543-kartuli_reader\",\"test1637705489099-kartuli_commenter\",\"test1637705489099-kartuli_reader\",\"test1637705572790-kartuli_commenter\",\"test1637705572790-kartuli_reader\",\"test1637705616668-kartuli_commenter\",\"test1637705616668-kartuli_reader\",\"test1637706491154-kartuli_commenter\",\"test1637706491154-kartuli_reader\",\"test1637710270708-kartuli_commenter\",\"test1637710270708-kartuli_reader\",\"testuser7-firstcorpus_admin\",\"testuser7-firstcorpus_commenter\",\"testuser7-firstcorpus_reader\",\"testuser7-firstcorpus_writer\",\"testuser7-georgian_admin\",\"testuser7-georgian_commenter\",\"testuser7-georgian_reader\",\"testuser7-georgian_writer\"],\"type\":\"user\",\"derived_key\":\"3478fb994235039e50fa4f6d9dfa73486ed2dc5f\",\"salt\":\"e5767c5366f711a69ee453367daf3757\"}
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://localhost:5984/_users/org.couchdb.user:testuser7
+etag: "23-0f8aa93a908ae6af5a71e766562b8e5d"
+date: Tue, 23 Nov 2021 23:31:44 GMT
+content-type: application/json
+content-length: 90
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:testuser7","rev":"23-0f8aa93a908ae6af5a71e766562b8e5d"}

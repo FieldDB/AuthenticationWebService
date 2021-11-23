@@ -1,0 +1,15 @@
+GET /_users/org.couchdb.user%3Atestuser3
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: changeUsersPassword
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "1-da674c71c9e0ccbf7431219cd7bd0436"
+date: Tue, 23 Nov 2021 23:31:37 GMT
+content-type: application/json
+content-length: 498
+cache-control: must-revalidate
+
+{"_id":"org.couchdb.user:testuser3","_rev":"1-da674c71c9e0ccbf7431219cd7bd0436","password_scheme":"pbkdf2","iterations":10,"name":"testuser3","roles":["beta_user","fielddbuser","public-firstcorpus_reader","testuser3-firstcorpus_admin","testuser3-firstcorpus_commenter","testuser3-firstcorpus_reader","testuser3-firstcorpus_writer"],"previous_rev":"1-2632cd0c4b4c4d213680c81e45f503d1","type":"user","derived_key":"ba9579a9b2558cd7f7d742df2074bfbb31b2fa2d","salt":"78bf89b564180e54456798acfa1ad7ab"}

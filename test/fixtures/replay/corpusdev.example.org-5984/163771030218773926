@@ -1,0 +1,17 @@
+GET /theuserscouch/_design/users/_view/userWhoHaveTroubleLoggingIn?key=%22myotheremail@example.com%22
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-forgotpassword-hasnt-tried
+content-type: application/json
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "7BJNRG697W0IGMPFWX1XY7H37"
+date: Tue, 23 Nov 2021 23:31:42 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":1,"offset":1,"rows":[
+
+]}
