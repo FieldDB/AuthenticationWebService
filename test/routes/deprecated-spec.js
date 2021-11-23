@@ -36,8 +36,7 @@ describe('/ deprecated', () => {
           appbrand: 'georgiantogether',
         })
         .then((res) => {
-          debug(JSON.stringify(res.body));
-          expect(res.body.user.username).to.equal(username);
+          expect(res.body.user.username).to.equal(username, JSON.stringify(res.body));
           expect(res.body.user.appbrand).to.equal('georgiantogether');
           expect(res.body.user.corpora[0].dbname).to.equal(`${username}-kartuli`);
           expect(res.body.user.corpora[0].title).to.equal('kartuli');
@@ -75,17 +74,18 @@ describe('/ deprecated', () => {
             .set('x-request-id', `${requestId}-register`)
             .set('Accept', 'application/json');
         })
-        .then((res) =>
-        // expect(res.body).to.deep.equal({
-        //   total_rows: 0,
-        //   offset: 0,
-        //   rows: [],
-        // }, `should replicate the user activity feed for ${username}`);
+        .then((res) => {
+          expect(res.body).to.deep.equal({
+            total_rows: 0,
+            offset: 0,
+            rows: [],
+          }, `should replicate the user activity feed for ${username}`);
 
-          supertest(`http://${username}:test@localhost:5984`)
+          return supertest(`http://${username}:test@localhost:5984`)
             .get(`/${username}-kartuli/_design/lexicon/_view/lexiconNodes`)
             .set('x-request-id', `${requestId}-register`)
-            .set('Accept', 'application/json'))
+            .set('Accept', 'application/json');
+        })
         .then((res) => {
           if (res.status === 200) {
             debug(JSON.stringify(res.body));
