@@ -6,9 +6,9 @@ module.exports = {
     'db',
   ],
   'check-coverage': true,
-  branches: 55,
-  functions: 63,
-  lines: 67,
-  statements: 67,
+  branches: 58,
+  functions: 66,
+  lines: 71,
+  statements: 71,
   reporter: ['text', 'lcov'],
 };
