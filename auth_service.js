@@ -128,9 +128,9 @@ authWebService.use((req, res, next) => {
   const err = new Error('Not Found');
   debug(`${req.url} was not found/handled`);
   err.status = 404;
-  return next(err, req, res, next);
+  // return next(err, req, res, next);
   // }
-  // next();
+  next(err);
 });
 
 authWebService.use(errorHandler);

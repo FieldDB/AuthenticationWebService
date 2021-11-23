@@ -33,17 +33,14 @@ describe('/ deprecated', () => {
         .send({
           username,
           password: 'test',
+          appbrand: 'georgiantogether',
         })
         .then((res) => {
-          if (res.body.userFriendlyErrors) {
-            // expect(res.body.userFriendlyErrors).to.deep.equal([
-            //   `Username ${username} already exists, try a different username.`,
-            // ]);
-          } else {
-            debug(JSON.stringify(res.body));
-            expect(res.body.user.username).to.equal(username);
-            expect(res.body.user.appbrand).to.equal('beta');
-          }
+          debug(JSON.stringify(res.body));
+          expect(res.body.user.username).to.equal(username);
+          expect(res.body.user.appbrand).to.equal('georgiantogether');
+          expect(res.body.user.corpora[0].dbname).to.equal(`${username}-kartuli`);
+          expect(res.body.user.corpora[0].title).to.equal('kartuli');
 
           return supertest(`http://${username}:test@localhost:5984`)
             .get('/_session')
@@ -56,13 +53,13 @@ describe('/ deprecated', () => {
             userCtx: {
               name: username,
               roles: [
-                'beta_user', // used to be
+                'georgiantogether_user', // used to be the brand lowercase
                 'fielddbuser',
                 'public-firstcorpus_reader',
-                `${username}-firstcorpus_admin`,
-                `${username}-firstcorpus_writer`,
-                `${username}-firstcorpus_reader`,
-                `${username}-firstcorpus_commenter`,
+                `${username}-kartuli_admin`,
+                `${username}-kartuli_writer`,
+                `${username}-kartuli_reader`,
+                `${username}-kartuli_commenter`,
               ],
             },
             info: {
@@ -74,10 +71,21 @@ describe('/ deprecated', () => {
           expect(res.status).to.equal(200, JSON.stringify(res.body));
 
           return supertest(`http://${username}:test@localhost:5984`)
-            .get(`/${username}-firstcorpus/_design/lexicon/_view/lexiconNodes`)
-          // .set('x-request-id', requestId + '-register')
+            .get(`/${username}-activity_feed/_design/activities/_view/activities`)
+            .set('x-request-id', `${requestId}-register`)
             .set('Accept', 'application/json');
         })
+        .then((res) =>
+        // expect(res.body).to.deep.equal({
+        //   total_rows: 0,
+        //   offset: 0,
+        //   rows: [],
+        // }, `should replicate the user activity feed for ${username}`);
+
+          supertest(`http://${username}:test@localhost:5984`)
+            .get(`/${username}-kartuli/_design/lexicon/_view/lexiconNodes`)
+            .set('x-request-id', `${requestId}-register`)
+            .set('Accept', 'application/json'))
         .then((res) => {
           if (res.status === 200) {
             debug(JSON.stringify(res.body));
@@ -91,10 +99,36 @@ describe('/ deprecated', () => {
           } else {
             expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
           }
+          return supertest(`http://${username}:test@localhost:5984`)
+            .get(`/${username}-kartuli/_design/data/_view/by_type?group=true`)
+            .set('x-request-id', `${requestId}-register`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          expect(res.body).to.deep.equal({
+            rows: [{
+              key: 'Corpus',
+              value: 1,
+            }, {
+              key: 'CorpusMask',
+              value: 1,
+            }, {
+              key: 'DataList',
+              value: 1,
+            }, {
+              key: 'Session',
+              value: 1,
+            }, {
+              key: 'Team',
+              value: 1,
+            }, {
+              key: 'UserMask',
+              value: 1,
+            }],
+          }, 'should create the docs');
         });
       // TODO add more expectations
       // - user activity feed
-      // - types of docs that should be created
     });
 
     it('should register wordcloud users if not already registered', () => supertest(authWebService)
@@ -324,7 +358,7 @@ describe('/ deprecated', () => {
         password: 'test',
       })
       .then((res) => {
-        expect(res.body.userFriendlyErrors).to.equal(undefined);
+        expect(res.body.userFriendlyErrors).to.equal(undefined, JSON.stringify(res.body));
         expect(res.body.user._id).to.equal('testingspreadsheet'); // eslint-disable-line no-underscore-dangle
         expect(res.body.user.username).to.equal('testingspreadsheet');
         if (res.body.user.corpora.length === 1) {
@@ -393,7 +427,7 @@ describe('/ deprecated', () => {
         .then((res) => {
           expect(res.body.info).to.deep.equal([
             'Your password has succesfully been updated.',
-          ]);
+          ], JSON.stringify(res.body));
         });
     });
 
@@ -492,6 +526,7 @@ describe('/ deprecated', () => {
         expect(res.body).to.deep.equal({
           message: 'Internal server error',
           status: 500,
+          stack: res.body.stack,
           userFriendlyErrors: ['The server was unable to send you an email, your password has not been reset. Please report this 2823'],
         });
       }));
@@ -512,7 +547,7 @@ describe('/ deprecated', () => {
       if (process.env.REPLAY !== 'bloody') {
         this.skip();
       }
-      this.timeout(10000);
+      this.timeout(15000);
 
       return supertest(authWebService)
         .post('/register')
@@ -681,10 +716,6 @@ describe('/ deprecated', () => {
         expect(res.status).to.equal(404);
       }));
 
-    it.skip('should refuse to add users to the corpus if the user is not an admin', () => {
-
-    });
-
     it('should be able to remove all roles from a user', function () {
       if (process.env.REPLAY !== 'bloody') {
         this.skip();
@@ -813,6 +844,31 @@ describe('/ deprecated', () => {
               authenticated: 'default',
             },
           }, 'should have roles');
+
+          return supertest(authWebService)
+            .post('/addroletouser')
+            .set('x-request-id', `${requestId}-addroletouser-remove`)
+            .send({
+              username: 'testuser5',
+              password: 'test',
+              connection: {
+                dbname: 'jenkins-firstcorpus',
+              },
+              users: [{
+                username: 'testuser2',
+                add: ['reader', 'commenter'],
+              }],
+            });
+        })
+        .then((res) => {
+          expect(res.body).to.deep.equal({
+            message: 'User testuser5 found but didnt have permission on jenkins-firstcorpus',
+            stack: res.body.stack,
+            status: 401,
+            userFriendlyErrors: [
+              "You don't have permission to perform this action.",
+            ],
+          });
         });
     });
 
@@ -1039,7 +1095,7 @@ describe('/ deprecated', () => {
               message: 'User testuser1 was removed from the jenkins-firstcorpus team.',
             }],
             info: ['User testuser1 was removed from the jenkins-firstcorpus team.'],
-          });
+          }, JSON.stringify(res.body));
 
           return supertest(authWebService)
             .post('/updateroles')
