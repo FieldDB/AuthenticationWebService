@@ -396,7 +396,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         returndata.status = 412;
         returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: newCorpusTitle'];
         res.send(returndata);
-        return;
+        throw new Error('ending the request');
       }
       req.body.appbrand = req.body.appbrand || req.body.brand || req.body.serverCode || req.body.serverLabel;
       req.log.debug(` Creating a corpus withbranding ${req.body.appbrand}`);
@@ -428,6 +428,9 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         res.send(returndata);
       })
       .catch((err) => {
+        if (err.message === 'ending the request') {
+          return;
+        }
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
         //   returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
         //   req.log.debug(`${new Date()} There was an error in corpus.createNewCorpus`);

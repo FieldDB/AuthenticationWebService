@@ -195,7 +195,7 @@ describe('install', () => {
             .set('Accept', 'application/json');
         })
         .then((res) => {
-          console.log('res.body', res.body);
+          debug('res.body', res.body);
           const doc = res.body;
           if (!doc.corpus_validate_doc_update) {
             expect(doc.user_validate_doc_update).to.equal(undefined);
@@ -220,9 +220,9 @@ describe('install', () => {
           if (res.body._id) {
             expect(res.status).to.equal(200);
           } else {
-            console.log('res.status', res.status);
-            console.log('res.body', res.body);
-            console.log('res.headers', res.headers);
+            debug('res.status', res.status);
+            debug('res.body', res.body);
+            debug('res.headers', res.headers);
             expect(res.status).to.equal(201);
             expect(res.body.id).to.equal('_design/blockNonContribAdminWrites');
           }
@@ -256,7 +256,7 @@ describe('install', () => {
             .set('Accept', 'application/json');
         })
         .then((res) => {
-          console.log('res.body', res.body);
+          debug('res.body', res.body);
           const doc = res.body;
           if (!doc.user_validate_doc_update) {
             expect(doc.corpus_validate_doc_update).to.equal(undefined);
@@ -280,9 +280,9 @@ describe('install', () => {
           if (res.body._id) {
             expect(res.status).to.equal(200);
           } else {
-            console.log('res.status', res.status);
-            console.log('res.body', res.body);
-            console.log('res.headers', res.headers);
+            debug('res.status', res.status);
+            debug('res.body', res.body);
+            debug('res.headers', res.headers);
             expect(res.status).to.equal(201);
             expect(res.body.id).to.equal('_design/blockNonContribAdminWrites');
           }
