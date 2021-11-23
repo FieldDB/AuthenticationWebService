@@ -669,7 +669,11 @@ describe('lib/user', () => {
   describe('undoCorpusCreation', () => {
     it('should not reject', () => undoCorpusCreation()
       .then((result) => {
-        expect(result).to.equal(undefined);
+        expect(result).to.deep.equal({
+          info: {
+            text: 'There was a problem while creating your corpus undefined. The server admins have been notified.',
+          },
+        }, JSON.stringify(result));
       }));
 
     it('should undoCorpusCreation', () => undoCorpusCreation({
@@ -685,7 +689,11 @@ describe('lib/user', () => {
       }],
     })
       .then((result) => {
-        expect(result).to.equal(undefined);
+        expect(result).to.deep.equal({
+          info: {
+            text: 'There was a problem while creating your corpus testingcreatefailure-firstcorpus. The server admins have been notified.',
+          },
+        }, JSON.stringify(result));
       }));
   });
 

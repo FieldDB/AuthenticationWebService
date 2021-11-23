@@ -4,12 +4,6 @@ const debug = require('debug')('route:deprecated');
 const corpus = require('../lib/corpus');
 const userFunctions = require('../lib/user');
 
-const cleanErrorStatus = function cleanErrorStatus(status) {
-  if (status) {
-    return parseInt(status, 10);
-  }
-  return '';
-};
 /**
  * These are all the old routes that haphazardly grew over time and make up API version 0.1
  * which we still have to support until all clients have switched to the new routes
@@ -31,18 +25,14 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     })
       .then(({ user, info }) => {
         const returndata = {};
-        if (!user) {
-          returndata.userFriendlyErrors = [info.message];
-        } else {
-          returndata.user = user;
-          delete returndata.user.password;
-          delete returndata.user.serverlogs;
-          returndata.info = [info.message];
-          if (req && req.syncDetails) {
-            returndata.info.unshift('Preferences saved.');
-          }
-        // debug(new Date() + " Returning the existing user as json:\n" + JSON.stringify(user));
+        returndata.user = user;
+        delete returndata.user.password;
+        delete returndata.user.serverlogs;
+        returndata.info = [info.message];
+        if (req.body.syncDetails) {
+          returndata.info.unshift('Preferences saved.');
         }
+        // debug(new Date() + " Returning the existing user as json:\n" + JSON.stringify(user));
         debug(returndata, `${new Date()} Returning response`);
         res.send(returndata);
       })
