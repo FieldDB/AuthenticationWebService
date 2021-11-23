@@ -90,7 +90,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       .catch((err) => {
       // res.status(cleanErrorStatus(err.statusCode || err.status) || 400);
       // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 400;
-        console.error(err, `${new Date()} There was an error in the userFunctions.registerNewUser`);
+        // console.error(err, `${new Date()} There was an error in the userFunctions.registerNewUser`);
         // returndata.userFriendlyErrors = [info.message];
         next(err);
       });

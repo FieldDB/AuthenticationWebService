@@ -52,13 +52,13 @@ describe('/ deprecated', () => {
             userCtx: {
               name: username,
               roles: [
-                'georgiantogether_user', // used to be the brand lowercase
                 'fielddbuser',
+                'georgiantogether_user', // used to be the brand lowercase
                 'public-firstcorpus_reader',
                 `${username}-kartuli_admin`,
-                `${username}-kartuli_writer`,
-                `${username}-kartuli_reader`,
                 `${username}-kartuli_commenter`,
+                `${username}-kartuli_reader`,
+                `${username}-kartuli_writer`,
               ],
             },
             info: {
@@ -827,15 +827,15 @@ describe('/ deprecated', () => {
             userCtx: {
               name: 'testuser5',
               roles: [
-                'testuser5-firstcorpus_admin',
-                'testuser5-firstcorpus_writer',
-                'testuser5-firstcorpus_reader',
-                'testuser5-firstcorpus_commenter',
-                'public-firstcorpus_reader',
+                'beta_user',
                 'fielddbuser',
-                'user',
-                'jenkins-firstcorpus_reader',
                 'jenkins-firstcorpus_commenter',
+                'jenkins-firstcorpus_reader',
+                'public-firstcorpus_reader',
+                'testuser5-firstcorpus_admin',
+                'testuser5-firstcorpus_commenter',
+                'testuser5-firstcorpus_reader',
+                'testuser5-firstcorpus_writer',
               ],
             },
             info: {
@@ -954,14 +954,14 @@ describe('/ deprecated', () => {
             ok: true,
             name: 'testuser4',
             roles: [
-              'testuser4-firstcorpus_admin',
-              'testuser4-firstcorpus_writer',
-              'testuser4-firstcorpus_reader',
-              'testuser4-firstcorpus_commenter',
-              'public-firstcorpus_reader',
+              'beta_user',
               'fielddbuser',
-              'user',
               'jenkins-firstcorpus_writer',
+              'public-firstcorpus_reader',
+              'testuser4-firstcorpus_admin',
+              'testuser4-firstcorpus_commenter',
+              'testuser4-firstcorpus_reader',
+              'testuser4-firstcorpus_writer',
             ],
           }, 'should have roles');
 
@@ -977,15 +977,15 @@ describe('/ deprecated', () => {
             userCtx: {
               name: 'testuser10',
               roles: [
-                'testuser10-firstcorpus_admin',
-                'testuser10-firstcorpus_writer',
-                'testuser10-firstcorpus_reader',
-                'testuser10-firstcorpus_commenter',
-                'public-firstcorpus_reader',
+                'beta_user',
                 'fielddbuser',
-                'user',
-                'jenkins-firstcorpus_reader',
                 'jenkins-firstcorpus_exporter',
+                'jenkins-firstcorpus_reader',
+                'public-firstcorpus_reader',
+                'testuser10-firstcorpus_admin',
+                'testuser10-firstcorpus_commenter',
+                'testuser10-firstcorpus_reader',
+                'testuser10-firstcorpus_writer',
               ],
             },
             info: {
@@ -1056,8 +1056,8 @@ describe('/ deprecated', () => {
 
           const roles = res.body.roles.filter((role) => role.includes('jenkins-firstcorpus'));
           expect(roles).to.deep.equal([
-            'jenkins-firstcorpus_reader',
             'jenkins-firstcorpus_commenter',
+            'jenkins-firstcorpus_reader',
           ], 'should have roles');
         });
     });
@@ -1404,6 +1404,33 @@ describe('/ deprecated', () => {
           } else {
             expect(res.status).to.be.oneOf([401, 404]); // delay in lexicon creation on new resources
           }
+          return supertest('http://testuser9:test@localhost:5984')
+            .get(`/${expectedDBName}/_design/data/_view/by_type?group=true`)
+            .set('x-request-id', `${requestId}-newcorpus`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          expect(res.body).to.deep.equal({
+            rows: [{
+              key: 'Corpus',
+              value: 1,
+            }, {
+              key: 'CorpusMask',
+              value: 1,
+            }, {
+              key: 'DataList',
+              value: 1,
+            }, {
+              key: 'Session',
+              value: 1,
+            }, {
+              key: 'Team',
+              value: 1,
+            }, {
+              key: 'UserMask',
+              value: 1,
+            }],
+          }, 'should create the docs');
         });
     });
 

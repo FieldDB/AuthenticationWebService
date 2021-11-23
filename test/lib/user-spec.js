@@ -96,14 +96,14 @@ describe('lib/user', () => {
             'testuser4-firstcorpus_commenter',
           ],
           after: [
-            'reader',
             'commenter',
+            'reader',
           ],
           before: [
-            'reader',
             'commenter',
+            'reader',
           ],
-          message: 'User testuser8 now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
+          message: 'User testuser8 now has commenter reader access to testuser4-firstcorpus, the user was already a member of this corpus team.',
           remove: [
             'testuser4-firstcorpus_admin',
             'testuser4-firstcorpus_writer',
