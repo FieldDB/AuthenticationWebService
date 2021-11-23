@@ -253,7 +253,7 @@ describe('/ deprecated', () => {
   describe('/login', () => {
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       this.timeout(10000);
 
@@ -346,7 +346,7 @@ describe('/ deprecated', () => {
 
     it('should handle invalid password', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       this.retries(8);
 
@@ -427,7 +427,7 @@ describe('/ deprecated', () => {
   describe('/changepassword', () => {
     it('should accept changepassword', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       return supertest(authWebService)
         .post('/changepassword')
@@ -477,7 +477,7 @@ describe('/ deprecated', () => {
   describe('/forgotpassword', () => {
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       this.timeout(10000);
 
@@ -559,7 +559,7 @@ describe('/ deprecated', () => {
   describe('/addroletouser', () => {
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       this.timeout(15000);
 
@@ -732,7 +732,7 @@ describe('/ deprecated', () => {
 
     it('should be able to remove all roles from a user', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -769,7 +769,7 @@ describe('/ deprecated', () => {
 
     it('should be able to add and remove roles in the same request', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -888,7 +888,7 @@ describe('/ deprecated', () => {
 
     it('should accept roles to add and remove from one or or more users', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1013,7 +1013,7 @@ describe('/ deprecated', () => {
 
     it('should accept addroletouser from the backbone app', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1080,7 +1080,7 @@ describe('/ deprecated', () => {
   describe('/updateroles', () => {
     it('should accept deprecated updateroles from the spreadsheet app', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1148,7 +1148,7 @@ describe('/ deprecated', () => {
 
     it('should accept new updateroles from the spreadsheet app', function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1322,7 +1322,7 @@ describe('/ deprecated', () => {
   describe('/newcorpus', () => {
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       this.timeout(10000);
 
@@ -1385,7 +1385,7 @@ describe('/ deprecated', () => {
       }));
 
     it('should create a corpus', () => {
-      const newCorpusUnique = Date.now();
+      const newCorpusUnique =  process.env.REPLAY ? Date.now() : '1637706700780';
       const expectedDBName = `${testUsername}-testing_v3_32_01${newCorpusUnique}`;
       return supertest(authWebService)
         .post('/newcorpus')
@@ -1519,7 +1519,7 @@ describe('/ deprecated', () => {
   describe('syncDetails', () => {
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
-        this.skip();
+        // this.skip();
       }
       this.timeout(10000);
       return supertest(authWebService)
