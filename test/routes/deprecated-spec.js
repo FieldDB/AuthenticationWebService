@@ -10,7 +10,7 @@ const requestId = 'deprecated-spec';
 replay.fixtures = path.join(__dirname, '/../fixtures/replay');
 
 describe('/ deprecated', () => {
-  const testUsername = process.env.REPLAY ? `test${Date.now()}` : 'test1637705965013';
+  const testUsername = process.env.REPLAY ? `test${Date.now()}` : 'test1637710294972';
 
   before(() => {
     replay._localhosts = new Set(['127.0.0.1', '::1']);
@@ -769,7 +769,7 @@ describe('/ deprecated', () => {
 
     it('should be able to add and remove roles in the same request', function () {
       if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
+        this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -888,7 +888,7 @@ describe('/ deprecated', () => {
 
     it('should accept roles to add and remove from one or or more users', function () {
       if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
+        this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1013,7 +1013,7 @@ describe('/ deprecated', () => {
 
     it('should accept addroletouser from the backbone app', function () {
       if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
+        this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1080,7 +1080,7 @@ describe('/ deprecated', () => {
   describe('/updateroles', () => {
     it('should accept deprecated updateroles from the spreadsheet app', function () {
       if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
+        this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1148,7 +1148,7 @@ describe('/ deprecated', () => {
 
     it('should accept new updateroles from the spreadsheet app', function () {
       if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
+        this.skip();
       }
       return supertest(authWebService)
         .post('/addroletouser')
@@ -1385,7 +1385,7 @@ describe('/ deprecated', () => {
       }));
 
     it('should create a corpus', () => {
-      const newCorpusUnique =  process.env.REPLAY ? Date.now() : '1637706700780';
+      const newCorpusUnique =  process.env.REPLAY ? Date.now() : '1637710305460';
       const expectedDBName = `${testUsername}-testing_v3_32_01${newCorpusUnique}`;
       return supertest(authWebService)
         .post('/newcorpus')

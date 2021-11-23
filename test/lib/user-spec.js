@@ -603,7 +603,7 @@ describe('lib/user', () => {
      * - update username to equal the recorded username
      */
     it('should register wordcloud users', () => {
-      const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637705978258';
+      const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637710296692';
       return registerNewUser({
         req: {
           body: {
