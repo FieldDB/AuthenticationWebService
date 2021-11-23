@@ -138,24 +138,28 @@ describe('lib/user', () => {
      * re-record instructions
      * - remove body because has a date time in serverLogs
      */
-    it('should handle invalid password', () => authenticateUser({
-      username: 'testuser8',
-      password: 'wrongpassword',
-      req: {
-        id: 'authenticateUser-wrong-password',
-      },
-    })
-      .catch(({ message, status, userFriendlyErrors }) => {
-        expect(message).to.equal('Username or password is invalid. Please try again.');
-        expect(status).to.equal(401);
-        expect(userFriendlyErrors).to.deep.equal([
-          'Username or password is invalid. Please try again. You have 3 more attempts before a temporary password will be emailed to your registration email (if you provided one).',
-        ]);
-      }));
+    it('should handle invalid password', function () {
+      this.retries(5);
+
+      return authenticateUser({
+        username: 'testuser7',
+        password: 'wrongpassword',
+        req: {
+          id: 'authenticateUser-wrong-password',
+        },
+      })
+        .catch(({ message, status, userFriendlyErrors }) => {
+          expect(message).to.equal('Username or password is invalid. Please try again.');
+          expect(status).to.equal(401);
+          expect(userFriendlyErrors).to.deep.equal([
+            'Username or password is invalid. Please try again. You have 3 more attempts before a temporary password will be emailed to your registration email (if you provided one).',
+          ]);
+        });
+    });
 
     it('should handle invalid password who have an email address', function () {
       this.retries(8);
-      authenticateUser({
+      return authenticateUser({
         username: 'testinguserwithemail',
         password: 'wrongpassword',
         req: {
