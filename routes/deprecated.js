@@ -274,20 +274,23 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         err.status = 412;
         err.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: the corpus to be modified must be included in the request'];
         next(err);
-        return;
+        throw new Error('ending the request');
       }
       if (!req || !req.body.users || req.body.users.length === 0 || !req.body.users[0].username) {
         const err = new Error('Client didnt define the user(s) to modify.');
         err.status = 412;
         err.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. info: user(s) to modify must be included in this request'];
         next(err);
-        return;
+        throw new Error('ending the request');
       }
       // Add a role to the user
       return userFunctions.addRoleToUser({
         req,
       })
-        .catch(next);
+        .catch((err) => {
+          next(err);
+          throw new Error('ending the request');
+        });
     })
       .then((userPermissionSet) => {
         const info = userPermissionSet.map((userPermission) => {
@@ -311,7 +314,10 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         res.send(returndata);
       })
       .catch((err) => {
-        debug(err, 'in the error handle');
+        if (err.message === 'ending the request') {
+          return;
+        }
+        console.log(err, 'in the error handle');
 
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 500);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 500;
