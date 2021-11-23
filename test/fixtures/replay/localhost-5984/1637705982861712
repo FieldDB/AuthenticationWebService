@@ -1,0 +1,22 @@
+GET /test1637705965013-kartuli/_design/data/_view/by_type?group=true
+accept-encoding: gzip, deflate
+x-request-id: deprecated-spec-register
+accept: application/json
+authorization: Basic dGVzdDE2Mzc3MDU5NjUwMTM6dGVzdA==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "6AA9A7H37YU2OTKJLOEOEVTID"
+date: Tue, 23 Nov 2021 22:19:42 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"rows":[
+{"key":"Corpus","value":1},
+{"key":"CorpusMask","value":1},
+{"key":"DataList","value":1},
+{"key":"Session","value":1},
+{"key":"Team","value":1},
+{"key":"UserMask","value":1}
+]}

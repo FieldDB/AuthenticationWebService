@@ -1,0 +1,17 @@
+POST /_users
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-register-new
+body: {\"_id\":\"org.couchdb.user:test1637705965013\",\"_rev\":\"1-01f96dc5a21c7bf25a2a78e4c5b42dab\",\"password_scheme\":\"pbkdf2\",\"iterations\":10,\"name\":\"test1637705965013\",\"roles\":[\"fielddbuser\",\"georgiantogether_user\",\"public-firstcorpus_reader\",\"test1637705965013-kartuli_admin\",\"test1637705965013-kartuli_commenter\",\"test1637705965013-kartuli_reader\",\"test1637705965013-kartuli_writer\"],\"type\":\"user\",\"derived_key\":\"995c5eeaafc3919710e862be13bf8105d16f48e8\",\"salt\":\"f03d65667b9dcc866e051efe8c51f9bf\"}
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://localhost:5984/_users/org.couchdb.user:test1637705965013
+etag: "2-383a673807767ebeb6ffdf6843d155ec"
+date: Tue, 23 Nov 2021 22:19:41 GMT
+content-type: application/json
+content-length: 97
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:test1637705965013","rev":"2-383a673807767ebeb6ffdf6843d155ec"}

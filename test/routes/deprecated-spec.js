@@ -10,7 +10,7 @@ const requestId = 'deprecated-spec';
 replay.fixtures = path.join(__dirname, '/../fixtures/replay');
 
 describe('/ deprecated', () => {
-  const testUsername = process.env.REPLAY ? `test${Date.now()}` : 'test1637230388552';
+  const testUsername = process.env.REPLAY ? `test${Date.now()}` : 'test1637705965013';
 
   before(() => {
     replay._localhosts = new Set(['127.0.0.1', '::1']);

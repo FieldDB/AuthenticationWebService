@@ -1,0 +1,54 @@
+GET /theuserscouch/_design/users/_view/usermasks
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-corpusteam-not-user
+content-type: application/json
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "37ZF00QF7C18AM98XQCIIVLVZ"
+date: Tue, 23 Nov 2021 22:19:43 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":38,"offset":0,"rows":[
+{"id":"anonymouswordclouduser1401365327719","key":"anonymouswordclouduser1401365327719","value":{"username":"anonymouswordclouduser1401365327719","gravatar":"1a159bd00ea705e1af2ccd1d907146e0","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637687566521","key":"anonymouswordclouduser1637687566521","value":{"username":"anonymouswordclouduser1637687566521","gravatar":"7dcfa2c18b280ea36ed9195172e97a33","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637687670230","key":"anonymouswordclouduser1637687670230","value":{"username":"anonymouswordclouduser1637687670230","gravatar":"6e28d6a13095752796c5bb045664af56","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637687806067","key":"anonymouswordclouduser1637687806067","value":{"username":"anonymouswordclouduser1637687806067","gravatar":"54bd1af9c64d4a74266aebd68f07f850","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637688161107","key":"anonymouswordclouduser1637688161107","value":{"username":"anonymouswordclouduser1637688161107","gravatar":"c541b9af699216f273b645213405379e","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637705335166","key":"anonymouswordclouduser1637705335166","value":{"username":"anonymouswordclouduser1637705335166","gravatar":"37b5fc4843d4e77cd409ac82396a4c98","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637705501991","key":"anonymouswordclouduser1637705501991","value":{"username":"anonymouswordclouduser1637705501991","gravatar":"a4df7e253311311fd135db1d8c2bec1e","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637705586048","key":"anonymouswordclouduser1637705586048","value":{"username":"anonymouswordclouduser1637705586048","gravatar":"480e9f6338a384a1fbd59f8309a0f5ea","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637705629769","key":"anonymouswordclouduser1637705629769","value":{"username":"anonymouswordclouduser1637705629769","gravatar":"997f8c102cebcb5e21aa8f9b588be75b","gravatar_email":""}},
+{"id":"anonymouswordclouduser1637705978258","key":"anonymouswordclouduser1637705978258","value":{"username":"anonymouswordclouduser1637705978258","gravatar":"531493bfe4f794c297b8b2d47dfc64a7","gravatar_email":""}},
+{"id":"jenkins","key":"jenkins","value":{"username":"jenkins","gravatar":"ab63a76362c3972ac83d5cb8830fdb51","gravatar_email":""}},
+{"id":"lingllama","key":"lingllama","value":{"username":"lingllama","gravatar":"54b53868cb4d555b804125f1a3969e87","gravatar_email":"lingllama@example.org"}},
+{"id":"test1637687494585","key":"test1637687494585","value":{"username":"test1637687494585","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637687552717","key":"test1637687552717","value":{"username":"test1637687552717","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637687657135","key":"test1637687657135","value":{"username":"test1637687657135","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637687792911","key":"test1637687792911","value":{"username":"test1637687792911","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637688148080","key":"test1637688148080","value":{"username":"test1637688148080","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637705321543","key":"test1637705321543","value":{"username":"test1637705321543","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637705489099","key":"test1637705489099","value":{"username":"test1637705489099","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637705572790","key":"test1637705572790","value":{"username":"test1637705572790","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637705616668","key":"test1637705616668","value":{"username":"test1637705616668","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"test1637705965013","key":"test1637705965013","value":{"username":"test1637705965013","gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","gravatar_email":"testuser@lingsync.org"}},
+{"id":"testingdisabledusers","key":"testingdisabledusers","value":{"username":"testingdisabledusers","gravatar":"b94cf47d619e67349282991c98abded7"}},
+{"id":"testingphophlo","key":"testingphophlo","value":{"username":"testingphophlo","gravatar":"f8d69b82cf7b40560941d0808f199d6b","gravatar_email":""}},
+{"id":"testingprototype","key":"testingprototype","value":{"username":"testingprototype","gravatar":"2c5a03887ebeb2e98281cdcb93871204","gravatar_email":""}},
+{"id":"testingspreadsheet","key":"testingspreadsheet","value":{"username":"testingspreadsheet","gravatar":"d3ab37db99e16d2c98b61cbedd87b921","gravatar_email":""}},
+{"id":"testinguserwithemail","key":"testinguserwithemail","value":{"username":"testinguserwithemail","gravatar":"60a6c20d49f49bc210ac98d7e47c74a0","gravatar_email":"myemail@example.com"}},
+{"id":"testuser1","key":"testuser1","value":{"username":"testuser1","gravatar":"41da76f0fc3ec62a6939e634bfb6a342","gravatar_email":""}},
+{"id":"testuser10","key":"testuser10","value":{"username":"testuser10","gravatar":"6ec4eb9b0c42da2985e0539358298001","gravatar_email":""}},
+{"id":"testuser2","key":"testuser2","value":{"username":"testuser2","gravatar":"58dd024d49e1d1b83a5d307f09f32734","gravatar_email":""}},
+{"id":"testuser3","key":"testuser3","value":{"username":"testuser3","gravatar":"1e4332f65a7a921075fbfb92c7c60cce","gravatar_email":""}},
+{"id":"testuser4","key":"testuser4","value":{"username":"testuser4","gravatar":"8147e2c0496d91393d3c270a5c38ed61","gravatar_email":""}},
+{"id":"testuser41","key":"testuser41","value":{"username":"testuser41","gravatar":"b1952abe34575ff89a9ee3a980c5b223","gravatar_email":""}},
+{"id":"testuser5","key":"testuser5","value":{"username":"testuser5","gravatar":"16de10fc1a6e97be104b98149c59be61","gravatar_email":""}},
+{"id":"testuser6","key":"testuser6","value":{"username":"testuser6","gravatar":"9eb9c70d8cc74fd724eacf72baccbda9"}},
+{"id":"testuser7","key":"testuser7","value":{"username":"testuser7","gravatar":"9a936f54cefff8139ebafd21984efcf4","gravatar_email":""}},
+{"id":"testuser8","key":"testuser8","value":{"username":"testuser8","gravatar":"c0e0dc6fd8199002cd63457be98d49a9"}},
+{"id":"testuser9","key":"testuser9","value":{"username":"testuser9","gravatar":"0201fef79e1e459199ec8e59316f0ebe","gravatar_email":""}}
+]}

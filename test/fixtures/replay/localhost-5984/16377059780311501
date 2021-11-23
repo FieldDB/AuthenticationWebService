@@ -1,0 +1,14 @@
+PUT /testuser-firstcorpus
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: createNewCorpusesIfDontExist
+
+HTTP/1.1 412 Precondition Failed
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 23 Nov 2021 22:19:38 GMT
+content-type: application/json
+content-length: 95
+cache-control: must-revalidate
+
+{"error":"file_exists","reason":"The database could not be created, the file already exists."}

@@ -1,0 +1,15 @@
+POST /_replicate
+accept-encoding: gzip, deflate
+accept: application/json
+content-type: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"source\":\"https://public:none@corpusdev.example.org/new_testing_corpus\",\"target\":{\"url\":\"http://admin:none@localhost:5984/new_testing_corpus\"},\"create_target\":true}
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 23 Nov 2021 22:17:38 GMT
+content-type: application/json
+content-length: 427
+cache-control: must-revalidate
+
+{"ok":true,"no_changes":true,"session_id":"072325c65a1d7edf40813f5cdafadeee","source_last_seq":16,"replication_id_version":3,"history":[{"session_id":"072325c65a1d7edf40813f5cdafadeee","start_time":"Tue, 23 Nov 2021 17:10:37 GMT","end_time":"Tue, 23 Nov 2021 17:10:39 GMT","start_last_seq":0,"end_last_seq":16,"recorded_seq":16,"missing_checked":11,"missing_found":11,"docs_read":11,"docs_written":11,"doc_write_failures":0}]}

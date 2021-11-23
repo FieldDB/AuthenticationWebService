@@ -1,0 +1,14 @@
+GET /_session
+accept-encoding: gzip, deflate
+x-request-id: deprecated-spec-register-new
+accept: application/json
+authorization: Basic dGVzdDE2Mzc3MDU5NjUwMTM6dGVzdA==
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 23 Nov 2021 22:19:42 GMT
+content-type: application/json
+content-length: 388
+cache-control: must-revalidate
+
+{"ok":true,"userCtx":{"name":"test1637705965013","roles":["fielddbuser","georgiantogether_user","public-firstcorpus_reader","test1637705965013-kartuli_admin","test1637705965013-kartuli_commenter","test1637705965013-kartuli_reader","test1637705965013-kartuli_writer"]},"info":{"authentication_db":"_users","authentication_handlers":["oauth","cookie","default"],"authenticated":"default"}}

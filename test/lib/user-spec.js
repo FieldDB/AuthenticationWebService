@@ -139,6 +139,9 @@ describe('lib/user', () => {
      * - remove body because has a date time in serverLogs
      */
     it('should handle invalid password', function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
       this.retries(5);
 
       return authenticateUser({
@@ -196,9 +199,12 @@ describe('lib/user', () => {
     it('should authenticate', () => authenticateUser({
       username: 'testuser5',
       password: 'test',
-
       req: {
         id: 'authenticateUser-success',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -226,9 +232,12 @@ describe('lib/user', () => {
           dbname: 'testuser-two',
         }],
       },
-
       req: {
         id: 'authenticateUser-sync',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -262,6 +271,10 @@ describe('lib/user', () => {
       req: {
         body: {},
         id: 'createNewCorpusesIfDontExist-anothers',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -284,6 +297,10 @@ describe('lib/user', () => {
       req: {
         body: {},
         id: 'createNewCorpusesIfDontExist',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -315,6 +332,10 @@ describe('lib/user', () => {
             dbname: 'testingprototype-firstcorpus',
           },
         },
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -340,6 +361,10 @@ describe('lib/user', () => {
             dbname: 'jenkins-firstcorpus',
           },
         },
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -364,6 +389,10 @@ describe('lib/user', () => {
       email: 'lingllama@example.org',
       req: {
         id: 'findByEmail',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -387,6 +416,10 @@ describe('lib/user', () => {
       username: 'lingllama',
       req: {
         id: 'findByUsername',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then(({
@@ -427,6 +460,10 @@ describe('lib/user', () => {
       username: 'testingdisabledusers',
       req: {
         id: 'findByUsername-disabled',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .catch(({
@@ -459,6 +496,10 @@ describe('lib/user', () => {
       email: 'myemail@example.com',
       req: {
         id: 'forgotPassword-reset',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .catch((err) => {
@@ -479,6 +520,10 @@ describe('lib/user', () => {
           username: 'yourusernamegoeshere',
         },
         id: 'registerNewUser-default',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -497,6 +542,10 @@ describe('lib/user', () => {
           username: 'aa',
         },
         id: 'registerNewUser-too-short',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -513,6 +562,10 @@ describe('lib/user', () => {
           username: 'Jen kins',
         },
         id: 'registerNewUser-not-ascii',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -531,6 +584,10 @@ describe('lib/user', () => {
           username: 'jenkins',
         },
         id: 'registerNewUser-existing',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -546,7 +603,7 @@ describe('lib/user', () => {
      * - update username to equal the recorded username
      */
     it('should register wordcloud users', () => {
-      const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637231371832';
+      const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637705978258';
       return registerNewUser({
         req: {
           body: {
@@ -591,6 +648,10 @@ describe('lib/user', () => {
         user: expectedUser,
         req: {
           id: 'saveUpdateUserToDatabase-sample',
+          log: {
+            error: () => {},
+            warn: () => {},
+          },
         },
       })
         .then(({ user, info }) => {
@@ -613,6 +674,10 @@ describe('lib/user', () => {
         user: expectedUser,
         req: {
           id: 'saveUpdateUserToDatabase-conflict',
+          log: {
+            error: () => {},
+            warn: () => {},
+          },
         },
       })
         .then((result) => {
@@ -638,6 +703,10 @@ describe('lib/user', () => {
       username: 'testuser3',
       req: {
         id: 'setPassword',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then(({ user, info }) => {

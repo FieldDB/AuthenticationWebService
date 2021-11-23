@@ -1,0 +1,15 @@
+GET /theuserscouch/anonymouswordclouduser1401365327719
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-register-wordcloud
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "1-37463e8bb4689556f50d77199e912616"
+date: Tue, 23 Nov 2021 22:19:42 GMT
+content-type: application/json
+content-length: 2250
+cache-control: must-revalidate
+
+{"_id":"anonymouswordclouduser1401365327719","_rev":"1-37463e8bb4689556f50d77199e912616","fieldDBtype":"User","username":"anonymouswordclouduser1401365327719","password":"testtest","firstname":"","lastname":"","appbrand":"ilanguagecloud","hash":"$2a$10$DGrRqfjhqvQ7YUMW9F.c.uAbJy3XnQrpvd0U.0jUxu3z3f0.U7.de","dateCreated":1637687571013,"authServerVersionWhenCreated":"4.16.14","prefs":{"skin":"user/skins/weaving.jpg","unicodes":[{"fieldDBtype":"UnicodeSymbol","symbol":"ɔ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ə","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ɛ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ɣ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ɥ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ɦ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ɫ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ʃ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ʒ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"ʔ","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"λ","tipa":"lambda","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"α","tipa":"alpha","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"β","tipa":"\beta","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∀","tipa":"\forall","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∃","tipa":"exists","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"°","tipa":"^{circ}","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∄","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∅","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∈","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∉","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∋","tipa":"","useCount":0},{"fieldDBtype":"UnicodeSymbol","symbol":"∌","tipa":"","useCount":0}],"fieldDBtype":"UserPreference","version":"v5.168.15-rc0","dateCreated":1637687571016},"email":"","gravatar":"1a159bd00ea705e1af2ccd1d907146e0","version":"v5.168.15-rc0","api":"users","name":"anonymouswordclouduser1401365327719","corpora":[],"datalists":[]}
