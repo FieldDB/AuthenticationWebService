@@ -537,10 +537,10 @@ describe('/ deprecated', () => {
           });
       })
       .then((res) => {
+        delete res.body.stack;
         expect(res.body).to.deep.equal({
           message: 'Internal server error',
           status: 500,
-          stack: res.body.stack,
           userFriendlyErrors: ['The server was unable to send you an email, your password has not been reset. Please report this 2823'],
         });
       }));
@@ -875,9 +875,9 @@ describe('/ deprecated', () => {
             });
         })
         .then((res) => {
+          delete res.body.stack;
           expect(res.body).to.deep.equal({
             message: 'User testuser5 found but didnt have permission on jenkins-firstcorpus',
-            stack: res.body.stack,
             status: 401,
             userFriendlyErrors: [
               "You don't have permission to perform this action.",
