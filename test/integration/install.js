@@ -18,7 +18,7 @@ const source = process.env.SOURCE_URL;
 debug('destination', destination);
 debug('source', source);
 
-describe.skip('install', () => {
+describe('install', () => {
   before(() => {
     replay._localhosts = new Set();
     debug('before replay localhosts', replay._localhosts);

@@ -425,7 +425,7 @@ describe('/ deprecated', () => {
   });
 
   describe('/changepassword', () => {
-    it('should accept changepassword', function () {
+    it('should accept changepassword', () => {
       if (process.env.REPLAY !== 'bloody') {
         // this.skip();
       }
@@ -730,7 +730,7 @@ describe('/ deprecated', () => {
         expect(res.status).to.equal(404);
       }));
 
-    it('should be able to remove all roles from a user', function () {
+    it('should be able to remove all roles from a user', () => {
       if (process.env.REPLAY !== 'bloody') {
         // this.skip();
       }
@@ -1385,7 +1385,7 @@ describe('/ deprecated', () => {
       }));
 
     it('should create a corpus', () => {
-      const newCorpusUnique =  process.env.REPLAY ? Date.now() : '1637710305460';
+      const newCorpusUnique = process.env.REPLAY ? Date.now() : '1637710305460';
       const expectedDBName = `${testUsername}-testing_v3_32_01${newCorpusUnique}`;
       return supertest(authWebService)
         .post('/newcorpus')
