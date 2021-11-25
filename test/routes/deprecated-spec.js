@@ -252,9 +252,6 @@ describe('/ deprecated', () => {
 
   describe('/login', () => {
     before(function () {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
       this.timeout(10000);
 
       return supertest(authWebService)
@@ -345,9 +342,6 @@ describe('/ deprecated', () => {
       }));
 
     it('should handle invalid password', function () {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
       this.retries(8);
 
       return supertest(authWebService)
@@ -426,9 +420,7 @@ describe('/ deprecated', () => {
 
   describe('/changepassword', () => {
     it('should accept changepassword', () => {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
+      debug('changepassword', process.env.REPLAY);
       return supertest(authWebService)
         .post('/changepassword')
         .set('x-request-id', `${requestId}-changepassword`)
@@ -476,9 +468,6 @@ describe('/ deprecated', () => {
 
   describe('/forgotpassword', () => {
     before(function () {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
       this.timeout(10000);
 
       return supertest(authWebService)
@@ -558,9 +547,8 @@ describe('/ deprecated', () => {
 
   describe('/addroletouser', () => {
     before(function () {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
+      debug('/forgotpassword', process.env.REPLAY);
+
       this.timeout(19000);
 
       return supertest(authWebService)
@@ -731,9 +719,8 @@ describe('/ deprecated', () => {
       }));
 
     it('should be able to remove all roles from a user', () => {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
+      debug('/addroletouser', process.env.REPLAY);
+
       return supertest(authWebService)
         .post('/addroletouser')
         .set('x-request-id', `${requestId}-prep-addroletouser`)
@@ -1321,9 +1308,8 @@ describe('/ deprecated', () => {
 
   describe('/newcorpus', () => {
     before(function () {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
+      debug('/forgotpassword', process.env.REPLAY);
+
       this.timeout(10000);
 
       return supertest(authWebService)
@@ -1519,9 +1505,8 @@ describe('/ deprecated', () => {
   describe('syncDetails', () => {
     const uniqueDBname = process.env.REPLAY ? Date.now() : '1637871012346';
     before(function () {
-      if (process.env.REPLAY !== 'bloody') {
-        // this.skip();
-      }
+      debug('/forgotpassword', process.env.REPLAY);
+
       this.timeout(10000);
       return supertest(authWebService)
         .post('/register')
