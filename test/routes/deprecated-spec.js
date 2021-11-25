@@ -1517,7 +1517,7 @@ describe('/ deprecated', () => {
   });
 
   describe('syncDetails', () => {
-    const uniqueDBname = process.env.REPLAY ? Date.now() : 'TODO';
+    const uniqueDBname = process.env.REPLAY ? Date.now() : '1637871012346';
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
         // this.skip();
@@ -1535,6 +1535,7 @@ describe('/ deprecated', () => {
           debug('register testuser8', res.body);
         });
     });
+
     it('should try to create all corpora listed in the user', () => supertest(authWebService)
       .post('/login')
       .set('x-request-id', `${requestId}-syncDetails`)
@@ -1555,10 +1556,9 @@ describe('/ deprecated', () => {
         },
       })
       .then((res) => {
-        debug(JSON.stringify(res.body));
         expect(res.body.user.corpora && res.body.user.corpora.length >= 1)
-          .to.equal(true, JSON.stringify(res.body.user.corpora));
-        expect(res.body.user.newCorpora.length).to.equal(3);
+          .to.equal(true, JSON.stringify(res.body));
+        expect(res.body.user.newCorpora.length).above(4);
 
         return supertest(`http://${testUsername}:test@localhost:5984`)
           .get('/someoneelsesdb-shouldnt_be_creatable')

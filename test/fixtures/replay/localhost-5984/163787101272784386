@@ -1,0 +1,17 @@
+POST /_users
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-syncDetails
+body: {\"_id\":\"org.couchdb.user:test1637710294972\",\"_rev\":\"9-d62542945071ff3920ecf054c9a39c60\",\"password_scheme\":\"pbkdf2\",\"iterations\":10,\"name\":\"test1637710294972\",\"roles\":[\"fielddbuser\",\"georgiantogether_user\",\"public-firstcorpus_reader\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870515339_admin\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870515339_commenter\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870515339_reader\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870515339_writer\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870561146_admin\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870561146_commenter\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870561146_reader\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870561146_writer\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870591579_admin\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870591579_commenter\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870591579_reader\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870591579_writer\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870985564_admin\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870985564_commenter\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870985564_reader\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870985564_writer\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870997252_admin\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870997252_commenter\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870997252_reader\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637870997252_writer\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346_admin\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346_commenter\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346_reader\",\"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346_writer\",\"test1637710294972-firstcorpus_admin\",\"test1637710294972-firstcorpus_commenter\",\"test1637710294972-firstcorpus_reader\",\"test1637710294972-firstcorpus_writer\",\"test1637710294972-kartuli_admin\",\"test1637710294972-kartuli_commenter\",\"test1637710294972-kartuli_reader\",\"test1637710294972-kartuli_writer\",\"test1637710294972-testing_v3_32_011637710305460_admin\",\"test1637710294972-testing_v3_32_011637710305460_commenter\",\"test1637710294972-testing_v3_32_011637710305460_reader\",\"test1637710294972-testing_v3_32_011637710305460_writer\"],\"type\":\"user\",\"derived_key\":\"45aaa0bf0e91d5fd86eae925992971be1ade8893\",\"salt\":\"0594e5f5aa845c2d1c674cde2470dfba\"}
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://localhost:5984/_users/org.couchdb.user:test1637710294972
+etag: "10-ff7d8cbd3f28294c925db433c446da90"
+date: Thu, 25 Nov 2021 20:10:12 GMT
+content-type: application/json
+content-length: 98
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:test1637710294972","rev":"10-ff7d8cbd3f28294c925db433c446da90"}
