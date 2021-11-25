@@ -1543,7 +1543,7 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body.user.corpora && res.body.user.corpora.length >= 1)
           .to.equal(true, JSON.stringify(res.body));
-        expect(res.body.user.newCorpora.length).above(4);
+        expect(res.body.user.newCorpora.length).above(2);
 
         return supertest(`http://${testUsername}:test@localhost:5984`)
           .get('/someoneelsesdb-shouldnt_be_creatable')
