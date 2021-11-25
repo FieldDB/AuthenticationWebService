@@ -1517,6 +1517,7 @@ describe('/ deprecated', () => {
   });
 
   describe('syncDetails', () => {
+    const uniqueDBname = process.env.REPLAY ? Date.now() : 'TODO';
     before(function () {
       if (process.env.REPLAY !== 'bloody') {
         // this.skip();
@@ -1538,18 +1539,18 @@ describe('/ deprecated', () => {
       .post('/login')
       .set('x-request-id', `${requestId}-syncDetails`)
       .send({
-        username: 'testuser8',
+        username: testUsername,
         password: 'test',
         syncDetails: true,
         syncUserDetails: {
           newCorpusConnections: [{
-            dbname: 'testuser8-firstcorpus',
+            dbname: `${testUsername}-firstcorpus`,
           }, {}, {
             dbname: 'someoneelsesdb-shouldnt_be_creatable',
           }, {
-            dbname: 'testuser8-an_offline_corpus_created_in_the_prototype',
+            dbname: `${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}`,
           }, {
-            dbname: 'testuser8-firstcorpus',
+            dbname: `${testUsername}-firstcorpus`,
           }],
         },
       })
@@ -1559,7 +1560,7 @@ describe('/ deprecated', () => {
           .to.equal(true, JSON.stringify(res.body.user.corpora));
         expect(res.body.user.newCorpora.length).to.equal(3);
 
-        return supertest('http://testuser8:test@localhost:5984')
+        return supertest(`http://${testUsername}:test@localhost:5984`)
           .get('/someoneelsesdb-shouldnt_be_creatable')
           .set('x-request-id', `${requestId}-syncDetails-after`)
           .set('Accept', 'application/json');
@@ -1567,8 +1568,8 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.status).to.equal(404);
 
-        return supertest('http://testuser8:test@localhost:5984')
-          .get('/testuser8-an_offline_corpus_created_in_the_prototype/_design/deprecated/_view/corpora')
+        return supertest(`http://${testUsername}:test@localhost:5984`)
+          .get(`/${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}/_design/deprecated/_view/corpora`)
           .set('x-request-id', `${requestId}-syncDetails`)
           .set('Accept', 'application/json');
       })
