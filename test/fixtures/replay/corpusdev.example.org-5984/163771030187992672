@@ -1,0 +1,16 @@
+PUT /theuserscouch/testingspreadsheet
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-login-successfully
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/testingspreadsheet
+etag: "14-bd2bfaf1eb9d574a9913eb4869e9d000"
+date: Tue, 23 Nov 2021 23:31:41 GMT
+content-type: application/json
+content-length: 82
+cache-control: must-revalidate
+
+{"ok":true,"id":"testingspreadsheet","rev":"14-bd2bfaf1eb9d574a9913eb4869e9d000"}

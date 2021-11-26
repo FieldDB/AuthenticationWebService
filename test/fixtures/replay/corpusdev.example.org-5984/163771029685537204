@@ -1,0 +1,16 @@
+PUT /theuserscouch/anonymouswordclouduser1637710296692
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: registerNewUser-anonymouswordcloud
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/anonymouswordclouduser1637710296692
+etag: "1-aeed28885aa38fae54bd33fd1611bd57"
+date: Tue, 23 Nov 2021 23:31:36 GMT
+content-type: application/json
+content-length: 98
+cache-control: must-revalidate
+
+{"ok":true,"id":"anonymouswordclouduser1637710296692","rev":"1-aeed28885aa38fae54bd33fd1611bd57"}

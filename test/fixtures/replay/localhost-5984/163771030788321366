@@ -1,0 +1,14 @@
+GET /someoneelsesdb-shouldnt_be_creatable
+accept-encoding: gzip, deflate
+x-request-id: deprecated-spec-syncDetails-after
+accept: application/json
+authorization: Basic dGVzdHVzZXI4OnRlc3Q=
+
+HTTP/1.1 404 Object Not Found
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 23 Nov 2021 23:31:47 GMT
+content-type: application/json
+content-length: 44
+cache-control: must-revalidate
+
+{"error":"not_found","reason":"no_db_file"}

@@ -1,0 +1,16 @@
+PUT /theuserscouch/testuser3
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: setPassword
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/testuser3
+etag: "26-db4cee7d7c9230471b31870382623026"
+date: Tue, 23 Nov 2021 23:31:37 GMT
+content-type: application/json
+content-length: 73
+cache-control: must-revalidate
+
+{"ok":true,"id":"testuser3","rev":"26-db4cee7d7c9230471b31870382623026"}

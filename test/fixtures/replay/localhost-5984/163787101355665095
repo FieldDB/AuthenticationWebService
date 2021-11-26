@@ -1,0 +1,14 @@
+POST /test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346/_bulk_docs
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-syncDetails
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Thu, 25 Nov 2021 20:10:13 GMT
+content-type: application/json
+content-length: 503
+cache-control: must-revalidate
+
+[{"ok":true,"id":"team","rev":"1-1124a72002082d504e8ef16d640b81b0"},{"ok":true,"id":"test1637710294972","rev":"1-056f28701d3e1c63df999db0d035f417"},{"ok":true,"id":"corpus","rev":"1-74fc3c1faf040fa926e1a5b1fe076120"},{"ok":true,"id":"e1982dcf55c68537fa3e3b45df090aa0","rev":"1-0ea1a47e7f6ad22f41f31712642f1740"},{"ok":true,"id":"e1982dcf55c68537fa3e3b45df091160","rev":"1-2c88effe6b306c9e985ae6e115b74da1"},{"ok":true,"id":"e1982dcf55c68537fa3e3b45df091327","rev":"1-3e6177995da9a2c238e58cbd75e47566"}]

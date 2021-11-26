@@ -1,0 +1,16 @@
+PUT /theuserscouch/jenkins
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-after-addroletouser-many
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/jenkins
+etag: "153-792b05f8174456b07fe8757d9ae6c691"
+date: Tue, 23 Nov 2021 23:31:44 GMT
+content-type: application/json
+content-length: 72
+cache-control: must-revalidate
+
+{"ok":true,"id":"jenkins","rev":"153-792b05f8174456b07fe8757d9ae6c691"}

@@ -1,0 +1,16 @@
+PUT /theuserscouch/testuser1
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-prep-updateroles-spreadsheet
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/testuser1
+etag: "40-0fa4e449512a4846f5c4eb5ebf6b4f28"
+date: Tue, 23 Nov 2021 23:31:44 GMT
+content-type: application/json
+content-length: 73
+cache-control: must-revalidate
+
+{"ok":true,"id":"testuser1","rev":"40-0fa4e449512a4846f5c4eb5ebf6b4f28"}

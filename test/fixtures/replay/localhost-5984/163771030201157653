@@ -1,0 +1,15 @@
+DELETE /_users/org.couchdb.user%3Ajenkins?rev=1-880def054f9392ec49f348fae37a0c29
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: changeUsersPassword
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "2-175fe41bf5f4fa73739f08b5f6ea3504"
+date: Tue, 23 Nov 2021 23:31:42 GMT
+content-type: application/json
+content-length: 87
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:jenkins","rev":"2-175fe41bf5f4fa73739f08b5f6ea3504"}

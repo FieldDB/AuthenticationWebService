@@ -1,0 +1,16 @@
+PUT /theuserscouch/testuser2
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: addCorpusToUser
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/testuser2
+etag: "48-eb63b47daf93cd37d8b47f3817816a22"
+date: Tue, 23 Nov 2021 23:31:35 GMT
+content-type: application/json
+content-length: 73
+cache-control: must-revalidate
+
+{"ok":true,"id":"testuser2","rev":"48-eb63b47daf93cd37d8b47f3817816a22"}

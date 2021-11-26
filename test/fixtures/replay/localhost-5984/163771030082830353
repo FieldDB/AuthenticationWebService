@@ -1,0 +1,14 @@
+POST /test1637710294972-kartuli/_bulk_docs
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-register-new
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 23 Nov 2021 23:31:40 GMT
+content-type: application/json
+content-length: 503
+cache-control: must-revalidate
+
+[{"ok":true,"id":"team","rev":"1-75ad90f7abb71f516e5c305672fd2d11"},{"ok":true,"id":"test1637710294972","rev":"1-9c213c66714bdb1df91cce7af26a5f97"},{"ok":true,"id":"corpus","rev":"1-71438a94a3c1438d721b53cd533c4175"},{"ok":true,"id":"e1982dcf55c68537fa3e3b45df0543c4","rev":"1-d32200d3c448cfd2ca5410e738faebd4"},{"ok":true,"id":"e1982dcf55c68537fa3e3b45df054adf","rev":"1-b4c9e8dca0a9961f80f29729d3e635f1"},{"ok":true,"id":"e1982dcf55c68537fa3e3b45df0559f9","rev":"1-a3efb6049b864bb22faef2cc5df03c9e"}]

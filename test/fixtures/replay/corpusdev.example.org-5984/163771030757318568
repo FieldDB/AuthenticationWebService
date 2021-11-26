@@ -1,0 +1,16 @@
+PUT /theuserscouch/testuser7
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-newcorpus-branded
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/testuser7
+etag: "45-d42f9d1770af6855bb0acf579fb19e3d"
+date: Tue, 23 Nov 2021 23:31:47 GMT
+content-type: application/json
+content-length: 73
+cache-control: must-revalidate
+
+{"ok":true,"id":"testuser7","rev":"45-d42f9d1770af6855bb0acf579fb19e3d"}

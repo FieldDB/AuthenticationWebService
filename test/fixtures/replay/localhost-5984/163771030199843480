@@ -1,0 +1,15 @@
+GET /_users/org.couchdb.user%3Ajenkins
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: changeUsersPassword
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "1-880def054f9392ec49f348fae37a0c29"
+date: Tue, 23 Nov 2021 23:31:42 GMT
+content-type: application/json
+content-length: 596
+cache-control: must-revalidate
+
+{"_id":"org.couchdb.user:jenkins","_rev":"1-880def054f9392ec49f348fae37a0c29","password_scheme":"pbkdf2","iterations":10,"name":"jenkins","roles":["fielddbuser","jenkins-firstcorpus_admin","jenkins-firstcorpus_commenter","jenkins-firstcorpus_reader","jenkins-firstcorpus_writer","learnx_user","lingllama-communitycorpus_commenter","lingllama-communitycorpus_reader","lingllama-communitycorpus_writer","public-firstcorpus_reader"],"previous_rev":"1-43f8c8b0be08601ba311e90bb1e10ae3","type":"user","derived_key":"c2decf11e3a00d206f43712cd8b18ddbe596b250","salt":"0ea49a2a2896804ccde1524c1402fdac"}

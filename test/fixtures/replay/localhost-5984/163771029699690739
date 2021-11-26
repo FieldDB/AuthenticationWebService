@@ -1,0 +1,15 @@
+DELETE /_users/org.couchdb.user%3Atestuser3?rev=1-da674c71c9e0ccbf7431219cd7bd0436
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: changeUsersPassword
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "2-3b8b64477727e1677eda7dc2e3cf396c"
+date: Tue, 23 Nov 2021 23:31:37 GMT
+content-type: application/json
+content-length: 89
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:testuser3","rev":"2-3b8b64477727e1677eda7dc2e3cf396c"}

@@ -1,0 +1,16 @@
+PUT /theuserscouch/testuser6
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-prep-addroletouser
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/theuserscouch/testuser6
+etag: "69-2b4b4c357dd11f75347808b7f8ab70c1"
+date: Tue, 23 Nov 2021 23:31:43 GMT
+content-type: application/json
+content-length: 73
+cache-control: must-revalidate
+
+{"ok":true,"id":"testuser6","rev":"69-2b4b4c357dd11f75347808b7f8ab70c1"}

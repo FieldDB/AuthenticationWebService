@@ -1,0 +1,17 @@
+POST /_users
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-newcorpus
+body: {\"_id\":\"org.couchdb.user:test1637710294972\",\"_rev\":\"2-e4728abf096e146d45b0fe5c8c601c3a\",\"password_scheme\":\"pbkdf2\",\"iterations\":10,\"name\":\"test1637710294972\",\"roles\":[\"fielddbuser\",\"georgiantogether_user\",\"public-firstcorpus_reader\",\"test1637710294972-kartuli_admin\",\"test1637710294972-kartuli_commenter\",\"test1637710294972-kartuli_reader\",\"test1637710294972-kartuli_writer\",\"test1637710294972-testing_v3_32_011637710305460_admin\",\"test1637710294972-testing_v3_32_011637710305460_commenter\",\"test1637710294972-testing_v3_32_011637710305460_reader\",\"test1637710294972-testing_v3_32_011637710305460_writer\"],\"type\":\"user\",\"derived_key\":\"45aaa0bf0e91d5fd86eae925992971be1ade8893\",\"salt\":\"0594e5f5aa845c2d1c674cde2470dfba\"}
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://localhost:5984/_users/org.couchdb.user:test1637710294972
+etag: "3-83e1f0b128f0a46b924965c19842b46a"
+date: Tue, 23 Nov 2021 23:31:45 GMT
+content-type: application/json
+content-length: 97
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:test1637710294972","rev":"3-83e1f0b128f0a46b924965c19842b46a"}

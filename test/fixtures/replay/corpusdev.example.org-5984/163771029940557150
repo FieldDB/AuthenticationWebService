@@ -1,0 +1,17 @@
+PUT /_users/org.couchdb.user%3Atest1637710294972
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-register-new
+body: {\"_id\":\"org.couchdb.user:test1637710294972\",\"name\":\"test1637710294972\",\"password\":\"test\",\"roles\":[\"fielddbuser\",\"georgiantogether_user\",\"public-firstcorpus_reader\"],\"type\":\"user\"}
+
+HTTP/1.1 201 Created
+server: CouchDB/1.6.1 (Erlang OTP/17)
+location: http://corpusdev.example.org:5984/_users/org.couchdb.user:test1637710294972
+etag: "1-fa7e5d25231cc8be93247d05fd5e73f8"
+date: Tue, 23 Nov 2021 23:31:39 GMT
+content-type: application/json
+content-length: 97
+cache-control: must-revalidate
+
+{"ok":true,"id":"org.couchdb.user:test1637710294972","rev":"1-fa7e5d25231cc8be93247d05fd5e73f8"}

@@ -1,0 +1,15 @@
+GET /_users/org.couchdb.user%3Ajenkins
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-addroletouser-many
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "1-c0b05557e45febb80972435238363ed9"
+date: Tue, 23 Nov 2021 23:31:44 GMT
+content-type: application/json
+content-length: 596
+cache-control: must-revalidate
+
+{"_id":"org.couchdb.user:jenkins","_rev":"1-c0b05557e45febb80972435238363ed9","password_scheme":"pbkdf2","iterations":10,"name":"jenkins","roles":["fielddbuser","jenkins-firstcorpus_admin","jenkins-firstcorpus_commenter","jenkins-firstcorpus_reader","jenkins-firstcorpus_writer","learnx_user","lingllama-communitycorpus_commenter","lingllama-communitycorpus_reader","lingllama-communitycorpus_writer","public-firstcorpus_reader"],"previous_rev":"1-880def054f9392ec49f348fae37a0c29","type":"user","derived_key":"fa88e24177fac78b994eba7e6d5f7a25b9a2e07e","salt":"09e08ab17651cb0c8d2ac19fa2786564"}

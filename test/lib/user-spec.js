@@ -96,14 +96,14 @@ describe('lib/user', () => {
             'testuser4-firstcorpus_commenter',
           ],
           after: [
-            'reader',
             'commenter',
+            'reader',
           ],
           before: [
-            'reader',
             'commenter',
+            'reader',
           ],
-          message: 'User testuser8 now has reader commenter access to testuser4-firstcorpus, the user was already a member of this corpus team.',
+          message: 'User testuser8 now has commenter reader access to testuser4-firstcorpus, the user was already a member of this corpus team.',
           remove: [
             'testuser4-firstcorpus_admin',
             'testuser4-firstcorpus_writer',
@@ -138,24 +138,31 @@ describe('lib/user', () => {
      * re-record instructions
      * - remove body because has a date time in serverLogs
      */
-    it('should handle invalid password', () => authenticateUser({
-      username: 'testuser8',
-      password: 'wrongpassword',
-      req: {
-        id: 'authenticateUser-wrong-password',
-      },
-    })
-      .catch(({ message, status, userFriendlyErrors }) => {
-        expect(message).to.equal('Username or password is invalid. Please try again.');
-        expect(status).to.equal(401);
-        expect(userFriendlyErrors).to.deep.equal([
-          'Username or password is invalid. Please try again. You have 3 more attempts before a temporary password will be emailed to your registration email (if you provided one).',
-        ]);
-      }));
+    it('should handle invalid password', function () {
+      if (process.env.REPLAY !== 'bloody') {
+        this.skip();
+      }
+      this.retries(5);
+
+      return authenticateUser({
+        username: 'testuser7',
+        password: 'wrongpassword',
+        req: {
+          id: 'authenticateUser-wrong-password',
+        },
+      })
+        .catch(({ message, status, userFriendlyErrors }) => {
+          expect(message).to.equal('Username or password is invalid. Please try again.');
+          expect(status).to.equal(401);
+          expect(userFriendlyErrors).to.deep.equal([
+            'Username or password is invalid. Please try again. You have 3 more attempts before a temporary password will be emailed to your registration email (if you provided one).',
+          ]);
+        });
+    });
 
     it('should handle invalid password who have an email address', function () {
       this.retries(8);
-      authenticateUser({
+      return authenticateUser({
         username: 'testinguserwithemail',
         password: 'wrongpassword',
         req: {
@@ -192,9 +199,12 @@ describe('lib/user', () => {
     it('should authenticate', () => authenticateUser({
       username: 'testuser5',
       password: 'test',
-
       req: {
         id: 'authenticateUser-success',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -222,9 +232,12 @@ describe('lib/user', () => {
           dbname: 'testuser-two',
         }],
       },
-
       req: {
         id: 'authenticateUser-sync',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -255,6 +268,14 @@ describe('lib/user', () => {
       corpora: [{
         dbname: 'testanotheruser-a_corpus',
       }],
+      req: {
+        body: {},
+        id: 'createNewCorpusesIfDontExist-anothers',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
+      },
     })
       .then((result) => {
         expect(result).to.deep.equal([{
@@ -273,6 +294,14 @@ describe('lib/user', () => {
       }, {
         dbname: 'testuser-two',
       }],
+      req: {
+        body: {},
+        id: 'createNewCorpusesIfDontExist',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
+      },
     })
       .then((result) => {
         expect(result).to.deep.equal([{
@@ -303,6 +332,10 @@ describe('lib/user', () => {
             dbname: 'testingprototype-firstcorpus',
           },
         },
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -328,6 +361,10 @@ describe('lib/user', () => {
             dbname: 'jenkins-firstcorpus',
           },
         },
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -352,6 +389,10 @@ describe('lib/user', () => {
       email: 'lingllama@example.org',
       req: {
         id: 'findByEmail',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -375,6 +416,10 @@ describe('lib/user', () => {
       username: 'lingllama',
       req: {
         id: 'findByUsername',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then(({
@@ -415,6 +460,10 @@ describe('lib/user', () => {
       username: 'testingdisabledusers',
       req: {
         id: 'findByUsername-disabled',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .catch(({
@@ -447,6 +496,10 @@ describe('lib/user', () => {
       email: 'myemail@example.com',
       req: {
         id: 'forgotPassword-reset',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .catch((err) => {
@@ -467,6 +520,10 @@ describe('lib/user', () => {
           username: 'yourusernamegoeshere',
         },
         id: 'registerNewUser-default',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -485,6 +542,10 @@ describe('lib/user', () => {
           username: 'aa',
         },
         id: 'registerNewUser-too-short',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -501,6 +562,10 @@ describe('lib/user', () => {
           username: 'Jen kins',
         },
         id: 'registerNewUser-not-ascii',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -519,6 +584,10 @@ describe('lib/user', () => {
           username: 'jenkins',
         },
         id: 'registerNewUser-existing',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then((result) => {
@@ -534,7 +603,7 @@ describe('lib/user', () => {
      * - update username to equal the recorded username
      */
     it('should register wordcloud users', () => {
-      const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637231371832';
+      const username = process.env.REPLAY ? `anonymouswordclouduser${Date.now()}` : 'anonymouswordclouduser1637710296692';
       return registerNewUser({
         req: {
           body: {
@@ -579,6 +648,10 @@ describe('lib/user', () => {
         user: expectedUser,
         req: {
           id: 'saveUpdateUserToDatabase-sample',
+          log: {
+            error: () => {},
+            warn: () => {},
+          },
         },
       })
         .then(({ user, info }) => {
@@ -601,6 +674,10 @@ describe('lib/user', () => {
         user: expectedUser,
         req: {
           id: 'saveUpdateUserToDatabase-conflict',
+          log: {
+            error: () => {},
+            warn: () => {},
+          },
         },
       })
         .then((result) => {
@@ -626,6 +703,10 @@ describe('lib/user', () => {
       username: 'testuser3',
       req: {
         id: 'setPassword',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
       },
     })
       .then(({ user, info }) => {
@@ -661,7 +742,11 @@ describe('lib/user', () => {
   describe('undoCorpusCreation', () => {
     it('should not reject', () => undoCorpusCreation()
       .then((result) => {
-        expect(result).to.equal(undefined);
+        expect(result).to.deep.equal({
+          info: {
+            text: 'There was a problem while creating your corpus undefined. The server admins have been notified.',
+          },
+        }, JSON.stringify(result));
       }));
 
     it('should undoCorpusCreation', () => undoCorpusCreation({
@@ -677,7 +762,11 @@ describe('lib/user', () => {
       }],
     })
       .then((result) => {
-        expect(result).to.equal(undefined);
+        expect(result).to.deep.equal({
+          info: {
+            text: 'There was a problem while creating your corpus testingcreatefailure-firstcorpus. The server admins have been notified.',
+          },
+        }, JSON.stringify(result));
       }));
   });
 

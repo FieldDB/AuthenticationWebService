@@ -73,7 +73,7 @@ describe.skip('/users', () => {
 
         return supertest(`http://${username}:test@localhost:5984`)
           .get(`/${username}-firstcorpus/_design/lexicon/_view/lexiconNodes`)
-        // .set('x-request-id', requestId + '-register')
+          .set('x-request-id', `${requestId}-register`)
           .set('Accept', 'application/json');
       })
       .then((res) => {

@@ -1,0 +1,15 @@
+PUT /test1637710294972-activity_feed/_security
+accept: application/json
+content-type: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-register-new
+body: {\"admins\":{\"names\":[],\"roles\":[\"fielddbadmin\"]},\"members\":{\"names\":[\"test1637710294972\"],\"roles\":[]},\"_id\":\"_security\"}
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+date: Tue, 23 Nov 2021 23:31:39 GMT
+content-type: application/json
+content-length: 12
+cache-control: must-revalidate
+
+{"ok":true}

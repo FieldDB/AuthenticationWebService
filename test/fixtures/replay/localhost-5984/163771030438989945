@@ -1,0 +1,15 @@
+GET /_users/org.couchdb.user%3Atest1637710294972
+accept: application/json
+accept-encoding: deflate, gzip
+x-request-id: deprecated-spec-prep-addroletouser-backbone
+content-type: application/json
+
+HTTP/1.1 200 OK
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "2-e4728abf096e146d45b0fe5c8c601c3a"
+date: Tue, 23 Nov 2021 23:31:44 GMT
+content-type: application/json
+content-length: 490
+cache-control: must-revalidate
+
+{"_id":"org.couchdb.user:test1637710294972","_rev":"2-e4728abf096e146d45b0fe5c8c601c3a","password_scheme":"pbkdf2","iterations":10,"name":"test1637710294972","roles":["fielddbuser","georgiantogether_user","public-firstcorpus_reader","test1637710294972-kartuli_admin","test1637710294972-kartuli_commenter","test1637710294972-kartuli_reader","test1637710294972-kartuli_writer"],"type":"user","derived_key":"45aaa0bf0e91d5fd86eae925992971be1ade8893","salt":"0594e5f5aa845c2d1c674cde2470dfba"}

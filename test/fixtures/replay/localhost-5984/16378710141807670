@@ -1,0 +1,17 @@
+GET /test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346/_design/deprecated/_view/corpora
+accept-encoding: gzip, deflate
+x-request-id: deprecated-spec-syncDetails
+accept: application/json
+authorization: Basic dGVzdDE2Mzc3MTAyOTQ5NzI6dGVzdA==
+
+HTTP/1.1 200 OK
+transfer-encoding: chunked
+server: CouchDB/1.6.1 (Erlang OTP/17)
+etag: "C5EZDJW5RQE47QW0JC3SIZLE1"
+date: Thu, 25 Nov 2021 20:10:14 GMT
+content-type: application/json
+cache-control: must-revalidate
+
+{"total_rows":1,"offset":0,"rows":[
+{"id":"corpus","key":null,"value":{"_id":"corpus","_rev":"1-74fc3c1faf040fa926e1a5b1fe076120","fieldDBtype":"CorpusMask","dbname":"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346","connection":{"fieldDBtype":"Connection","corpusUrls":[],"brandLowerCase":"","version":"v5.168.15-rc0","title":"an_offline_corpus_created_in_the_prototype1637871012346","titleAsUrl":"an_offline_corpus_created_in_the_prototype1637871012346","dbname":"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346","description":"This is probably your first Corpus, you can use it to play with the app... When you want to make a real corpus, click New : Corpus","corpusid":"","pouchname":"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346","protocol":"","domain":"","port":"","path":"","userFriendlyServerName":"","authUrls":[],"clientUrls":[],"lexiconUrls":[],"searchUrls":[],"audioUrls":[],"websiteUrls":[],"activityUrls":[],"website":""},"corpusid":"","dateCreated":1637871012652,"team":{"fieldDBtype":"Team","_id":"team","username":"test1637710294972","researchInterest":"No public information available","affiliation":"No public information available","description":"No public information available","dateCreated":1637871012654,"gravatar":"88ee02aae473ed20a4bf779e2b7c82f0","version":"v5.168.15-rc0","firstname":"","lastname":"","api":"users","name":"test1637710294972"},"version":"v5.168.15-rc0","pouchname":"test1637710294972-an_offline_corpus_created_in_the_prototype1637871012346","api":"corpora","title":"","description":"","termsOfUse":"","license":{},"copyright":""}}
+]}
