@@ -69,8 +69,8 @@ module.exports = {
       from: 'none@localhost', // sender address
       to: '', // list of receivers
       subject: 'Welcome to localhost!', // Subject line
-      text: 'Your username is: ', // plaintext // body
-      html: 'Your username is: ',
+      text: 'Your username is: insert_username', // plaintext // body
+      html: 'Your username is: insert_username',
     };
   },
   welcomeToCorpusTeamMailOptions: function welcomeToCorpusTeamMailOptions() {
@@ -78,8 +78,8 @@ module.exports = {
       from: 'none@localhost', // sender address
       to: '', // list of receivers
       subject: '[LingSync.org] Someone has granted you access to their corpus', // Subject line
-      text: "The new corpus's identifier is: ", // plaintext // body
-      html: "The new corpus's identifier is: ",
+      text: "The new corpus's identifier is: insert_corpus_identifier", // plaintext // body
+      html: "The new corpus's identifier is: insert_corpus_identifier",
     };
   },
   suspendedUserMailOptions: function suspendedUserMailOptions() {
@@ -96,8 +96,8 @@ module.exports = {
       from: 'none@localhost', // sender address
       to: '', // list of receivers
       subject: 'Welcome to localhost!', // Subject line
-      text: 'Your username is: ', // plaintext // body
-      html: 'Your username is: ',
+      text: 'Your username is: insert_username', // plaintext // body
+      html: 'Your username is: insert_username',
     };
   },
   welcomeToCorpusTeamMailOptionsPhophlo: function welcomeToCorpusTeamMailOptionsPhophlo() {
@@ -105,8 +105,8 @@ module.exports = {
       from: 'none@localhost', // sender address
       to: '', // list of receivers
       subject: '[LingSync.org] Someone has granted you access to their corpus', // Subject line
-      text: "The new corpus's identifier is: ", // plaintext // body
-      html: "The new corpus's identifier is: ",
+      text: "The new corpus's identifier is: insert_corpus_identifier", // plaintext // body
+      html: "The new corpus's identifier is: insert_corpus_identifier",
     };
   },
   suspendedUserMailOptionsPhophlo: function suspendedUserMailOptionsPhophlo() {
