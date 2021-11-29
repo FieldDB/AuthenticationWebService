@@ -6,6 +6,7 @@ const { DEBUG } = env;
 const { NODE_ENV } = env;
 const sequelize = new Sequelize('database', 'id', 'password', {
   dialect: 'sqlite',
+  // eslint-disable-next-line no-console
   logging: /(sql|oauth|token)/.test(DEBUG) ? console.log : false,
   pool: {
     max: 5,

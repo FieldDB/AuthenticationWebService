@@ -1,5 +1,3 @@
-/* global Promise */
-
 const debug = require('debug')('model:oauth');
 const fs = require('fs');
 const Sequelize = require('sequelize');
@@ -19,11 +17,13 @@ try {
   fs.mkdirSync('db');
 } catch (err) {
   if (err.message !== 'EEXIST: file already exists, mkdir \'db\'') {
+    // eslint-disable-next-line no-console
     console.log('err', err);
   }
 }
 const sequelize = new Sequelize('database', 'id', 'password', {
   dialect: 'sqlite',
+  // eslint-disable-next-line no-console
   logging: /(sql|oauth)/.test(DEBUG) ? console.log : false,
   pool: {
     max: 5,
@@ -130,12 +130,12 @@ function list(opts, callback) {
 
   oauthClient
     .findAll(options)
-    .then((oauth_clients) => {
-      if (!oauth_clients) {
+    .then((oauthClients) => {
+      if (!oauthClients) {
         return callback(new Error('Unable to fetch oauthClient collection'));
       }
 
-      return callback(null, oauth_clients.map((dbModel) => dbModel.toJSON()));
+      return callback(null, oauthClients.map((dbModel) => dbModel.toJSON()));
     })
     .catch(callback);
 }
@@ -206,23 +206,23 @@ function getAccessToken(bearerToken) {
 /**
  * Get oauth client details
  */
-function getClient(clientId, clientSecret) {
+function getClient(clientId /* clientSecret */) {
+  // eslint-disable-next-line prefer-rest-params
   debug('getClient arguments', arguments);
 
   return oauthClient.findOne({
     where: {
       client_id: clientId,
-      // examples show that that this is required, but when called via oauth.authorize it is missing
+      // TODO examples show that that this is required, but when called via oauth.authorize it is missing
       // client_secret: clientSecret,
       deletedAt: null,
     },
   }).then((client) => {
-    let json;
     if (!client) {
       throw new Error('Client id or secret is invalid');
     }
 
-    json = {
+    const json = {
       client: lodash.omit(client.toJSON(), ['client_secret']), // remove the secret
       id: clientId,
       grants: ['authorization_code'],
@@ -238,12 +238,12 @@ function getClient(clientId, clientSecret) {
  * Get details for a given authorization code
  */
 function getAuthorizationCode(code) {
+  // eslint-disable-next-line prefer-rest-params
   debug('getAuthorizationCode', arguments, AUTHORIZATION_CODE_TRANSIENT_STORE);
   debug('AUTHORIZATION_CODE_TRANSIENT_STORE', AUTHORIZATION_CODE_TRANSIENT_STORE);
 
   return new Promise((resolve, reject) => {
     const result = AUTHORIZATION_CODE_TRANSIENT_STORE[code];
-    let err;
     if (result) {
       // delete AUTHORIZATION_CODE_TRANSIENT_STORE[code];
       result.expiresAt = new Date(result.expiresAt);
@@ -252,7 +252,7 @@ function getAuthorizationCode(code) {
       // };
       return resolve(result);
     }
-    err = new Error('Code is not authorized', {
+    const err = new Error('Code is not authorized', {
       code: 403,
     });
     err.status = 403;
@@ -265,6 +265,7 @@ function getAuthorizationCode(code) {
  * Revoke a given authorization code
  */
 function revokeAuthorizationCode(code) {
+  // eslint-disable-next-line prefer-rest-params
   debug('revokeAuthorizationCode', arguments);
 
   return new Promise((resolve) => {
@@ -349,6 +350,7 @@ function getUser(username, password, callback) {
  * Verify the scope for a token matches the scope pemitted
  */
 function verifyScope(decodedToken, scope, callback) {
+  // eslint-disable-next-line prefer-rest-params
   debug('verifyScope', arguments);
   // TODO look up if the client permits those scopes
   return callback(null, true);
@@ -363,6 +365,7 @@ function verifyScope(decodedToken, scope, callback) {
  * Save token
  */
 function saveToken(token, value, user) {
+  // eslint-disable-next-line prefer-rest-params
   debug('saveToken ', arguments);
   return new Promise((resolve, reject) => {
     if (!token || !value || !user) {

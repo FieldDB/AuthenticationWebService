@@ -9,6 +9,7 @@ const { DEBUG } = env;
 const { NODE_ENV } = env;
 const sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
+  // eslint-disable-next-line no-console
   logging: /(sql|user)/.test(DEBUG) ? console.log : false,
   pool: {
     max: 5,
@@ -41,11 +42,10 @@ const FLAT_SCHEMA = {
     type: Sequelize.STRING,
     get: function getGravatar() {
       const gravatar = this.getDataValue('gravatar');
-      let email;
       if (gravatar) {
         return gravatar;
       }
-      email = this.getDataValue('email') || this.getDataValue('id') || DEFAULT_GRAVATAR;
+      const email = this.getDataValue('email') || this.getDataValue('id') || DEFAULT_GRAVATAR;
       return crypto.createHash('md5').update(email).digest('hex');
     },
   },
@@ -139,12 +139,11 @@ function increaseRevision(revision) {
  * @return {Promise}
  */
 function hashPassword(password) {
-  let salt;
   if (!password) {
     return new Error('Please provide a password');
   }
 
-  salt = bcrypt.genSaltSync(10);
+  const salt = bcrypt.genSaltSync(10);
   return {
     salt,
     hash: bcrypt.hashSync(password, salt),
@@ -157,9 +156,6 @@ function hashPassword(password) {
  * @return {Promise}
  */
 function create(profile, callback) {
-  let flat;
-  let hashed;
-
   if (!profile) {
     return callback(new Error('Please provide a user'));
   }
@@ -171,7 +167,7 @@ function create(profile, callback) {
   // eslint-disable-next-line no-param-reassign
   delete profile.hash;
 
-  flat = jsonToFlat(profile);
+  const flat = jsonToFlat(profile);
 
   if (flat.revision) {
     if (flat.revision.indexOf('-') === -1) {
@@ -182,7 +178,7 @@ function create(profile, callback) {
   }
   flat.revision = flat.revision || `1-${Date.now()}`;
 
-  hashed = hashPassword(profile.password);
+  const hashed = hashPassword(profile.password);
   // eslint-disable-next-line no-param-reassign
   delete profile.password;
   if (hashed instanceof Error) {
@@ -193,10 +189,7 @@ function create(profile, callback) {
 
   return User
     .create(flat)
-    .then((data) => {
-      flat = data.toJSON();
-      return callback(null, flatToJson(flat, ''));
-    })
+    .then((data) => callback(null, flatToJson(data.toJSON(), '')))
     .catch(callback);
 }
 
@@ -273,7 +266,6 @@ function changePassword(profile, callback) {
       },
     })
     .then((dbUser) => {
-      let hashed;
       if (!dbUser.dataValues.hash) {
         return callback(new Error('Password was not set, please report this 34544.'));
       }
@@ -284,7 +276,7 @@ function changePassword(profile, callback) {
         return callback(new Error('Password doesn\'t match your old password'));
       }
 
-      hashed = hashPassword(profile.newPassword);
+      const hashed = hashPassword(profile.newPassword);
       // eslint-disable-next-line no-param-reassign
       delete profile.password;
       // eslint-disable-next-line no-param-reassign
@@ -317,8 +309,6 @@ function save(profile, callback) {
       },
     })
     .then((dbUser) => {
-      let flat;
-      let hashed;
       // Create the user
       if (!dbUser) {
         return create(profile, callback);
@@ -329,7 +319,7 @@ function save(profile, callback) {
       // eslint-disable-next-line no-param-reassign
       delete profile.password;
 
-      flat = jsonToFlat(profile, 'not:::patched');
+      const flat = jsonToFlat(profile, 'not:::patched');
       debug(flat);
 
       // Update only the changed fields
@@ -344,7 +334,7 @@ function save(profile, callback) {
       // and the passed in profile had a password,
       // set the hash
       if (profile.password && !dbUser.dataValues.hash) {
-        hashed = hashPassword(profile.password);
+        const hashed = hashPassword(profile.password);
         if (hashed instanceof Error) {
           return callback(hashed);
         }
