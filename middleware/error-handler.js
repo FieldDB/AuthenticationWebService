@@ -81,6 +81,8 @@ const errorHandler = function (err, req, res, next) {
     data.userFriendlyErrors = ['Server erred, please report this 23829'];
   } else if (err.status && err.userFriendlyErrors && err.userFriendlyErrors[0] && err.userFriendlyErrors[0].includes('Please report this')) {
     data.userFriendlyErrors = err.userFriendlyErrors;
+  } else if (err.userFriendlyErrors) {
+    data.userFriendlyErrors = err.userFriendlyErrors;
   } else {
     data.userFriendlyErrors = ['Server erred, please report this 816'];
   }

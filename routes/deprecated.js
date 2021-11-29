@@ -286,11 +286,11 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       // Add a role to the user
       return userFunctions.addRoleToUser({
         req,
-      })
-        .catch((err) => {
-          next(err);
-          throw new Error('ending the request');
-        });
+      });
+      // .catch((err) => {
+      //   next(err);
+      //   throw new Error('ending the request');
+      // });
     })
       .then((userPermissionSet) => {
         const info = userPermissionSet.map((userPermission) => {

@@ -38,7 +38,7 @@ describe('lib/user', () => {
     it('should reject with an error', () => addCorpusToUser()
       .catch((err) => {
         expect(err.message).to.equal('username is required');
-        expect(err.status).to.equal(500);
+        expect(err.status).to.equal(undefined);
         expect(err.userFriendlyErrors).to.deep.equal(['Username doesnt exist on this server. This is a bug.']);
       }));
 
