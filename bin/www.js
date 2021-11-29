@@ -1,15 +1,16 @@
 #!/usr/bin/env node
-var config = require('config');
-var https = require('https');
-var url = require('url');
+const config = require('config');
+const https = require('https');
 
-var server;
-var service = require('../auth_service');
+let server;
+const service = require('../auth_service');
+
 service.set('port', config.httpsOptions.port);
 
-var whenReady = new Promise(function(resolve) {
+const whenReady = new Promise((resolve) => {
   if (process.env.NODE_ENV === 'production') {
-    server = service.listen(config.httpsOptions.port, function() {
+    server = service.listen(config.httpsOptions.port, () => {
+      // eslint-disable-next-line no-console
       console.log('Running in production mode behind an Nginx proxy, Listening on http port %d', server.address().port);
       resolve(server);
     });
@@ -17,8 +18,9 @@ var whenReady = new Promise(function(resolve) {
     /**
      * Ask https to turn on the service
      */
-    server = https.createServer(config.httpsOptions, service).listen(service.get('port'), function() {
-      console.log('HTTPS Express server listening on https://localhost:' + server.address().port);
+    server = https.createServer(config.httpsOptions, service).listen(service.get('port'), () => {
+      // eslint-disable-next-line no-console
+      console.log(`HTTPS Express server listening on https://localhost:${server.address().port}`);
       resolve(server);
     });
   }
@@ -26,6 +28,6 @@ var whenReady = new Promise(function(resolve) {
 
 module.exports = {
   ready: whenReady,
-  server: server,
-  service: service,
+  server,
+  service,
 };
