@@ -34,6 +34,7 @@ describe('middleware/error-handler', () => {
       res.status = sinon.spy();
       req.log = {
         fields: {},
+        error: () => {},
       };
     });
 

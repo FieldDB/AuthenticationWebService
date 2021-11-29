@@ -2,20 +2,21 @@ const debug = require('debug')('middleware:error');
 
 const { BUNYAN_LOG_LEVEL } = process.env;
 
-const cleanErrorStatus = function (status) {
+function cleanErrorStatus(status) {
   if (status && status < 600) {
     return status;
   }
   return '';
-};
+}
 
 // eslint-disable-next-line no-unused-vars
-const errorHandler = function (err, req, res, next) {
+function errorHandler(err, req, res, next) {
   let data;
   const { NODE_ENV } = process.env;
   debug(`errorHandler ${NODE_ENV} ${req.url}`, err);
 
   if (res.headersSent) {
+    // eslint-disable-next-line no-console
     console.warn('This request has already been replied to', err);
     return;
   }
@@ -93,7 +94,7 @@ const errorHandler = function (err, req, res, next) {
     // data.stack = data.stack ? data.stack.toString() : undefined;
     data.message = 'Internal server error';
     if (BUNYAN_LOG_LEVEL !== 'FATAL') {
-      console.log(`${new Date()}There was an unexpected error ${process.env.NODE_ENV} ${req.url}`, err);
+      req.log.error(err, `${new Date()} There was an unexpected error ${process.env.NODE_ENV} ${req.url}`);
     }
   } else {
     data.message = err.message;
@@ -103,13 +104,14 @@ const errorHandler = function (err, req, res, next) {
   };
 
   if (req.headers['x-requested-with'] === 'XMLHttpRequest' || /application\/json/.test(req.headers['content-type'])) {
-    return res.json(data);
+    res.json(data);
+    return;
   }
 
-  return res.json({
+  res.json({
     status: data.status,
     userFriendlyErrors: data.userFriendlyErrors,
   });
-};
+}
 
 exports.errorHandler = errorHandler;
