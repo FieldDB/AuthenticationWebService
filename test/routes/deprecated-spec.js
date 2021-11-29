@@ -42,14 +42,14 @@ describe('/ deprecated', () => {
           expect(res.body.user.username).to.equal(testUsername, JSON.stringify(res.body));
           expect(res.body.user.appbrand).to.equal('georgiantogether');
           expect(res.body.user.prefs).to.deep.equal({
-            alwaysRandomizeSkin: true,
+            // alwaysRandomizeSkin: true,
             dateCreated: res.body.user.prefs.dateCreated,
             fieldDBtype: 'UserPreference',
-            hotkeys: [],
-            numberOfItemsInPaginatedViews: 10,
-            numVisibleDatum: 2,
+            // hotkeys: [],
+            // numberOfItemsInPaginatedViews: 10,
+            // numVisibleDatum: 2,
             skin: 'user/skins/weaving.jpg',
-            transparentDashboard: false,
+            // transparentDashboard: false,
             unicodes: res.body.user.prefs.unicodes,
             version: 'v5.168.15-rc0',
           }, JSON.stringify(res.body.user.prefs));
@@ -1541,9 +1541,9 @@ describe('/ deprecated', () => {
         },
       })
       .then((res) => {
-        expect(res.body.user.corpora && res.body.user.corpora.length >= 1)
+        expect(res.body.user && res.body.user.corpora && res.body.user.corpora.length >= 1)
           .to.equal(true, JSON.stringify(res.body));
-        expect(res.body.user.newCorpora.length).above(2);
+        expect(res.body.user.newCorpora && res.body.user.newCorpora.length).above(2, JSON.stringify(res.body.user.newCorpora));
 
         return supertest(`http://${testUsername}:test@localhost:5984`)
           .get('/someoneelsesdb-shouldnt_be_creatable')

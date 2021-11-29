@@ -47,6 +47,9 @@ describe('lib/user', () => {
       newConnection: {
         dbname: 'testuser2-firstcorpus',
       },
+      userPermissionResult: {
+        after: [],
+      },
       req: {
         id: 'addCorpusToUser',
       },
@@ -426,7 +429,7 @@ describe('lib/user', () => {
         user,
       }) => {
         expect(user.firstname).to.equal('Ling');
-        expect(user.corpuses).to.equal(undefined);
+        expect(user.corpuses).not.to.equal(undefined);
         expect(user.corpora.length).above(0);
       }));
 
@@ -483,6 +486,23 @@ describe('lib/user', () => {
         });
 
         expect(stack).to.contain('lib/user.js');
+      }));
+
+    it('should return a FielDB user', () => findByUsername({
+      username: 'lingllama',
+      req: {
+        id: 'findByUsername',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
+      },
+    })
+      .then(({
+        user,
+      }) => {
+        expect(typeof user.clone).to.equal('function');
+        expect(typeof user.toJSON).to.equal('function');
       }));
   });
 

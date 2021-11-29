@@ -25,7 +25,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     })
       .then(({ user, info }) => {
         const returndata = {};
-        returndata.user = user;
+        returndata.user = user.toJSON();
         delete returndata.user.password;
         delete returndata.user.serverlogs;
         returndata.info = [info.message];
@@ -72,7 +72,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     })
       .then(({ user, info } = {}) => {
         const returndata = {};
-        returndata.user = user;
+        returndata.user = user.toJSON();
         returndata.info = [info.message];
         debug(user, `${new Date()} Returning the newly built user:`);
         res.send(returndata);
@@ -127,7 +127,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     })
       .then(({ user, info }) => {
         const returndata = {};
-        returndata.user = user;
+        returndata.user = user.toJSON();
         returndata.info = [info.message];
         res.status(200);
         debug(user, `${new Date()} Returning success`);
@@ -360,6 +360,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         returndata.status = 412;
         returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: newCorpusTitle'];
         res.send(returndata);
+        // TODO use next(err)
         throw new Error('ending the request');
       }
       req.body.appbrand = req.body.appbrand || req.body.brand || req.body.serverCode || req.body.serverLabel;
