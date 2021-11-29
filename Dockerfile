@@ -14,4 +14,4 @@ ENV NODE_ENV=beta
 
 EXPOSE 3183
 
-CMD [ "node", "bin/www" ]
+CMD [ "node", "bin/www.js" ]
