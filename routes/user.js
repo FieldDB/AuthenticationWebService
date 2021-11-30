@@ -1,6 +1,6 @@
 const debug = require('debug')('route:user');
 const swagger = require('@cesine/swagger-node-express');
-const param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
+const param = require('@cesine/swagger-node-express/Common/node/paramTypes');
 
 const User = require('../models/user');
 const authenticationMiddleware = require('../middleware/authentication');
@@ -29,11 +29,11 @@ exports.getUser = {
         username: req.params.username,
       };
 
-      User.read(json, (readErr, profile) => {
+      return User.read(json, (readErr, profile) => {
         if (readErr) {
           return next(readErr, req, res, next);
         }
-        res.json(profile);
+        return res.json(profile);
       });
     });
   },
@@ -60,7 +60,7 @@ exports.getCurrentUser = {
         username: res.locals.user.username,
       };
 
-      User.read(json, (readErr, profile) => {
+      return User.read(json, (readErr, profile) => {
         if (readErr) {
           return next(readErr, req, res, next);
         }
@@ -70,8 +70,10 @@ exports.getCurrentUser = {
           notFound.status = 404;
           return next(notFound);
         }
-        profile.token = res.locals.token;
-        res.json(profile);
+        return res.json({
+          ...profile,
+          token: res.locals.token,
+        });
       });
     });
   },
@@ -100,7 +102,7 @@ exports.getList = {
       if (err) {
         return next(err, req, res, next);
       }
-      res.json(miniProfiles);
+      return res.json(miniProfiles);
     });
   },
 };
@@ -154,11 +156,11 @@ exports.putUser = {
       }
 
       req.body.username = res.locals.user.username;
-      User.save(req.body, (saveErr, profile) => {
+      return User.save(req.body, (saveErr, profile) => {
         if (saveErr) {
           return next(saveErr, req, res, next);
         }
-        res.json(profile);
+        return res.json(profile);
       });
     });
   },

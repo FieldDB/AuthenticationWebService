@@ -1,6 +1,6 @@
 /* Load modules provided by $ npm install, see package.json for details */
 const swagger = require('@cesine/swagger-node-express');
-const param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes.js');
+const param = require('../node_modules/@cesine/swagger-node-express/Common/node/paramTypes');
 
 exports.getELanguages = {
   spec: {

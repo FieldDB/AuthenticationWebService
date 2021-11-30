@@ -1,6 +1,6 @@
 const swagger = require('@cesine/swagger-node-express');
-const param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
-const corpusData = require('../lib/corpus.js');
+const param = require('@cesine/swagger-node-express/Common/node/paramTypes');
+const corpusData = require('../lib/corpus');
 
 exports.getCorpora = {
   spec: {
@@ -84,7 +84,7 @@ exports.deleteCorpora = {
     // If the user has admin permissions
     // Flag the corpus as deleted
     // Remove the corpus from the user's list of corpora and add it to the deleted list
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     corpusData.deleteCorpus(id);
     res.status(204);
   },
