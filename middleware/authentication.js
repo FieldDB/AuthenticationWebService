@@ -1,10 +1,10 @@
-const AsToken = require('../lib/token');
+const config = require('config');
 const debug = require('debug')('middleware:authentication');
 const { ExtractJwt } = require('passport-jwt');
 const JwtStrategy = require('passport-jwt').Strategy;
 const passport = require('passport');
 
-const config = require('config');
+const AsToken = require('../lib/token');
 const user = require('../models/user');
 
 const opts = {
@@ -24,11 +24,11 @@ passport.use(new JwtStrategy(opts, ((jwtPayload, done) => {
       return done(err, false);
     }
     if (userModel) {
-      done(null, userModel);
-    } else {
-      done(null, false);
-      // or you could create a new account
+      return done(null, userModel);
     }
+
+    return done(null, false);
+    // or you could create a new account
   });
 })));
 
@@ -47,7 +47,8 @@ function jwt(req, res, next) {
   if (tokenString) {
     try {
       const verified = AsToken.verify(tokenString);
-      res.locals.user = req.user = verified.user;
+      req.user = verified.user;
+      res.locals.user = verified.user;
       res.locals.token = tokenString;
       // Oauth2 is trying to use this token
       // delete req.headers.authorization;
@@ -56,7 +57,8 @@ function jwt(req, res, next) {
     } catch (err) {
       // Often this is because it has expired or it was mutated
       debug(err);
-      res.locals.user = req.user = AsToken.decode(tokenString).user;
+      req.user = AsToken.decode(tokenString).user;
+      res.locals.user = req.user;
       res.locals.user.expired = true;
       return next();
     }
@@ -64,7 +66,7 @@ function jwt(req, res, next) {
 
   debug('req.user', req.user);
   debug('res.locals', res.locals);
-  next();
+  return next();
 }
 
 function requireAuthentication(req, res, next) {
@@ -83,7 +85,7 @@ function requireAuthentication(req, res, next) {
   // TOOD can add oauth middleware = oauth.authenticate({ });
   // https://github.com/oauthjs/express-oauth-server/blob/master/index.js#L42
 
-  next();
+  return next();
 }
 
 function redirectAuthenticatedUser(req, res, next) {
@@ -95,7 +97,7 @@ function redirectAuthenticatedUser(req, res, next) {
     return res.redirect(redirectUri);
   }
 
-  next();
+  return next();
 }
 
 function requireAuthenticationPassportJWT(req, res, next) {

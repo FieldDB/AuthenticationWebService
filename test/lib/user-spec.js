@@ -21,16 +21,21 @@ const {
   verifyPassword,
 } = require('../../lib/user');
 
+// eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
 replay.fixtures = path.join(__dirname, '../fixtures/replay');
 
 describe('lib/user', () => {
   before(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set(['127.0.0.1', '::1']);
+    // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
   });
   after(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = originalLocalhosts;
+    // eslint-disable-next-line no-underscore-dangle
     debug('after replay localhosts', replay._localhosts);
   });
 
@@ -38,7 +43,7 @@ describe('lib/user', () => {
     it('should reject with an error', () => addCorpusToUser()
       .catch((err) => {
         expect(err.message).to.equal('username is required');
-        expect(err.status).to.equal(500);
+        expect(err.status).to.equal(undefined);
         expect(err.userFriendlyErrors).to.deep.equal(['Username doesnt exist on this server. This is a bug.']);
       }));
 
@@ -46,6 +51,9 @@ describe('lib/user', () => {
       username: 'testuser2',
       newConnection: {
         dbname: 'testuser2-firstcorpus',
+      },
+      userPermissionResult: {
+        after: [],
       },
       req: {
         id: 'addCorpusToUser',
@@ -426,7 +434,7 @@ describe('lib/user', () => {
         user,
       }) => {
         expect(user.firstname).to.equal('Ling');
-        expect(user.corpuses).to.equal(undefined);
+        expect(user.corpuses).not.to.equal(undefined);
         expect(user.corpora.length).above(0);
       }));
 
@@ -483,6 +491,23 @@ describe('lib/user', () => {
         });
 
         expect(stack).to.contain('lib/user.js');
+      }));
+
+    it('should return a FielDB user', () => findByUsername({
+      username: 'lingllama',
+      req: {
+        id: 'findByUsername',
+        log: {
+          error: () => {},
+          warn: () => {},
+        },
+      },
+    })
+      .then(({
+        user,
+      }) => {
+        expect(typeof user.clone).to.equal('function');
+        expect(typeof user.toJSON).to.equal('function');
       }));
   });
 

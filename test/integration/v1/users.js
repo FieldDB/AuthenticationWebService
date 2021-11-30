@@ -1,11 +1,13 @@
 const { expect } = require('chai');
 const supertest = require('supertest');
 
+// eslint-disable-next-line global-require
 const api = process.env.URL || require('../../../auth_service');
 const user = require('../../../models/user');
+const userFixtures = require('../../fixtures/user.json');
 
 const fixtures = {
-  user: require('../../fixtures/user.json'),
+  user: userFixtures,
 };
 
 describe('/v1/users', () => {

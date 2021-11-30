@@ -1,5 +1,5 @@
 const debug = require('debug')('authentication');
-const param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
+const param = require('@cesine/swagger-node-express/Common/node/paramTypes');
 const sequelize = require('sequelize');
 const querystring = require('querystring');
 
@@ -45,9 +45,6 @@ exports.postLogin = {
       password: req.body.password,
       username: req.body.username,
     }, (err, user) => {
-      let token;
-      let redirect;
-
       delete req.body.password;
       if (err) {
         debug('error logging in', err, user);
@@ -57,12 +54,12 @@ exports.postLogin = {
         return next(err, req, res, next);
       }
 
-      token = signUserAsToken({ user });
+      const token = signUserAsToken({ user });
       debug('token', token);
       res.set('Set-Cookie', `Authorization=Bearer ${token}; path=/; Secure; HttpOnly`);
       res.set('Authorization', `Bearer ${token}`);
 
-      redirect = req.body.redirect || `${req.body.redirect_uri}?${querystring.stringify(req.body)}`;
+      const redirect = req.body.redirect || `${req.body.redirect_uri}?${querystring.stringify(req.body)}`;
       return res.redirect(redirect);
     });
   },
@@ -147,8 +144,6 @@ exports.postRegister = {
     }
 
     return User.create(req.body, (createErr, user) => {
-      let token;
-
       if (createErr) {
         err = createErr;
         debug('Error registering the user', err, user);
@@ -164,7 +159,7 @@ exports.postRegister = {
         return next(err, req, res, next);
       }
 
-      token = signUserAsToken({ user });
+      const token = signUserAsToken({ user });
       debug('token', token);
       res.set('Set-Cookie', `Authorization=Bearer ${token}; path=/; Secure; HttpOnly`);
       res.set('Authorization', `Bearer ${token}`);

@@ -29,9 +29,7 @@ describe('models/oauth-client', () => {
     setTimeout(() => {
       OAuthClient.create(fixtures.client, () => {
         User.create(fixtures.user, () => {
-          OAuthToken.create(token, () => {
-            done();
-          });
+          OAuthToken.create(token, () => done());
         });
       });
     }, 300);
@@ -61,7 +59,7 @@ describe('models/oauth-client', () => {
           day_limit: 6000,
         });
 
-        done();
+        return done();
       });
     });
 
@@ -76,7 +74,7 @@ describe('models/oauth-client', () => {
 
           expect(client).to.equal(null);
 
-          done();
+          return done();
         });
     });
 
@@ -111,7 +109,7 @@ describe('models/oauth-client', () => {
               updatedAt: client.updatedAt,
             });
 
-            done();
+            return done();
           });
       });
 
@@ -127,7 +125,7 @@ describe('models/oauth-client', () => {
             expect(client).not.to.equal(null);
             expect(client.client_id).equal(fixtures.client.client_id);
 
-            done();
+            return done();
           });
       });
     });
@@ -145,9 +143,7 @@ describe('models/oauth-client', () => {
               client_id: 'testm-hij',
               deletedAt: new Date(1341967961140),
               deletedReason: 'spidering on July 9 2012',
-            }, () => {
-              done();
-            });
+            }, () => done());
         });
     });
 
@@ -172,7 +168,7 @@ describe('models/oauth-client', () => {
         expect(client.title).to.not.equal(undefined);
         expect(client.deletedReason).to.equal(null);
 
-        done();
+        return done();
       });
     });
 
@@ -196,7 +192,7 @@ describe('models/oauth-client', () => {
         expect(client.client_id).to.not.equal(undefined);
         expect(client.deletedReason).to.not.equal(undefined);
 
-        done();
+        return done();
       });
     });
   });
@@ -265,7 +261,7 @@ describe('models/oauth-client', () => {
             userId: '6e6017b0-4235-11e6-afb5-8d78a35b2f79',
           });
 
-          done();
+          return done();
         });
       });
     });
@@ -302,7 +298,7 @@ describe('models/oauth-client', () => {
       it('should handle client not found', () => OAuthClient
         .getClient('not-a-known-client', undefined)
         .then((clientInfo) => {
-          throw new Error('should not succeed');
+          throw new Error(`should not succeed ${JSON.stringify(clientInfo)}`);
         }).catch((err) => {
           expect(err.message).to.equal('Client id or secret is invalid');
         }));
@@ -335,7 +331,7 @@ describe('models/oauth-client', () => {
             updatedAt: profile.updatedAt,
           });
 
-          done();
+          return done();
         });
       });
     });

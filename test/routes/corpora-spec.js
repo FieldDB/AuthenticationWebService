@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const supertest = require('supertest');
 
+// eslint-disable-next-line global-require
 const authWebService = process.env.URL || require('../../auth_service');
 
 describe('/corpora', () => {

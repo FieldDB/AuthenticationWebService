@@ -104,7 +104,7 @@ describe('models/user', () => {
       User.create(json, (err) => {
         expect(err.message).equal('Please provide a password which is 8 characters or longer');
 
-        done();
+        return done();
       });
     });
 
@@ -126,7 +126,7 @@ describe('models/user', () => {
         expect(profile.revision).to.not.equal(undefined);
         expect(profile.revision).not.equal('notanexpectedtrevision');
 
-        done();
+        return done();
       });
     });
 
@@ -183,7 +183,7 @@ describe('models/user', () => {
           updatedAt: profile.updatedAt,
         });
 
-        done();
+        return done();
       });
     });
 
@@ -207,7 +207,7 @@ describe('models/user', () => {
         expect(profile.revision).to.not.equal(undefined);
         expect(profile.deletedAt).to.equal(null);
 
-        done();
+        return done();
       });
     });
 
@@ -221,7 +221,7 @@ describe('models/user', () => {
 
         expect(profile).to.equal(null);
 
-        done();
+        return done();
       });
     });
 
@@ -236,9 +236,7 @@ describe('models/user', () => {
           },
           description: 'Friendly',
           language: 'zh',
-        }, () => {
-          done();
-        });
+        }, () => done());
       });
 
       it('should read an existing user', (done) => {
@@ -268,7 +266,7 @@ describe('models/user', () => {
             updatedAt: profile.updatedAt,
           });
 
-          done();
+          return done();
         });
       });
 
@@ -311,7 +309,7 @@ describe('models/user', () => {
             updatedAt: profile.updatedAt,
           });
 
-          done();
+          return done();
         });
       });
 
@@ -323,16 +321,14 @@ describe('models/user', () => {
         };
 
         before((done) => {
-          User.create(userToDelete, () => {
-            done();
-          });
+          User.create(userToDelete, () => done());
         });
 
         it('should require a user', (done) => {
           User.flagAsDeleted(null, (err) => {
             expect(err.message).equal('Please provide a username and a deletedReason');
 
-            done();
+            return done();
           });
         });
 
@@ -340,7 +336,7 @@ describe('models/user', () => {
           User.flagAsDeleted({}, (err) => {
             expect(err.message).equal('Please provide a username and a deletedReason');
 
-            done();
+            return done();
           });
         });
 
@@ -350,7 +346,7 @@ describe('models/user', () => {
           }, (err) => {
             expect(err.message).equal('Please provide a username and a deletedReason');
 
-            done();
+            return done();
           });
         });
 
@@ -361,7 +357,7 @@ describe('models/user', () => {
           }, (err) => {
             expect(err.message).equal('Cannot delete user which doesn\'t exist');
 
-            done();
+            return done();
           });
         });
 
@@ -377,7 +373,7 @@ describe('models/user', () => {
             expect(user.deletedReason).equal('for testing purposes');
             expect(user.deletedAt.toDateString()).equal(new Date().toDateString());
 
-            done();
+            return done();
           });
         });
       });
@@ -401,7 +397,7 @@ describe('models/user', () => {
           expect(userWithPassword.password).to.equal(undefined);
           userWithPassword.hash = profile.hash;
         }
-        done();
+        return done();
       });
     });
 
@@ -419,7 +415,7 @@ describe('models/user', () => {
       }, (err) => {
         expect(err.message).equal('User not found');
 
-        done();
+        return done();
       });
     });
 
@@ -430,7 +426,7 @@ describe('models/user', () => {
       }, (err) => {
         expect(err.message).equal('Invalid password');
 
-        done();
+        return done();
       });
     });
 
@@ -445,7 +441,7 @@ describe('models/user', () => {
 
         expect(profile.username).equal(userWithPassword.username);
 
-        done();
+        return done();
       });
     });
 
@@ -461,13 +457,11 @@ describe('models/user', () => {
         }
         expect(updatedProfile.hash).to.not.equal(userWithPassword.hash);
 
-        User.changePassword({
+        return User.changePassword({
           username: userWithPassword.username,
           password: 'changedpassword',
           newPassword: 'zKmmfweLj2!h',
-        }, () => {
-          done();
-        });
+        }, () => done());
       });
     });
 
@@ -480,7 +474,7 @@ describe('models/user', () => {
       User.changePassword(info, (err) => {
         expect(err.message).to.equal('Password doesn\'t match your old password');
 
-        done();
+        return done();
       });
     });
 
@@ -494,7 +488,7 @@ describe('models/user', () => {
         debug('err', err);
         expect(err.message).to.equal('Illegal arguments: number, string');
 
-        done();
+        return done();
       });
     });
   });
@@ -517,9 +511,7 @@ describe('models/user', () => {
             password: 'zKmmfweLj2!h',
             name: {},
             email: 'noemi@example.com',
-          }, () => {
-            done();
-          });
+          }, () => done());
         });
       });
     });
@@ -540,7 +532,7 @@ describe('models/user', () => {
         expect(users).not.to.deep.equal([]);
         expect(users).length(3);
 
-        done();
+        return done();
       });
     });
 
@@ -560,7 +552,7 @@ describe('models/user', () => {
         expect(users).to.deep.equal([]);
         expect(users).length(0);
 
-        done();
+        return done();
       });
     });
   });

@@ -25,7 +25,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     })
       .then(({ user, info }) => {
         const returndata = {};
-        returndata.user = user;
+        returndata.user = user.toJSON();
         delete returndata.user.password;
         delete returndata.user.serverlogs;
         returndata.info = [info.message];
@@ -72,7 +72,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     })
       .then(({ user, info } = {}) => {
         const returndata = {};
-        returndata.user = user;
+        returndata.user = user.toJSON();
         returndata.info = [info.message];
         debug(user, `${new Date()} Returning the newly built user:`);
         res.send(returndata);
@@ -127,7 +127,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     })
       .then(({ user, info }) => {
         const returndata = {};
-        returndata.user = user;
+        returndata.user = user.toJSON();
         returndata.info = [info.message];
         res.status(200);
         debug(user, `${new Date()} Returning success`);
@@ -259,11 +259,11 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         }
       }
       connection.dbname = connection.dbname || connection.pouchname;
-      for (const attrib in defaultConnection) {
-        if (defaultConnection.hasOwnProperty(attrib) && !connection[attrib]) {
+      Object.keys(defaultConnection).forEach((attrib) => {
+        if (!connection[attrib]) {
           connection[attrib] = defaultConnection[attrib];
         }
-      }
+      });
       if (req.body.dbname && connection.dbname === 'default') {
         connection.dbname = req.body.dbname;
       }
@@ -286,11 +286,11 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       // Add a role to the user
       return userFunctions.addRoleToUser({
         req,
-      })
-        .catch((err) => {
-          next(err);
-          throw new Error('ending the request');
-        });
+      });
+      // .catch((err) => {
+      //   next(err);
+      //   throw new Error('ending the request');
+      // });
     })
       .then((userPermissionSet) => {
         const info = userPermissionSet.map((userPermission) => {
@@ -298,8 +298,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
             return '';
           }
           if (!userPermission.message) {
-            userPermission.message = 'There was a problem processing this user permission, Please report this 3134.';
-            debug(userPermission, userPermission.message);
+            return 'There was a problem processing this user permission, Please report this 3134.';
           }
           return userPermission.message;
         });
@@ -317,7 +316,6 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         if (err.message === 'ending the request') {
           return;
         }
-        console.log(err, 'in the error handle');
 
         // res.status(cleanErrorStatus(err.statusCode || err.status) || 500);
         // returndata.status = cleanErrorStatus(err.statusCode || err.status) || 500;
@@ -360,6 +358,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         returndata.status = 412;
         returndata.userFriendlyErrors = ['This app has made an invalid request. Please notify its developer. missing: newCorpusTitle'];
         res.send(returndata);
+        // TODO use next(err)
         throw new Error('ending the request');
       }
       req.body.appbrand = req.body.appbrand || req.body.brand || req.body.serverCode || req.body.serverLabel;
@@ -432,13 +431,13 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
     req.body.userRoleInfo.dbname = req.body.userRoleInfo.dbname || req.body.userRoleInfo.pouchname;
     const roles = [];
     if (!req.body.roles && req.body.userRoleInfo) {
-      for (const role in req.body.userRoleInfo) {
-        if (req.body.userRoleInfo.hasOwnProperty(role)) {
-          if (req.body.userRoleInfo[role] && (role === 'admin' || role === 'writer' || role === 'reader' || role === 'commenter')) {
-            roles.push(`${req.body.userRoleInfo.dbname}_${role}`);
-          }
+      Object.keys(req.body.userRoleInfo).forEach((role) => {
+        // if (req.body.userRoleInfo.hasOwnProperty(role)) {
+        if (req.body.userRoleInfo[role] && (role === 'admin' || role === 'writer' || role === 'reader' || role === 'commenter')) {
+          roles.push(`${req.body.userRoleInfo.dbname}_${role}`);
         }
-      }
+        // }
+      });
     }
     req.body.roles = req.body.roles || roles;
     debug(`${new Date()} updateroles is DEPRECATED, using the addroletouser route to process this request`, roles);

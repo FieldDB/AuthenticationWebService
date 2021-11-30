@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const supertest = require('supertest');
 const AsToken = require('../../lib/token');
 
+// eslint-disable-next-line global-require
 const service = process.env.URL || require('../../auth_service');
 const User = require('../../models/user');
 

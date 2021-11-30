@@ -37,7 +37,7 @@ describe('models/oauth-token', () => {
           createdAt: token.createdAt,
         });
 
-        done();
+        return done();
       });
     });
 
@@ -52,7 +52,7 @@ describe('models/oauth-token', () => {
 
           expect(token).to.equal(null);
 
-          done();
+          return done();
         });
     });
 
@@ -67,9 +67,7 @@ describe('models/oauth-token', () => {
             refresh_token_expires_on: new Date(1468108856432),
             client_id: clientId,
             user_id: 'test-user-efg_random_uuid-lookup',
-          }, () => {
-            done();
-          });
+          }, () => done());
       });
 
       it('should look up an access token', (done) => {
@@ -92,7 +90,7 @@ describe('models/oauth-token', () => {
             expect(JSON.stringify(token.accessTokenExpiresAt))
               .equal('"2016-07-10T00:00:56.432Z"');
 
-            done();
+            return done();
           });
       });
 
@@ -108,7 +106,7 @@ describe('models/oauth-token', () => {
             expect(token.access_token).equal('test-token');
             expect(token.refresh_token).equal('test-refresh');
 
-            done();
+            return done();
           });
       });
     });
@@ -131,7 +129,7 @@ describe('models/oauth-token', () => {
           if (token) {
             return done();
           }
-          OauthToken
+          return OauthToken
             .create({
               access_token: 'testm-abc',
               client_id: client.id,
@@ -148,9 +146,7 @@ describe('models/oauth-token', () => {
                       access_token: 'testm-hij',
                       client_id: client.id,
                       user_id: user.id,
-                    }, () => {
-                      done();
-                    });
+                    }, () => done());
                 });
             });
         });
@@ -178,7 +174,7 @@ describe('models/oauth-token', () => {
         expect(token.user_id).to.not.equal(undefined);
         expect(token.deletedReason).to.equal(null);
 
-        done();
+        return done();
       });
     });
   });

@@ -1,23 +1,29 @@
-const debug = require('debug')('test:install');
+const debug = require('debug')('test:integration:users');
 const {
   expect,
 } = require('chai');
 const path = require('path');
 const replay = require('replay');
 const supertest = require('supertest');
+// eslint-disable-next-line global-require
 const authWebService = process.env.URL || require('../../auth_service');
 
+// eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
 const requestId = 'deprecated-spec';
 replay.fixtures = path.join(__dirname, '/../fixtures/replay');
 
 describe.skip('/users', () => {
   before(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set(['127.0.0.1', '::1']);
+    // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
   });
   after(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = originalLocalhosts;
+    // eslint-disable-next-line no-underscore-dangle
     debug('after replay localhosts', replay._localhosts);
   });
 

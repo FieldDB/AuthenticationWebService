@@ -1,6 +1,7 @@
+const debug = require('debug')('test:lib:token');
 const { expect } = require('chai');
 
-const AsToken = exports.AsToken || require('../../lib/token');
+const AsToken = require('../../lib/token');
 
 describe('AsToken', () => {
   it('should load', () => {
@@ -71,7 +72,7 @@ describe('AsToken', () => {
 
     it('should verify the token and return contents', () => {
       const bearerToken = `Bearer ${AsToken.sign(json)}`;
-      console.log(bearerToken);
+      debug(bearerToken);
 
       const decoded = AsToken.verify(bearerToken);
       expect(decoded).to.deep.equal({

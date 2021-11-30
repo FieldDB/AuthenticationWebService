@@ -14,6 +14,8 @@ const oauth = new OAuthServer({
 });
 
 debug('oauth', oauth.server);
+// Debug changes in the express-oauth-server implementation
+// eslint-disable-next-line no-restricted-syntax, guard-for-in
 for (const att in oauth.server) {
   debug('oauth server has: ', att);
 }

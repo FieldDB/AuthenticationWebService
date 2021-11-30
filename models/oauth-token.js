@@ -6,6 +6,7 @@ const { DEBUG } = env;
 const { NODE_ENV } = env;
 const sequelize = new Sequelize('database', 'id', 'password', {
   dialect: 'sqlite',
+  // eslint-disable-next-line no-console
   logging: /(sql|oauth|token)/.test(DEBUG) ? console.log : false,
   pool: {
     max: 5,
@@ -87,7 +88,7 @@ function read(token, callback) {
 /**
  * List oauth token matching the options
  * @param  {Object} options [description]
- * @return {Promise}        [description]
+ * @return {Promise}        [description] // TODO why converting promise to callback?
  */
 function list(options, callback) {
   const opts = lodash.assign({

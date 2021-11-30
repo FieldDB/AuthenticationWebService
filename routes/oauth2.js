@@ -1,8 +1,7 @@
 const debug = require('debug')('oauth:routes');
-const param = require('@cesine/swagger-node-express/Common/node/paramTypes.js');
+const param = require('@cesine/swagger-node-express/Common/node/paramTypes');
 const querystring = require('querystring');
 
-const errorMiddleware = require('../middleware/error-handler').errorHandler;
 const oauth = require('../middleware/oauth');
 
 /**
@@ -27,7 +26,6 @@ exports.getAuthorize = {
     nickname: 'getAuthorize',
   },
   action: function getAuthorize(req, res, next) {
-    let middleware;
     debug('getAuthorize res.locals', res.locals);
     debug('req.path', req.path);
     debug('req.query', req.query);
@@ -42,11 +40,13 @@ exports.getAuthorize = {
     // https://oauth2-server.readthedocs.io/en/latest/api/oauth2-server.html#authorize-request-response-options-callback
     const authenticateHandler = {
       handle(request, response) {
+        debug('request', request);
+        debug('response', response);
         return res.locals.user;
       },
     };
 
-    middleware = oauth.authorize({
+    const middleware = oauth.authorize({
       scope: req.query.scope,
       authenticateHandler,
       continueMiddleware: true, // does not call through
@@ -61,6 +61,7 @@ exports.getAuthorize = {
         return next(err);
       }
       // next(); // cannot set headers after they are set
+      return null;
     });
   },
 };
@@ -86,11 +87,10 @@ exports.postToken = {
     nickname: 'postToken',
   },
   action: function postToken(req, res, next) {
-    let middleware;
     debug('postToken', req.query, req.body, res.headers);
     // req.user = res.locals.user; TODO where does the user that is passed to client come from
 
-    middleware = oauth.token({
+    const middleware = oauth.token({
       // continueMiddleware: true,
     });
 
@@ -103,8 +103,8 @@ exports.postToken = {
       }
       // TODO this has no effect
       // instead working around it by return jwt in saveToken response as accesToken
-      res.set('Authorization', `Bearer ${res.locals.oauth.token.jwt}`);
-
+      // res.set('Authorization', `Bearer ${res.locals.oauth.token.jwt}`);
+      return null;
       // next();
     });
   },
