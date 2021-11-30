@@ -3,8 +3,10 @@ const { expect } = require('chai');
 const path = require('path');
 const replay = require('replay');
 const supertest = require('supertest');
+// eslint-disable-next-line global-require
 const authWebService = process.env.URL || require('../../auth_service');
 
+// eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
 const requestId = 'deprecated-spec';
 replay.fixtures = path.join(__dirname, '/../fixtures/replay');
@@ -13,11 +15,15 @@ describe('/ deprecated', () => {
   const testUsername = process.env.REPLAY ? `test${Date.now()}` : 'test1637710294972';
 
   before(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set(['127.0.0.1', '::1']);
+    // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
   });
   after(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = originalLocalhosts;
+    // eslint-disable-next-line no-underscore-dangle
     debug('after replay localhosts', replay._localhosts);
   });
 
@@ -1543,7 +1549,8 @@ describe('/ deprecated', () => {
       .then((res) => {
         expect(res.body.user && res.body.user.corpora && res.body.user.corpora.length >= 1)
           .to.equal(true, JSON.stringify(res.body));
-        expect(res.body.user.newCorpora && res.body.user.newCorpora.length).above(2, JSON.stringify(res.body.user.newCorpora));
+        expect(res.body.user.newCorpora && res.body.user.newCorpora.length)
+          .above(2, JSON.stringify(res.body.user.newCorpora));
 
         return supertest(`http://${testUsername}:test@localhost:5984`)
           .get('/someoneelsesdb-shouldnt_be_creatable')

@@ -5,7 +5,9 @@ const replay = require('replay');
 const supertest = require('supertest');
 const url = require('url');
 
+// eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
+// eslint-disable-next-line no-underscore-dangle
 debug('replay localhosts', replay._localhosts);
 
 let destination = 'http://admin:none@localhost:5984';
@@ -20,11 +22,15 @@ debug('source', source);
 
 describe('install', () => {
   before(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set();
+    // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
   });
   after(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = originalLocalhosts;
+    // eslint-disable-next-line no-underscore-dangle
     debug('after replay localhosts', replay._localhosts);
   });
 
@@ -217,6 +223,7 @@ describe('install', () => {
             .send(doc);
         })
         .then((res) => {
+          // eslint-disable-next-line no-underscore-dangle
           if (res.body._id) {
             expect(res.status).to.equal(200);
           } else {
@@ -277,6 +284,7 @@ describe('install', () => {
             .send(doc);
         })
         .then((res) => {
+          // eslint-disable-next-line no-underscore-dangle
           if (res.body._id) {
             expect(res.status).to.equal(200);
           } else {

@@ -21,16 +21,21 @@ const {
   verifyPassword,
 } = require('../../lib/user');
 
+// eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
 replay.fixtures = path.join(__dirname, '../fixtures/replay');
 
 describe('lib/user', () => {
   before(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set(['127.0.0.1', '::1']);
+    // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
   });
   after(() => {
+    // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = originalLocalhosts;
+    // eslint-disable-next-line no-underscore-dangle
     debug('after replay localhosts', replay._localhosts);
   });
 

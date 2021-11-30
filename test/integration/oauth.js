@@ -1,4 +1,3 @@
-const AsToken = require('../../lib/token');
 const debug = require('debug')('test:integration:oauth');
 const { expect } = require('chai');
 const Express = require('express');
@@ -9,8 +8,10 @@ const session = require('express-session');
 const supertest = require('supertest');
 const url = require('url');
 
-const service = process.env.URL || require('../../auth_service');
+const AsToken = require('../../lib/token');
 const OauthClient = require('../../models/oauth-client');
+// eslint-disable-next-line global-require
+const service = process.env.URL || require('../../auth_service');
 const UserModel = require('../../models/user');
 
 const fixtures = {
@@ -257,7 +258,6 @@ describe('/oauth2', () => {
             .set('Authorization', res.headers.authorization);
         })
         .then((res) => {
-          let callbackUrl;
           debug('after authorize in res.body', res.body);
           debug('after authorize in res.headers', res.headers);
           expect(res.status).to.equal(302, res.text);
@@ -291,7 +291,7 @@ describe('/oauth2', () => {
           });
 
           // Follow redirect back to client
-          callbackUrl = res.headers.location.replace('http://localhost:8011', '');
+          const callbackUrl = res.headers.location.replace('http://localhost:8011', '');
           debug('callbackUrl', callbackUrl);
           return supertest(clientServer)
             .get(callbackUrl)

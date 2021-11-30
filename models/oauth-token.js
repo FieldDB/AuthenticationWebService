@@ -88,7 +88,7 @@ function read(token, callback) {
 /**
  * List oauth token matching the options
  * @param  {Object} options [description]
- * @return {Promise}        [description]
+ * @return {Promise}        [description] // TODO why converting promise to callback?
  */
 function list(options, callback) {
   const opts = lodash.assign({
