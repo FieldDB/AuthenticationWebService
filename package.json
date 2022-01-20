@@ -73,7 +73,7 @@
   },
   "scripts": {
     "docker:build": "docker build -t fielddb-auth .",
-    "docker:test": "curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/e77f0802ebcecdf5a5a929f524b7843b2e1481fc/Dockerfile-couchdb -o Dockerfile-couchdb; mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini && echo 'module.exports = { usersDbConnection: { url: \"http://localhost:5984\" }};' > config/local.js&& docker-compose up -d && docker-compose logs && npm run setup && npm run test:deprecated",
+    "docker:test": "curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/52e609dfd93b321a7c08ade525608e3837d99259/Dockerfile-couchdb -o Dockerfile-couchdb; mkdir etc; curl https://raw.githubusercontent.com/FieldDB/CorpusWebService/main/etc/local.ini -o etc/local.ini && echo 'module.exports = { usersDbConnection: { url: \"http://localhost:5984\" }};' > config/local.js&& docker-compose up -d && docker-compose logs && npm run setup && npm run test:deprecated",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "eslint ",
@@ -89,3 +89,4 @@
   },
   "license": "Apache-2.0"
 }
+52e609dfd93b321a7c08ade525608e3837d99259
