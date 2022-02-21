@@ -36,11 +36,9 @@ describe('install', () => {
         password: 'none',
       })
       .then((res) => {
-        expect(res.status).to.equal(200)
-        adminSessionCookie = res.headers['set-cookie'].map((cookie) => {
-          return cookie.split(';')[0]
-        }).join();
-        console.log('adminSessionCookie', adminSessionCookie)
+        expect(res.status).to.equal(200);
+        adminSessionCookie = res.headers['set-cookie'].map((cookie) => cookie.split(';')[0]).join();
+        debug('adminSessionCookie', adminSessionCookie);
       });
   });
   after(() => {
@@ -87,7 +85,7 @@ describe('install', () => {
   });
 
   describe('theuserscouch', () => {
-    const usersDBname = config.usersDbConnection.dbname
+    const usersDBname = config.usersDbConnection.dbname;
     before(() => supertest(destination)
       .get('/_all_dbs')
       .set('Accept', 'application/json')
