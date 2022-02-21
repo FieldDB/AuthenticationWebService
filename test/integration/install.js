@@ -37,7 +37,8 @@ describe('install', () => {
       })
       .then((res) => {
         expect(res.status).to.equal(200);
-        adminSessionCookie = res.headers['set-cookie'].map((cookie) => cookie.split(';')[0]).join();
+        const setCookie = res.headers['set-cookie'].length === 1 ?  res.headers['set-cookie'][0] : res.headers['set-cookie'];
+        adminSessionCookie = setCookie.split(';')[0];
         debug('adminSessionCookie', adminSessionCookie);
       });
   });
