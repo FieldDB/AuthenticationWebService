@@ -68,7 +68,8 @@ $ docker-compose rm -f
 Exec into the docker container
 
 ```bash
-
+$ docker container list
+$ docker exec -it cda63fa5d348 /bin/bash
 ```
 
 ## Release History
