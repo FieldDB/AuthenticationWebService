@@ -70,6 +70,7 @@ describe('install', () => {
   });
 
   describe('theuserscouch', () => {
+    const usersDBname = config.usersDbConnection.dbname
     before(() => supertest(destination)
       .get('/_all_dbs')
       .set('Accept', 'application/json')
@@ -84,7 +85,7 @@ describe('install', () => {
       .send({
         source: `${source}/new_theuserscouch`,
         target: {
-          url: `${destination}/theuserscouch`,
+          url: `${destination}/${usersDBname}`,
         },
         create_target: true,
       })
@@ -98,7 +99,7 @@ describe('install', () => {
       })
       .then((res) => {
         debug('res.body after', res.body);
-        expect(res.body).includes('theuserscouch');
+        expect(res.body).includes(usersDBname);
       }));
   });
 
