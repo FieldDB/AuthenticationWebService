@@ -1,6 +1,15 @@
-FROM couchdb:3.2.1
+FROM couchdb:3.1.2
 
 RUN mkdir -p /data/logs/corpus
 
-COPY etc/local.ini /usr/local/etc/couchdb
+COPY etc/local.ini /usr/local/etc/couchdb/
+
+RUN set +x; cp /usr/local/etc/couchdb/local.ini /opt/couchdb/etc/; \
+  cp /usr/local/etc/couchdb/local.ini /etc/couchdb/; \
+  curl -X PUT http://admin:none@127.0.0.1:5984/_users; \
+  curl -X PUT http://admin:none@127.0.0.1:5984/_replicator; \
+  ls -alt /etc/couchdb; \
+  ls -alt /usr/local/etc/couchdb; \
+  ls -alt /opt/couchdb/etc;
+
 # COPY fielddb_debug.* /usr/local/etc/couchdb
