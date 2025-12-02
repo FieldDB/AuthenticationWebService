@@ -20,6 +20,7 @@ const source = process.env.SOURCE_URL;
 debug('destination', destination);
 debug('source', source);
 let adminSessionCookie;
+const usersDBname = config.usersDbConnection.dbname;
 
 describe('install', () => {
   before(() => {
@@ -55,6 +56,7 @@ describe('install', () => {
   describe('_users views', () => {
     before(() => supertest(destination)
       .get('/_all_dbs')
+      .set('cookie', adminSessionCookie)
       .set('Accept', 'application/json')
       .then((res) => {
         debug('res', res.body);
@@ -62,6 +64,7 @@ describe('install', () => {
       })
       .catch((err) => supertest(destination)
         .put('/_users')
+        .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
         .send({})
       ));
@@ -102,15 +105,6 @@ describe('install', () => {
   });
 
   describe('theuserscouch', () => {
-    const usersDBname = config.usersDbConnection.dbname;
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        debug('res', res.body);
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate theuserscouch', () => supertest(destination)
       .post('/_replicate')
       .set('cookie', adminSessionCookie)
@@ -137,13 +131,6 @@ describe('install', () => {
   });
 
   describe('new_corpus', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate new_corpus', () => {
       const dbnameToReplicate = 'new_corpus';
 
@@ -174,13 +161,6 @@ describe('install', () => {
   });
 
   describe('new_testing_corpus', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate new_testing_corpus', () => {
       const dbnameToReplicate = 'new_testing_corpus';
 
@@ -337,50 +317,6 @@ describe('install', () => {
   });
 
   describe('new_lexicon', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
-    it('should replicate new_lexicon', () => {
-      const dbnameToReplicate = 'new_lexicon';
-
-      return supertest(destination)
-        .post('/_replicate')
-        .set('cookie', adminSessionCookie)
-        .set('Accept', 'application/json')
-        .send({
-          source: `${source}/${dbnameToReplicate}`,
-          target: {
-            url: `${destination}/${dbnameToReplicate}`,
-          },
-          create_target: true,
-        })
-        .then((res) => {
-          debug('res.body new_lexicon', res.body);
-          expect(res.body.ok).to.equal(true);
-
-          return supertest(destination)
-            .get('/_all_dbs')
-            .set('Accept', 'application/json');
-        })
-        .then((res) => {
-          debug('res.body new_lexicon after', res.body);
-          expect(res.body).includes(dbnameToReplicate);
-        });
-    });
-  });
-
-  describe('new_lexicon', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate new_lexicon', () => {
       const dbnameToReplicate = 'new_lexicon';
 
