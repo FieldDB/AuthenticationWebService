@@ -23,6 +23,9 @@ let adminSessionCookie;
 
 describe('install', () => {
   before(() => {
+    if (source.includes('example.org')) {
+      throw new Error('SOURCE_URL is not set to a valid test CouchDB instance. Please export SOURCE_URL=http://public:none@thecouchinstance.org');
+    }
     // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set();
     // eslint-disable-next-line no-underscore-dangle
@@ -50,6 +53,19 @@ describe('install', () => {
   });
 
   describe('_users views', () => {
+    before(() => supertest(destination)
+      .get('/_all_dbs')
+      .set('Accept', 'application/json')
+      .then((res) => {
+        debug('res', res.body);
+        expect(res.body).includes('_users', JSON.stringify(res.body));
+      })
+      .catch((err) => supertest(destination)
+        .put('/_users')
+        .set('Accept', 'application/json')
+        .send({})
+      ));
+
     it('should create the _users views', () => supertest(destination)
       .post('/_users')
       .set('cookie', adminSessionCookie)
@@ -71,7 +87,7 @@ describe('install', () => {
       })
       .then((res) => {
         if (res.body.error !== 'conflict') {
-          expect(res.body.ok).to.equal(true);
+          expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
         }
 
         return supertest(destination)
