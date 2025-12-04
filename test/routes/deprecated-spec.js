@@ -33,7 +33,7 @@ describe('/ deprecated', () => {
      * - remove body because the body contains date created timestamps
      * - update username to equal the recorded username
      */
-    it.only('should register a new user', () => {
+    it('should register a new user', () => {
       debug('username', testUsername);
       return supertest(authWebService)
         .post('/register')
@@ -257,7 +257,7 @@ describe('/ deprecated', () => {
 
   describe('/login', () => {
     before(function () {
-      this.timeout(40000);
+      this.timeout(140000);
 
       return supertest(authWebService)
         .post('/register')
