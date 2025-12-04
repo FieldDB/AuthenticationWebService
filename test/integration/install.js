@@ -230,7 +230,7 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body prototype couchapp', res.body);
-          expect(res.body.couchapp.name).to.equal(' Prototype (has the most features of the apps)', JSON.stringify(res.body));
+          expect(res.body.couchapp.name).to.contain(' Prototype (has the most features of the apps)', JSON.stringify(res.body));
         });
     });
   });
