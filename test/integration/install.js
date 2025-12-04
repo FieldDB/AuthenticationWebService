@@ -160,7 +160,7 @@ describe('install', () => {
   });
 
   describe('new_testing_corpus', () => {
-    it.only('should replicate new_testing_corpus', () => {
+    it('should replicate new_testing_corpus', () => {
       const dbnameToReplicate = 'new_testing_corpus';
 
       return supertest(destination)
@@ -192,11 +192,9 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body new_testing_corpus design doc for data', res.body);
-          // FIXME: this design doc throws an error in CouchDB 3.x
-          // expect(res.body).to.deep.equal({
-          //   rows: [],
-          // }, JSON.stringify(res.body));
-          expect(res.body.reason).to.equal('missing', JSON.stringify(res.body));
+          expect(res.body).to.deep.equal({
+            rows: [],
+          }, JSON.stringify(res.body));
         });
     });
   });
