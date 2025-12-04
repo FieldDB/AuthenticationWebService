@@ -61,8 +61,8 @@ $ npm run docker:test
 
 Turn off the docker container
 ```bash
-$ docker-compose stop
-$ docker-compose rm -f
+$ docker compose stop
+$ docker compose rm -f
 ```
 
 Exec into the docker container

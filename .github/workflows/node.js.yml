@@ -41,11 +41,11 @@ jobs:
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
 
-    - name: Start docker-compose services
-      run: docker-compose up -d
+    - name: Start docker compose services
+      run: docker compose up -d
 
-    - name: Show docker-compose logs
-      run: docker-compose logs --no-color --timestamps || true
+    - name: Show docker compose logs
+      run: docker compose logs --no-color --timestamps || true
 
     - name: Run setup
       run: npm run setup
