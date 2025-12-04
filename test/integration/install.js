@@ -62,12 +62,11 @@ describe('install', () => {
         debug('res', res.body);
         expect(res.body).includes('_users', JSON.stringify(res.body));
       })
-      .catch((err) => supertest(destination)
+      .catch(() => supertest(destination)
         .put('/_users')
         .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
-        .send({})
-      ));
+        .send({})));
 
     it('should create the _users views', () => supertest(destination)
       .post('/_users')
@@ -189,11 +188,13 @@ describe('install', () => {
 
           return supertest(destination)
             .get(`/${dbnameToReplicate}/_design/data/_view/by_type?group=true`)
-            .set('Accept', 'application/json');return 
+            .set('Accept', 'application/json');
         })
         .then((res) => {
           debug('res.body new_testing_corpus design doc for data', res.body);
-          expect(res.body).includes('Corpus', JSON.stringify(res.body));
+          expect(res.body).to.deep.equal({
+            rows: [],
+          }, JSON.stringify(res.body));
         });
     });
   });
