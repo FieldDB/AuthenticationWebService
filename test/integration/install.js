@@ -161,7 +161,7 @@ describe('install', () => {
   });
 
   describe('new_testing_corpus', () => {
-    it('should replicate new_testing_corpus', () => {
+    it.only('should replicate new_testing_corpus', () => {
       const dbnameToReplicate = 'new_testing_corpus';
 
       return supertest(destination)
@@ -186,6 +186,14 @@ describe('install', () => {
         .then((res) => {
           debug('res.body new_testing_corpus after', res.body);
           expect(res.body).includes(dbnameToReplicate);
+
+          return supertest(destination)
+            .get(`/${dbnameToReplicate}/_design/data/_view/by_type?group=true`)
+            .set('Accept', 'application/json');return 
+        })
+        .then((res) => {
+          debug('res.body new_testing_corpus design doc for data', res.body);
+          expect(res.body).includes('Corpus', JSON.stringify(res.body));
         });
     });
   });
