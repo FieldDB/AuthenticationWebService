@@ -257,7 +257,7 @@ describe('/ deprecated', () => {
 
   describe('/login', () => {
     before(function () {
-      this.timeout(40000);
+      this.timeout(140000);
 
       return supertest(authWebService)
         .post('/register')

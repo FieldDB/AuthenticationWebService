@@ -197,6 +197,42 @@ describe('install', () => {
           }, JSON.stringify(res.body));
         });
     });
+
+    it('should replicate the prototype couchapp', () => {
+      const dbnameToReplicate = 'prototype';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body prototype', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body prototype after', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+
+          return supertest(destination)
+            .get(`/${dbnameToReplicate}/_design/prototype`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body prototype couchapp', res.body);
+          expect(res.body.couchapp.name).to.equal(' Prototype (has the most features of the apps)', JSON.stringify(res.body));
+        });
+    });
   });
 
   describe('new_corpus_activity_feed', () => {
