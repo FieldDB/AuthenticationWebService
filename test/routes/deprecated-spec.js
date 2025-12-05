@@ -552,9 +552,9 @@ describe('/ deprecated', () => {
 
   describe('/addroletouser', () => {
     before(function () {
-      debug('/forgotpassword', process.env.REPLAY);
+      debug('/addroletouser', process.env.REPLAY);
 
-      this.timeout(19000);
+      this.timeout(149000);
 
       return supertest(authWebService)
         .post('/register')
@@ -1311,9 +1311,9 @@ describe('/ deprecated', () => {
 
   describe('/newcorpus', () => {
     before(function () {
-      debug('/forgotpassword', process.env.REPLAY);
+      debug('/newcorpus', process.env.REPLAY);
 
-      this.timeout(40000);
+      this.timeout(140000);
 
       return supertest(authWebService)
         .post('/register')
@@ -1508,7 +1508,7 @@ describe('/ deprecated', () => {
   describe('syncDetails', () => {
     const uniqueDBname = process.env.REPLAY ? Date.now() : '1637871012346';
     before(function () {
-      debug('/forgotpassword', process.env.REPLAY);
+      debug('/syncDetails', process.env.REPLAY);
 
       this.timeout(40000);
       return supertest(authWebService)

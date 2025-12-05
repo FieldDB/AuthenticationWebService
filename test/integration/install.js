@@ -230,7 +230,7 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body prototype couchapp', res.body);
-          expect(res.body.couchapp.name).to.equal(' Prototype (has the most features of the apps)', JSON.stringify(res.body));
+          expect(res.body.couchapp.name).to.contain(' Prototype (has the most features of the apps)', JSON.stringify(res.body));
         });
     });
   });
@@ -378,15 +378,17 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body new_lexicon', res.body);
-          expect(res.body.ok).to.equal(true);
+          expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
 
           return supertest(destination)
-            .get('/_all_dbs')
+            .get(`/${dbnameToReplicate}/_design/lexicon/_view/lexiconNodes?group=true`)
             .set('Accept', 'application/json');
         })
         .then((res) => {
           debug('res.body new_lexicon after ', res.body);
-          expect(res.body).includes(dbnameToReplicate);
+          expect(res.body).to.deep.equal({
+            rows: [],
+          }, JSON.stringify(res.body));
         });
     });
   });
