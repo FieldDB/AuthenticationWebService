@@ -46,7 +46,7 @@ describe('install', () => {
         password: 'none',
       })
       .then((res) => {
-        expect(res.status).to.be.oneOf([401, 200], JSON.stringify(res.body));
+        expect(res.status).to.equal(200, JSON.stringify(res.body));
 
         const setCookie = res.headers['set-cookie'].length === 1 ? res.headers['set-cookie'][0] : res.headers['set-cookie'];
         [adminSessionCookie] = setCookie.split(';');
