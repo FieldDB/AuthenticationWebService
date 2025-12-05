@@ -59,6 +59,7 @@ describe('/ deprecated', () => {
           email: 'testuser@lingsync.org',
         })
         .then((res) => {
+          expect(res.body.user).not.to.equal(undefined, JSON.stringify(res.body));
           expect(res.body.user.username).to.equal(testUsername, JSON.stringify(res.body));
           expect(res.body.user.appbrand).to.equal('georgiantogether');
           expect(res.body.user.prefs).to.deep.equal({
@@ -98,11 +99,11 @@ describe('/ deprecated', () => {
               ],
             },
             info: {
-              authentication_db: couchDBInfo.version = '1.6.1' ? '_users' : undefined,
-              authentication_handlers: couchDBInfo.version = '1.6.1' ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'],
+              authentication_db: res.headers.server.includes('CouchDB/1.') ? '_users' : undefined,
+              authentication_handlers: res.headers.server.includes('CouchDB/1.') ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'],
               authenticated: 'default',
             },
-          }, `should have roles ${JSON.stringify(couchDBInfo)}`);
+          }, `should have roles ${JSON.stringify(res.headers)}`);
           expect(res.status).to.equal(200, JSON.stringify(res.body));
 
           return supertest(`http://${testUsername}:test@localhost:5984`)
