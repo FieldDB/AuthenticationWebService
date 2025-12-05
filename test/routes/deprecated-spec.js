@@ -16,7 +16,7 @@ replay.fixtures = path.join(__dirname, '/../fixtures/replay');
 let couchDBInfo;
 
 describe('/ deprecated', () => {
-  const testUsername = process.env.REPLAY ? `test${Date.now()}` : 'test1637710294972';
+  const testUsername = REPLAY ? `test${Date.now()}` : 'test1637710294972';
 
   before(() => {
     // eslint-disable-next-line no-underscore-dangle
@@ -99,7 +99,7 @@ describe('/ deprecated', () => {
             },
             info: {
               authentication_db: couchDBInfo.version = '1.6.1' ? '_users' : undefined,
-              authentication_handlers: couchDBInfo.version = '1.6.1' ? ['oauth',  'cookie', 'default'] : ['cookie', 'default'],
+              authentication_handlers: couchDBInfo.version = '1.6.1' ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'],
               authenticated: 'default',
             },
           }, 'should have roles');
