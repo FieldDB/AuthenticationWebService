@@ -18,7 +18,7 @@ const setup = function setup(api, apiVersion) {
   swagger.configureSwaggerPaths('', '/api', '');
   swagger.setErrorHandler((req, res, error) => errorHandler(error, req, res));
   swagger.setAppHandler(api);
- 
+
   /* Declare available APIs */
   swagger.addGet({
     spec: {
