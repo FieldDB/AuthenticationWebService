@@ -5,6 +5,8 @@ const replay = require('replay');
 const supertest = require('supertest');
 const url = require('url');
 
+const REPLAY = process.env.REPLAY || '';
+
 // eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
 // eslint-disable-next-line no-underscore-dangle
@@ -23,7 +25,10 @@ let adminSessionCookie;
 const usersDBname = config.usersDbConnection.dbname;
 
 describe('install', () => {
-  before(() => {
+  before(function() {
+    if (REPLAY !== 'bloody') {
+      this.skip();
+    }
     if (source.includes('example.org')) {
       throw new Error('SOURCE_URL is not set to a valid test CouchDB instance. Please export SOURCE_URL=http://public:none@thecouchinstance.org');
     }

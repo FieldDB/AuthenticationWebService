@@ -84,7 +84,8 @@ describe('/ deprecated', () => {
               ],
             },
             info: {
-              authentication_handlers: ['cookie', 'default'],
+              authentication_db: REPLAY ? '_users' : undefined,
+              authentication_handlers: REPLAY ? [ 'oauth',  'cookie', 'default'] : ['cookie', 'default'],
               authenticated: 'default',
             },
           }, 'should have roles');
