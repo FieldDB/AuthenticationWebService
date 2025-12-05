@@ -84,6 +84,14 @@ describe('/ deprecated', () => {
             .set('Accept', 'application/json');
         })
         .then((res) => {
+          const expectedInfo = res.headers.server.includes('CouchDB/1.') ? {
+            authentication_db: '_users',
+            authentication_handlers: ['oauth', 'cookie', 'default'],
+            authenticated: 'default',
+          } : {
+            authentication_handlers: ['cookie', 'default'],
+            authenticated: 'default',
+          };
           expect(res.body).to.deep.equal({
             ok: true,
             userCtx: {
@@ -98,14 +106,9 @@ describe('/ deprecated', () => {
                 `${testUsername}-kartuli_writer`,
               ],
             },
-            info: {
-              authentication_db: res.body.info.authentication_db,
-              authentication_handlers: res.body.info.authentication_handlers,
-              authenticated: 'default',
-            },
-          }, JSON.stringify(res.body));
+            info: expectedInfo,
+          }, `should have roles ${JSON.stringify(res.headers)}`);
           expect(res.status).to.equal(200, JSON.stringify(res.body));
-          expect(res.body.info.authentication_handlers).to.deep.equal(res.headers.server.includes('CouchDB/1.') ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'], JSON.stringify(res.headers));
 
           return supertest(`http://${testUsername}:test@localhost:5984`)
             .get(`/${testUsername}-activity_feed/_design/activities/_view/activities`)
