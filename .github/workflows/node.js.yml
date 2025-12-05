@@ -29,8 +29,6 @@ jobs:
     - run: npm ci
     - run: npm run lint:ci
     - run: DEBUG=replay* npm run coverage
-      env:
-        SOURCE_URL: ${{ secrets.SOURCE_URL }}
 
     - name: Coveralls
       uses: coverallsapp/github-action@master

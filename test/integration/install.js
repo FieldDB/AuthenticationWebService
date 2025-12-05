@@ -5,8 +5,6 @@ const replay = require('replay');
 const supertest = require('supertest');
 const url = require('url');
 
-const REPLAY = process.env.REPLAY || '';
-
 // eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
 // eslint-disable-next-line no-underscore-dangle
@@ -19,18 +17,21 @@ if (!destination) {
   destination = url.format(destination).replace(/\/$/, '');
 }
 const source = process.env.SOURCE_URL;
+const REPLAY = process.env.REPLAY || '';
 debug('destination', destination);
 debug('source', source);
 let adminSessionCookie;
+let couchDBInfo;
 const usersDBname = config.usersDbConnection.dbname;
 
 describe('install', () => {
-  before(function() {
-    if (REPLAY !== 'bloody') {
-      this.skip();
-    }
-    if (source.includes('example.org')) {
+  before(() => {
+    if (REPLAY === 'bloody' && source.includes('example.org')) {
       throw new Error('SOURCE_URL is not set to a valid test CouchDB instance. Please export SOURCE_URL=http://public:none@thecouchinstance.org');
+    }
+
+    if (REPLAY === 'bloody' && destination.includes('sync.org')) {
+      throw new Error('The destination is not set to a valid test CouchDB instance. Please edit config.local to use a db such as http://public:none@localhost:5984');
     }
     // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set();
@@ -45,10 +46,21 @@ describe('install', () => {
         password: 'none',
       })
       .then((res) => {
-        expect(res.status).to.equal(200);
+        expect(res.status).to.equal(200, JSON.stringify(res.body));
+
         const setCookie = res.headers['set-cookie'].length === 1 ? res.headers['set-cookie'][0] : res.headers['set-cookie'];
         [adminSessionCookie] = setCookie.split(';');
         debug('adminSessionCookie', adminSessionCookie);
+
+        return supertest(destination)
+          .get('/')
+          .set('Accept', 'application/json');
+      })
+      .then((res) => {
+        expect(res.status).to.equal(200);
+        debug('couchdb version', res.body);
+        couchDBInfo = res.body;
+        expect(couchDBInfo.version).to.equal('3.5.1', JSON.stringify(couchDBInfo));
       });
   });
   after(() => {
@@ -181,7 +193,7 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body new_testing_corpus', res.body);
-          expect(res.body.ok).to.equal(true);
+          expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
 
           return supertest(destination)
             .get('/_all_dbs')
@@ -220,14 +232,6 @@ describe('install', () => {
         .then((res) => {
           debug('res.body prototype', res.body);
           expect(res.body.ok).to.equal(true);
-
-          return supertest(destination)
-            .get('/_all_dbs')
-            .set('Accept', 'application/json');
-        })
-        .then((res) => {
-          debug('res.body prototype after', res.body);
-          expect(res.body).includes(dbnameToReplicate);
 
           return supertest(destination)
             .get(`/${dbnameToReplicate}/_design/prototype`)

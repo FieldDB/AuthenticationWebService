@@ -1,0 +1,18 @@
+GET /new_testing_corpus/_design/data/_view/by_type?group=true
+accept-encoding: gzip, deflate
+accept: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+cache-control: must-revalidate
+connection: close
+content-type: application/json
+date: Fri, 05 Dec 2025 16:44:45 GMT
+server: CouchDB/3.5.1 (Erlang OTP/26)
+transfer-encoding: chunked
+x-couch-request-id: fedc7785b6
+x-couchdb-body-time: 0
+
+{"rows":[
+
+]}
