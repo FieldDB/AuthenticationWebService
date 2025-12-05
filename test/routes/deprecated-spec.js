@@ -1553,46 +1553,47 @@ describe('/ deprecated', () => {
         .send({
           username: testUsername,
           password: 'test',
-        syncDetails: true,
-        syncUserDetails: {
-          newCorpusConnections: [{
-            dbname: `${testUsername}-firstcorpus`,
-          }, {}, {
-            dbname: 'someoneelsesdb-shouldnt_be_creatable',
-          }, {
-            dbname: `${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}`,
-          }, {
-            dbname: `${testUsername}-firstcorpus`,
-          }],
-        },
-      })
-      .then((res) => {
-        expect(res.body.user && res.body.user.corpora && res.body.user.corpora.length >= 1)
-          .to.equal(true, JSON.stringify(res.body));
-        expect(res.body.user.newCorpora && res.body.user.newCorpora.length)
-          .above(2, JSON.stringify(res.body.user.newCorpora));
+          syncDetails: true,
+          syncUserDetails: {
+            newCorpusConnections: [{
+              dbname: `${testUsername}-firstcorpus`,
+            }, {}, {
+              dbname: 'someoneelsesdb-shouldnt_be_creatable',
+            }, {
+              dbname: `${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}`,
+            }, {
+              dbname: `${testUsername}-firstcorpus`,
+            }],
+          },
+        })
+        .then((res) => {
+          expect(res.body.user && res.body.user.corpora && res.body.user.corpora.length >= 1)
+            .to.equal(true, JSON.stringify(res.body));
+          expect(res.body.user.newCorpora && res.body.user.newCorpora.length)
+            .above(2, JSON.stringify(res.body.user.newCorpora));
 
-        return supertest(`http://${testUsername}:test@localhost:5984`)
-          .get('/someoneelsesdb-shouldnt_be_creatable')
-          .set('x-request-id', `${requestId}-syncDetails-after`)
-          .set('Accept', 'application/json');
-      })
-      .then((res) => {
-        expect(res.status).to.equal(404);
+          return supertest(`http://${testUsername}:test@localhost:5984`)
+            .get('/someoneelsesdb-shouldnt_be_creatable')
+            .set('x-request-id', `${requestId}-syncDetails-after`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          expect(res.status).to.equal(404);
 
-        return supertest(`http://${testUsername}:test@localhost:5984`)
-          .get(`/${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}/_design/deprecated/_view/corpora`)
-          .set('x-request-id', `${requestId}-syncDetails`)
-          .set('Accept', 'application/json');
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          expect(res.body.total_rows).to.equal(1, JSON.stringify(res.body));
-        } else {
-          debug('syncDetails', JSON.stringify(res.body));
-          expect(res.status).to.be.oneOf([401, 404], JSON.stringify(res.body)); // delay in views creation on new resources
-        }
-      });
+          return supertest(`http://${testUsername}:test@localhost:5984`)
+            .get(`/${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}/_design/deprecated/_view/corpora`)
+            .set('x-request-id', `${requestId}-syncDetails`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            expect(res.body.total_rows).to.equal(1, JSON.stringify(res.body));
+          } else {
+            debug('syncDetails', JSON.stringify(res.body));
+            // delay in views creation on new resources
+            expect(res.status).to.be.oneOf([401, 404], JSON.stringify(res.body));
+          }
+        });
     });
   });
 });
