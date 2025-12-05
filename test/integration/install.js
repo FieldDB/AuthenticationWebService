@@ -17,14 +17,16 @@ if (!destination) {
   destination = url.format(destination).replace(/\/$/, '');
 }
 const source = process.env.SOURCE_URL;
+const REPLAY = process.env.REPLAY || '';
 debug('destination', destination);
 debug('source', source);
 let adminSessionCookie;
+let couchDBInfo;
 const usersDBname = config.usersDbConnection.dbname;
 
 describe('install', () => {
   before(() => {
-    if (source.includes('example.org')) {
+    if (REPLAY === 'bloody' && source.includes('example.org')) {
       throw new Error('SOURCE_URL is not set to a valid test CouchDB instance. Please export SOURCE_URL=http://public:none@thecouchinstance.org');
     }
     // eslint-disable-next-line no-underscore-dangle
@@ -44,6 +46,16 @@ describe('install', () => {
         const setCookie = res.headers['set-cookie'].length === 1 ? res.headers['set-cookie'][0] : res.headers['set-cookie'];
         [adminSessionCookie] = setCookie.split(';');
         debug('adminSessionCookie', adminSessionCookie);
+
+        return supertest(destination)
+          .get('/')
+          .set('Accept', 'application/json');
+      })
+      .then((res) => {
+        expect(res.status).to.equal(200);
+        debug('couchdb version', res.body);
+        couchDBInfo = res.body;
+        expect(couchDBInfo.version).to.equal('3.5.1', JSON.stringify(couchDBInfo));
       });
   });
   after(() => {
