@@ -1,15 +1,19 @@
 const debug = require('debug')('test:deprecated');
 const { expect } = require('chai');
+const config = require('config');
 const path = require('path');
 const replay = require('replay');
 const supertest = require('supertest');
 // eslint-disable-next-line global-require
 const authWebService = process.env.URL || require('../../auth_service');
 
+const REPLAY = process.env.REPLAY || '';
+
 // eslint-disable-next-line no-underscore-dangle
 const originalLocalhosts = replay._localhosts;
 const requestId = 'deprecated-spec';
 replay.fixtures = path.join(__dirname, '/../fixtures/replay');
+let couchDBInfo;
 
 describe('/ deprecated', () => {
   const testUsername = process.env.REPLAY ? `test${Date.now()}` : 'test1637710294972';
@@ -19,6 +23,16 @@ describe('/ deprecated', () => {
     replay._localhosts = new Set(['127.0.0.1', '::1']);
     // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
+
+    return supertest(config.usersDbConnection.url)
+      .get('/')
+      .set('Accept', 'application/json')
+      .then((res) => {
+        expect(res.status).to.equal(200);
+        debug('couchdb version', res.body);
+        couchDBInfo = res.body;
+        expect(couchDBInfo.version).to.be.a('string', JSON.stringify(couchDBInfo));
+      });
   });
   after(() => {
     // eslint-disable-next-line no-underscore-dangle
@@ -84,7 +98,8 @@ describe('/ deprecated', () => {
               ],
             },
             info: {
-              authentication_handlers: ['cookie', 'default'],
+              authentication_db: couchDBInfo.version = '1.6.1' ? '_users' : undefined,
+              authentication_handlers: couchDBInfo.version = '1.6.1' ? ['oauth',  'cookie', 'default'] : ['cookie', 'default'],
               authenticated: 'default',
             },
           }, 'should have roles');
