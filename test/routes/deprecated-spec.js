@@ -1535,21 +1535,24 @@ describe('/ deprecated', () => {
         .post('/register')
         .set('x-request-id', `${requestId}-prep-syncDetails`)
         .send({
-          username: 'testuser8',
+          username: testUsername,
           password: 'test',
 
         })
         .then((res) => {
-          debug('register testuser8', res.body);
+          debug(`register ${testUsername}`, res.body);
         });
     });
 
-    it('should try to create all corpora listed in the user', () => supertest(authWebService)
-      .post('/login')
-      .set('x-request-id', `${requestId}-syncDetails`)
-      .send({
-        username: testUsername,
-        password: 'test',
+    it('should try to create all corpora listed in the user', async function () {
+      // The corpus creation can be delayed and finish after the request to login finishes
+      this.retries(3);
+      return supertest(authWebService)
+        .post('/login')
+        .set('x-request-id', `${requestId}-syncDetails`)
+        .send({
+          username: testUsername,
+          password: 'test',
         syncDetails: true,
         syncUserDetails: {
           newCorpusConnections: [{
@@ -1584,11 +1587,12 @@ describe('/ deprecated', () => {
       })
       .then((res) => {
         if (res.status === 200) {
-          expect(res.body.total_rows).to.equal(1);
+          expect(res.body.total_rows).to.equal(1, JSON.stringify(res.body));
         } else {
           debug('syncDetails', JSON.stringify(res.body));
-          expect(res.status).to.be.oneOf([401, 404]); // delay in views creation on new resources
+          expect(res.status).to.be.oneOf([401, 404], JSON.stringify(res.body)); // delay in views creation on new resources
         }
-      }));
+      });
+    });
   });
 });

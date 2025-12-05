@@ -29,6 +29,10 @@ describe('install', () => {
     if (REPLAY === 'bloody' && source.includes('example.org')) {
       throw new Error('SOURCE_URL is not set to a valid test CouchDB instance. Please export SOURCE_URL=http://public:none@thecouchinstance.org');
     }
+
+    if (REPLAY === 'bloody' && destination.includes('sync.org')) {
+      throw new Error('The destination is not set to a valid test CouchDB instance. Please edit config.local to use a db such as http://public:none@localhost:5984');
+    }
     // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set();
     // eslint-disable-next-line no-underscore-dangle
