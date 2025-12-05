@@ -1,0 +1,13 @@
+GET /
+accept-encoding: gzip, deflate
+accept: application/json
+
+HTTP/1.1 200 OK
+cache-control: must-revalidate
+connection: close
+content-length: 127
+content-type: application/json
+date: Fri, 05 Dec 2025 16:56:48 GMT
+server: nginx/1.10.3
+
+{"couchdb":"Welcome","uuid":"0f659d1403b43877255f55b51149508f","version":"1.6.1","vendor":{"name":"Ubuntu","version":"16.04"}}

@@ -28,7 +28,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run lint:ci
-    - run: DEBUG=replay* npm run coverage || echo "warn some tests failed remove this warning after re-recording"
+    - run: DEBUG=replay* npm run coverage
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
