@@ -39,6 +39,11 @@ const setup = function setup(api, apiVersion) {
     },
   });
 
+  // swagger.addGet(userRoutes.getUser);
+  // swagger.addGet(userRoutes.getCurrentUser);
+  // swagger.addGet(userRoutes.getList);
+  // swagger.addPost(userRoutes.postUsers);
+  // swagger.addPut(userRoutes.putUser);
   swagger.addGet(corporaRoutes.getCorpora);
   swagger.addPost(corporaRoutes.postCorpora);
   swagger.addPut(corporaRoutes.putCorpora);
