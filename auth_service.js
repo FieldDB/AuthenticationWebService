@@ -61,10 +61,6 @@ debug(`Accepting api version ${apiVersion}`);
 /**
  * Middleware
  */
-// The example attaches it to the express
-// https://github.com/oauthjs/express-oauth-server#quick-start
-// service.oauth = oauthMiddleware;
-// authWebService.use(authenticationMiddleware.jwt);
 
 authWebService.use(favicon(path.join(__dirname, '/public/favicon.ico')));
 authWebService.use(bunyan({
