@@ -99,7 +99,7 @@ describe('/ deprecated', () => {
             },
             info: {
               authentication_db: couchDBInfo.version = '1.6.1' ? '_users' : undefined,
-              authentication_handlers: ['cookie', 'default'],
+              authentication_handlers: couchDBInfo.version = '1.6.1' ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'],
               authenticated: 'default',
             },
           }, `should have roles ${JSON.stringify(couchDBInfo)}`);
