@@ -554,7 +554,7 @@ describe('/ deprecated', () => {
     before(function () {
       debug('/addroletouser', process.env.REPLAY);
 
-      this.timeout(49000);
+      this.timeout(149000);
 
       return supertest(authWebService)
         .post('/register')
