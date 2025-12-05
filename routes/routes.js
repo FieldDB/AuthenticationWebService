@@ -4,9 +4,7 @@ const config = require('config');
 const debug = require('debug')('route:routes');
 
 /* Load modules provided by this codebase */
-const userRoutes = require('./user');
-const authenticationRoutes = require('./authentication');
-const oauthRoutes = require('./oauth2');
+// const userRoutes = require('../lib/users');
 const corporaRoutes = require('./corpora');
 const { errorHandler } = require('../middleware/error-handler');
 const utterancesRoutes = require('./utterances');
@@ -20,13 +18,7 @@ const setup = function setup(api, apiVersion) {
   swagger.configureSwaggerPaths('', '/api', '');
   swagger.setErrorHandler((req, res, error) => errorHandler(error, req, res));
   swagger.setAppHandler(api);
-  /* Prepare models for the API Schema info using the info the routes provide */
-  const APIModelShema = {};
-  APIModelShema.models = {
-    User: userRoutes.UserSchema,
-    Connection: userRoutes.ConnectionSchema,
-  };
-  swagger.addModels(APIModelShema);
+
   /* Declare available APIs */
   swagger.addGet({
     spec: {
@@ -47,17 +39,11 @@ const setup = function setup(api, apiVersion) {
     },
   });
 
-  swagger.addPost(authenticationRoutes.postLogin);
-  swagger.addGet(authenticationRoutes.getLogout);
-  swagger.addPost(authenticationRoutes.postRegister);
-  swagger.addGet(oauthRoutes.getAuthorize);
-  swagger.addPost(oauthRoutes.postToken);
-  swagger.addGet(userRoutes.getUser);
-  swagger.addGet(userRoutes.getCurrentUser);
-  swagger.addGet(userRoutes.getList);
-  swagger.addPost(userRoutes.postUsers);
-  swagger.addPut(userRoutes.putUser);
-  swagger.addDelete(userRoutes.deleteUsers);
+  // swagger.addGet(userRoutes.getUser);
+  // swagger.addGet(userRoutes.getCurrentUser);
+  // swagger.addGet(userRoutes.getList);
+  // swagger.addPost(userRoutes.postUsers);
+  // swagger.addPut(userRoutes.putUser);
   swagger.addGet(corporaRoutes.getCorpora);
   swagger.addPost(corporaRoutes.postCorpora);
   swagger.addPut(corporaRoutes.putCorpora);

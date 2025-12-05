@@ -71,8 +71,8 @@ describe.skip('/users', () => {
             ],
           },
           info: {
-            authentication_db: '_users',
-            authentication_handlers: ['oauth', 'cookie', 'default'],
+            // authentication_db: '_users',
+            authentication_handlers: [/* 'oauth' */'cookie', 'default'],
             authenticated: 'default',
           },
         }, 'should have roles');
