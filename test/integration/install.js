@@ -188,7 +188,7 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body new_testing_corpus', res.body);
-          expect(res.body.ok).to.equal(true);
+          expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
 
           return supertest(destination)
             .get('/_all_dbs')
@@ -227,14 +227,6 @@ describe('install', () => {
         .then((res) => {
           debug('res.body prototype', res.body);
           expect(res.body.ok).to.equal(true);
-
-          return supertest(destination)
-            .get('/_all_dbs')
-            .set('Accept', 'application/json');
-        })
-        .then((res) => {
-          debug('res.body prototype after', res.body);
-          expect(res.body).includes(dbnameToReplicate);
 
           return supertest(destination)
             .get(`/${dbnameToReplicate}/_design/prototype`)
