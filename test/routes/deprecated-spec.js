@@ -102,7 +102,7 @@ describe('/ deprecated', () => {
               authentication_handlers: couchDBInfo.version = '1.6.1' ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'],
               authenticated: 'default',
             },
-          }, 'should have roles');
+          }, 'should have roles ' + JSON.stringify(res.body));
           expect(res.status).to.equal(200, JSON.stringify(res.body));
 
           return supertest(`http://${testUsername}:test@localhost:5984`)
