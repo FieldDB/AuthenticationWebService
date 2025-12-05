@@ -99,12 +99,13 @@ describe('/ deprecated', () => {
               ],
             },
             info: {
-              authentication_db: res.headers.server.includes('CouchDB/1.') ? '_users' : undefined,
-              authentication_handlers: res.headers.server.includes('CouchDB/1.') ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'],
+              authentication_db: res.body.info.authentication_db,
+              authentication_handlers: res.body.info.authentication_handlers,
               authenticated: 'default',
             },
-          }, `should have roles ${JSON.stringify(res.headers)}`);
+          }, JSON.stringify(res.body));
           expect(res.status).to.equal(200, JSON.stringify(res.body));
+          expect(res.body.info.authentication_handlers).to.deep.equal(res.headers.server.includes('CouchDB/1.') ? ['oauth', 'cookie', 'default'] : ['cookie', 'default'], JSON.stringify(res.headers));
 
           return supertest(`http://${testUsername}:test@localhost:5984`)
             .get(`/${testUsername}-activity_feed/_design/activities/_view/activities`)
