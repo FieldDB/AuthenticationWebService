@@ -29,11 +29,11 @@
     "config": "^4.1.1",
     "cors": "^2.8.5",
     "debug": "^4.4.3",
-    "express": "^4.17.1",
+    "express": "^5.2.1",
     "express-bunyan-logger": "^1.3.3",
     "fielddb": "^5.168.15-rc0",
     "md5": "^2.3.0",
-    "nano": "^10.1.4",
+    "nano": "^11.0.3",
     "nodemailer": "^7.0.11",
     "serve-favicon": "^2.5.1",
     "uuid": "^13.0.0"
@@ -53,8 +53,7 @@
     "sinon": "^21.0.0",
     "supertest": "^7.1.4"
   },
-  "resolutions": {
-  },
+  "resolutions": {},
   "main": "./auth_service.js",
   "bin": {
     "fielddb-auth": "./auth_service.js"
