@@ -17,14 +17,14 @@ const jsConfig = [
   // ESLint Recommended Rules
   {
     name: 'js/config',
-    ...js.configs.recommended,
+    // ...js.configs.recommended,
   },
   // Stylistic Plugin
-  plugins.stylistic,
+  // plugins.stylistic,
   // Import X Plugin
-  plugins.importX,
+  // plugins.importX,
   // Airbnb Base Recommended Config
-  ...configs.base.recommended,
+  // ...configs.base.recommended,
 ];
 
 const nodeConfig = [
