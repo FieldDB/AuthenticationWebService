@@ -29,7 +29,7 @@
     "config": "^4.1.1",
     "cors": "^2.8.5",
     "debug": "^4.4.3",
-    "express": "^5.2.1",
+    "express": "^4.17.1",
     "express-bunyan-logger": "^1.3.3",
     "fielddb": "^5.168.15-rc0",
     "md5": "^2.3.0",
