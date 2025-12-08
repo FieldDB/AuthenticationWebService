@@ -1526,23 +1526,71 @@ describe('/ deprecated', () => {
   });
 
   describe('syncDetails', () => {
-    
+    const uniqueDBname = process.env.REPLAY ? Date.now() : '1637871012346';
+    before(function () {
+      debug('/syncDetails', process.env.REPLAY);
 
-    it.only('should try to create all corpora listed in the user', async function () {
-      const testUsername  = 'test1765217361392'; 
-      const uniqueDBname  = '1765217361394'
+      this.timeout(40000);
+      return supertest(authWebService)
+        .post('/register')
+        .set('x-request-id', `${requestId}-prep-syncDetails`)
+        .send({
+          username: testUsername,
+          password: 'test',
+
+        })
+        .then((res) => {
+          debug(`register ${testUsername}`, res.body);
+        });
+    });
+
+    it('should try to create all corpora listed in the user', async function () {
       // The corpus creation can be delayed and finish after the request to login finishes
       this.retries(3);
-      return supertest(`http://${testUsername}:test@localhost:5984`)
-            .get(`/${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}/_all_docs`)
+      return supertest(authWebService)
+        .post('/login')
+        .set('x-request-id', `${requestId}-syncDetails`)
+        .send({
+          username: testUsername,
+          password: 'test',
+          syncDetails: true,
+          syncUserDetails: {
+            newCorpusConnections: [{
+              dbname: `${testUsername}-firstcorpus`,
+            }, {}, {
+              dbname: 'someoneelsesdb-shouldnt_be_creatable',
+            }, {
+              dbname: `${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}`,
+            }, {
+              dbname: `${testUsername}-firstcorpus`,
+            }],
+          },
+        })
+        .then((res) => {
+          expect(res.body.user && res.body.user.corpora && res.body.user.corpora.length >= 1)
+            .to.equal(true, JSON.stringify(res.body));
+          expect(res.body.user.newCorpora && res.body.user.newCorpora.length)
+            .above(2, JSON.stringify(res.body.user.newCorpora));
+
+          return supertest(`http://${testUsername}:test@localhost:5984`)
+            .get('/someoneelsesdb-shouldnt_be_creatable')
+            .set('x-request-id', `${requestId}-syncDetails-after`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          expect(res.status).to.equal(404);
+
+          return supertest(`http://${testUsername}:test@localhost:5984`)
+            .get(`/${testUsername}-an_offline_corpus_created_in_the_prototype${uniqueDBname}/_design/deprecated/_view/corpora`)
             .set('x-request-id', `${requestId}-syncDetails`)
-            .set('Accept', 'application/json')
+            .set('Accept', 'application/json');
+        })
         .then((res) => {
           if (res.status === 200) {
-            expect(res.body.total_rows).to.be.at.least(6, JSON.stringify(res.body));
+            expect(res.body.total_rows).to.equal(1, JSON.stringify(res.body));
           } else {
             debug('syncDetails', JSON.stringify(res.body));
-            // FIXME roles for the offline corpora are not being updated on the user
+            // FIXME roles for the offline corpora are not being updated on the user due to a conflict when saving the user
             expect(res.status).to.be.oneOf([403], JSON.stringify(res.body));
           }
         });
