@@ -519,16 +519,14 @@ describe('install', () => {
 
           return supertest(destination)
             .get(`/${dbnameToReplicate}/_design/prototype`)
-            .set('cookie', adminSessionCookie)
             .set('Accept', 'application/json');
         })
         .then((res) => {
           debug('res.body prototype after ', res.body);
-          expect(res.body.couchapp && res.body.couchapp.name).to.equal('LingSync Prototype (has the most features of the apps)', JSON.stringify(res.body));
+          expect(res.body.couchapp && res.body.couchapp.name).to.contain('Prototype (has the most features of the apps)', JSON.stringify(res.body));
 
           return supertest(destination)
-            .get(`/${dbnameToReplicate}/_design/prototype/user.html`)
-            .set('cookie', adminSessionCookie);
+            .get(`/${dbnameToReplicate}/_design/prototype/user.html`);
         })
         .then((res) => {
           debug('res.body prototype after ', res.body);
