@@ -6,7 +6,7 @@ module.exports = {
     'db',
   ],
   'check-coverage': true,
-  branches: 66,
+  branches: 67,
   functions: 68,
   lines: 78,
   statements: 78,
