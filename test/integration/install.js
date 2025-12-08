@@ -25,7 +25,9 @@ let couchDBInfo;
 const usersDBname = config.usersDbConnection.dbname;
 
 describe('install', () => {
-  before(() => {
+  before(function () {
+    // couchdb can be slow to be fully setup so retry a few times
+    this.retries(3);
     if (REPLAY === 'bloody' && source.includes('example.org')) {
       throw new Error('SOURCE_URL is not set to a valid test CouchDB instance. Please export SOURCE_URL=http://public:none@thecouchinstance.org');
     }
