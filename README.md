@@ -30,10 +30,10 @@ Edit your /etc/hosts to add an entry for example.org:
 127.0.0.1       corpusdev.example.org
 ```
 
-Turn on your local couchdb and make sure it is running on http://127.0.0.1:5984/_utils Record tests by adding `.only` on the tests you wish to record:
+Turn on your local couchdb and make sure it is running on http://127.0.0.1:5984/_utils Record tests by adding `.only` on the tests which show the error "refused: not recording and no network access":
 
 ```bash
-$ DEBUG=*user*,*nock*,*replay* REPLAY=record npm test
+$ SOURCE_URL:-https://public:none@corpusdev.other.org DEBUG=*user*,*nock*,*replay* REPLAY=record npm test
 ```
 
 As a result you should see a directory corresponding to the server, and files with-in it representing the requests:
@@ -41,7 +41,7 @@ As a result you should see a directory corresponding to the server, and files wi
 ```bash
 $ tree test/fixtures/
 test/fixtures/
-└── corpusdev.example.org-5984
+└── corpusdev.other.org-5984
     └── 154417467505825257
 ```
 
@@ -51,6 +51,25 @@ To run tests against the local instance:
 
 ```
 $ URL=https://localhost:3183 npm test
+```
+
+### Running tests against a local couchdb
+
+```bash
+$ npm run docker:test
+```
+
+Turn off the docker container
+```bash
+$ docker compose stop
+$ docker compose rm -f
+```
+
+Exec into the docker container
+
+```bash
+$ docker container list
+$ docker exec -it cda63fa5d348 /bin/bash
 ```
 
 ## Release History

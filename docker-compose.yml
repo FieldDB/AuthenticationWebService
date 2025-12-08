@@ -1,12 +1,11 @@
 ############## Commands ##########################
-### docker-compose up -d
-### docker-compose logs -f
+### docker compose up -d
+### docker compose logs -f
 ### docker container list
 
 ############## Docs ##############################
 # https://hub.docker.com/_/couchdb
 
-version: "3.7"
 services:
   couchdb:
     build:
@@ -14,7 +13,9 @@ services:
       dockerfile: ./Dockerfile-couchdb
     ports:
       - 5984:5984
-      - 6984:6984
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=none
   app:
     depends_on:
       - couchdb

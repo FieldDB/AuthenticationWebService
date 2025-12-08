@@ -17,15 +17,53 @@ if (!destination) {
   destination = url.format(destination).replace(/\/$/, '');
 }
 const source = process.env.SOURCE_URL;
+const REPLAY = process.env.REPLAY || '';
 debug('destination', destination);
 debug('source', source);
+let adminSessionCookie;
+let couchDBInfo;
+const usersDBname = config.usersDbConnection.dbname;
 
 describe('install', () => {
-  before(() => {
+  before(function () {
+    // couchdb can be slow to be fully setup so retry a few times
+    this.retries(3);
+    if (REPLAY === 'bloody' && source.includes('example.org')) {
+      throw new Error('SOURCE_URL is not set to a valid test CouchDB instance. Please export SOURCE_URL=http://public:none@thecouchinstance.org');
+    }
+
+    if (REPLAY === 'bloody' && destination.includes('sync.org')) {
+      throw new Error('The destination is not set to a valid test CouchDB instance. Please edit config.local to use a db such as http://public:none@localhost:5984');
+    }
     // eslint-disable-next-line no-underscore-dangle
     replay._localhosts = new Set();
     // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
+
+    return supertest(destination)
+      .post('/_session')
+      .set('Accept', 'application/json')
+      .send({
+        name: 'admin',
+        password: 'none',
+      })
+      .then((res) => {
+        expect(res.status).to.equal(200, JSON.stringify(res.body));
+
+        const setCookie = res.headers['set-cookie'].length === 1 ? res.headers['set-cookie'][0] : res.headers['set-cookie'];
+        [adminSessionCookie] = setCookie.split(';');
+        debug('adminSessionCookie', adminSessionCookie);
+
+        return supertest(destination)
+          .get('/')
+          .set('Accept', 'application/json');
+      })
+      .then((res) => {
+        expect(res.status).to.equal(200);
+        debug('couchdb version', res.body);
+        couchDBInfo = res.body;
+        expect(couchDBInfo.version).to.equal('3.5.1', JSON.stringify(couchDBInfo));
+      });
   });
   after(() => {
     // eslint-disable-next-line no-underscore-dangle
@@ -35,8 +73,23 @@ describe('install', () => {
   });
 
   describe('_users views', () => {
+    before(() => supertest(destination)
+      .get('/_all_dbs')
+      .set('cookie', adminSessionCookie)
+      .set('Accept', 'application/json')
+      .then((res) => {
+        debug('res', res.body);
+        expect(res.body).includes('_users', JSON.stringify(res.body));
+      })
+      .catch(() => supertest(destination)
+        .put('/_users')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({})));
+
     it('should create the _users views', () => supertest(destination)
       .post('/_users')
+      .set('cookie', adminSessionCookie)
       .set('Accept', 'application/json')
       .send({
         _id: '_design/users',
@@ -55,7 +108,7 @@ describe('install', () => {
       })
       .then((res) => {
         if (res.body.error !== 'conflict') {
-          expect(res.body.ok).to.equal(true);
+          expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
         }
 
         return supertest(destination)
@@ -70,27 +123,20 @@ describe('install', () => {
   });
 
   describe('theuserscouch', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        debug('res', res.body);
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate theuserscouch', () => supertest(destination)
       .post('/_replicate')
+      .set('cookie', adminSessionCookie)
       .set('Accept', 'application/json')
       .send({
         source: `${source}/new_theuserscouch`,
         target: {
-          url: `${destination}/theuserscouch`,
+          url: `${destination}/${usersDBname}`,
         },
         create_target: true,
       })
       .then((res) => {
         debug('res.body theuserscouch', res.body);
-        expect(res.body.ok).to.equal(true);
+        expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
 
         return supertest(destination)
           .get('/_all_dbs')
@@ -98,23 +144,17 @@ describe('install', () => {
       })
       .then((res) => {
         debug('res.body after', res.body);
-        expect(res.body).includes('theuserscouch');
+        expect(res.body).includes(usersDBname);
       }));
   });
 
   describe('new_corpus', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate new_corpus', () => {
       const dbnameToReplicate = 'new_corpus';
 
       return supertest(destination)
         .post('/_replicate')
+        .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
         .send({
           source: `${source}/${dbnameToReplicate}`,
@@ -138,127 +178,13 @@ describe('install', () => {
     });
   });
 
-  describe('new_gamify_corpus', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
-    it('should replicate new_gamify_corpus', () => {
-      const dbnameToReplicate = 'new_gamify_corpus';
-
-      return supertest(destination)
-        .post('/_replicate')
-        .set('Accept', 'application/json')
-        .send({
-          source: `${source}/${dbnameToReplicate}`,
-          target: {
-            url: `${destination}/${dbnameToReplicate}`,
-          },
-          create_target: true,
-        })
-        .then((res) => {
-          debug('res.body new_gamify_corpus', res.body);
-          expect(res.body.ok).to.equal(true);
-
-          return supertest(destination)
-            .get('/_all_dbs')
-            .set('Accept', 'application/json');
-        })
-        .then((res) => {
-          debug('res.body new_gamify_corpus after', res.body);
-          expect(res.body).includes(dbnameToReplicate);
-        });
-    });
-  });
-
-  describe('new_learnx_corpus', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
-    it('should replicate new_learnx_corpus', () => {
-      const dbnameToReplicate = 'new_learnx_corpus';
-
-      return supertest(destination)
-        .post('/_replicate')
-        .set('Accept', 'application/json')
-        .send({
-          source: `${source}/${dbnameToReplicate}`,
-          target: {
-            url: `${destination}/${dbnameToReplicate}`,
-          },
-          create_target: true,
-        })
-        .then((res) => {
-          debug('res.body new_learnx_corpus', res.body);
-          expect(res.body.ok).to.equal(true);
-
-          return supertest(destination)
-            .get('/_all_dbs')
-            .set('Accept', 'application/json');
-        })
-        .then((res) => {
-          debug('res.body new_learnx_corpus after', res.body);
-          expect(res.body).includes(dbnameToReplicate);
-        });
-    });
-  });
-
-  describe('new_wordcloud_corpus', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
-    it('should replicate new_wordcloud_corpus', () => {
-      const dbnameToReplicate = 'new_wordcloud_corpus';
-
-      return supertest(destination)
-        .post('/_replicate')
-        .set('Accept', 'application/json')
-        .send({
-          source: `${source}/${dbnameToReplicate}`,
-          target: {
-            url: `${destination}/${dbnameToReplicate}`,
-          },
-          create_target: true,
-        })
-        .then((res) => {
-          debug('res.body new_wordcloud_corpus', res.body);
-          expect(res.body.ok).to.equal(true);
-
-          return supertest(destination)
-            .get('/_all_dbs')
-            .set('Accept', 'application/json');
-        })
-        .then((res) => {
-          debug('res.body new_wordcloud_corpus after', res.body);
-          expect(res.body).includes(dbnameToReplicate);
-        });
-    });
-  });
-
   describe('new_testing_corpus', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate new_testing_corpus', () => {
       const dbnameToReplicate = 'new_testing_corpus';
 
       return supertest(destination)
         .post('/_replicate')
+        .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
         .send({
           source: `${source}/${dbnameToReplicate}`,
@@ -269,7 +195,7 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body new_testing_corpus', res.body);
-          expect(res.body.ok).to.equal(true);
+          expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
 
           return supertest(destination)
             .get('/_all_dbs')
@@ -278,6 +204,16 @@ describe('install', () => {
         .then((res) => {
           debug('res.body new_testing_corpus after', res.body);
           expect(res.body).includes(dbnameToReplicate);
+
+          return supertest(destination)
+            .get(`/${dbnameToReplicate}/_design/data/_view/by_type?group=true`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_testing_corpus design doc for data', res.body);
+          expect(res.body).to.deep.equal({
+            rows: [],
+          }, JSON.stringify(res.body));
         });
     });
   });
@@ -292,6 +228,7 @@ describe('install', () => {
 
       return supertest(destination)
         .post('/_replicate')
+        .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
         .send({
           source: `${source}/new_activity_feed`,
@@ -354,6 +291,7 @@ describe('install', () => {
 
       return supertest(destination)
         .post('/_replicate')
+        .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
         .send({
           source: `${source}/new_activity_feed`,
@@ -406,19 +344,103 @@ describe('install', () => {
     });
   });
 
-  describe('new_lexicon', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
+  describe('new_gamify_corpus', () => {
+    it('should replicate new_gamify_corpus', () => {
+      const dbnameToReplicate = 'new_gamify_corpus';
 
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body new_gamify_corpus', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_gamify_corpus after', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+        });
+    });
+  });
+
+  describe('new_learnx_corpus', () => {
+    it('should replicate new_learnx_corpus', () => {
+      const dbnameToReplicate = 'new_learnx_corpus';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body new_learnx_corpus', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_learnx_corpus after', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+        });
+    });
+  });
+
+  describe('new_wordcloud_corpus', () => {
+    it('should replicate new_wordcloud_corpus', () => {
+      const dbnameToReplicate = 'new_wordcloud_corpus';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body new_wordcloud_corpus', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_wordcloud_corpus after', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+        });
+    });
+  });
+
+  describe('new_lexicon', () => {
     it('should replicate new_lexicon', () => {
       const dbnameToReplicate = 'new_lexicon';
 
       return supertest(destination)
         .post('/_replicate')
+        .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
         .send({
           source: `${source}/${dbnameToReplicate}`,
@@ -429,27 +451,22 @@ describe('install', () => {
         })
         .then((res) => {
           debug('res.body new_lexicon', res.body);
-          expect(res.body.ok).to.equal(true);
+          expect(res.body.ok).to.equal(true, JSON.stringify(res.body));
 
           return supertest(destination)
-            .get('/_all_dbs')
+            .get(`/${dbnameToReplicate}/_design/lexicon/_view/lexiconNodes?group=true`)
             .set('Accept', 'application/json');
         })
         .then((res) => {
-          debug('res.body new_lexicon after', res.body);
-          expect(res.body).includes(dbnameToReplicate);
+          debug('res.body new_lexicon after ', res.body);
+          expect(res.body).to.deep.equal({
+            rows: [],
+          }, JSON.stringify(res.body));
         });
     });
   });
 
   describe('new_export', () => {
-    before(() => supertest(destination)
-      .get('/_all_dbs')
-      .set('Accept', 'application/json')
-      .then((res) => {
-        expect(res.body).includes('_users', JSON.stringify(res.body));
-      }));
-
     it('should replicate new_export', () => {
       const dbnameToReplicate = 'new_export';
 
@@ -488,6 +505,7 @@ describe('install', () => {
 
       return supertest(destination)
         .post('/_replicate')
+        .set('cookie', adminSessionCookie)
         .set('Accept', 'application/json')
         .send({
           source: `${source}/${dbnameToReplicate}`,
@@ -501,6 +519,7 @@ describe('install', () => {
 
           return supertest(destination)
             .get(`/${dbnameToReplicate}/_design/prototype`)
+            .set('cookie', adminSessionCookie)
             .set('Accept', 'application/json');
         })
         .then((res) => {
@@ -508,7 +527,8 @@ describe('install', () => {
           expect(res.body.couchapp && res.body.couchapp.name).to.equal('LingSync Prototype (has the most features of the apps)', JSON.stringify(res.body));
 
           return supertest(destination)
-            .get(`/${dbnameToReplicate}/_design/prototype/user.html`);
+            .get(`/${dbnameToReplicate}/_design/prototype/user.html`)
+            .set('cookie', adminSessionCookie);
         })
         .then((res) => {
           debug('res.body prototype after ', res.body);

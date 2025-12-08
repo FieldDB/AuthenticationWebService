@@ -19,7 +19,6 @@ const favicon = require('serve-favicon');
 const path = require('path');
 
 /* Load modules provided by this codebase */
-const authenticationMiddleware = require('./middleware/authentication');
 const authWebServiceRoutes = require('./routes/routes');
 const { errorHandler } = require('./middleware/error-handler');
 const deprecatedRoutes = require('./routes/deprecated');
@@ -62,10 +61,6 @@ debug(`Accepting api version ${apiVersion}`);
 /**
  * Middleware
  */
-// The example attaches it to the express
-// https://github.com/oauthjs/express-oauth-server#quick-start
-// service.oauth = oauthMiddleware;
-authWebService.use(authenticationMiddleware.jwt);
 
 authWebService.use(favicon(path.join(__dirname, '/public/favicon.ico')));
 authWebService.use(bunyan({
@@ -104,12 +99,6 @@ authWebService.options('*', (req, res) => {
     res.send(204);
   }
 });
-
-authWebService.use('/bower_components', express.static(path.join(__dirname,
-  '/public/components/as-ui-auth/bower_components')));
-authWebService.use('/authentication', authenticationMiddleware.redirectAuthenticatedUser, express.static(path.join(__dirname, '/public/components/as-ui-auth/components')));
-authWebService.use('/authentication/register', authenticationMiddleware.redirectAuthenticatedUser,
-  express.static(path.join(__dirname, '/public/components/as-ui-auth/components/signup')));
 
 /**
  * Set up all the available URL authWebServiceRoutes see routes/routes.js for more details

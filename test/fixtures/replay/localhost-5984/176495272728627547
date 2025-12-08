@@ -1,0 +1,16 @@
+GET /
+accept-encoding: gzip, deflate
+accept: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+
+HTTP/1.1 200 OK
+cache-control: must-revalidate
+connection: close
+content-length: 247
+content-type: application/json
+date: Fri, 05 Dec 2025 16:38:46 GMT
+server: CouchDB/3.5.1 (Erlang OTP/26)
+x-couch-request-id: b36d62f8f4
+x-couchdb-body-time: 0
+
+{"couchdb":"Welcome","version":"3.5.1","git_sha":"44f6a43d8","uuid":"8507dcd80018afd3e0af696947fb57a0","features":["access-ready","partitioned","pluggable-storage-engines","reshard","scheduler"],"vendor":{"name":"The Apache Software Foundation"}}

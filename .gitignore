@@ -9,6 +9,7 @@ config/production.*
 config/local.*
 etc
 Dockerfile-couchdb
+db
 
 # Ignore natural lib
 public/libs/natural/
