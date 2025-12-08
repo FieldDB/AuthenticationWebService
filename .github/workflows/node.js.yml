@@ -38,8 +38,6 @@ jobs:
     - name: Create local config for tests
       run: |
         echo 'module.exports = { usersDbConnection: { url: "http://localhost:5984" }};' > config/local.js
-      env:
-        SOURCE_URL: ${{ secrets.SOURCE_URL }}
 
     - name: Start docker compose services
       run: docker compose up -d && sleep 5
