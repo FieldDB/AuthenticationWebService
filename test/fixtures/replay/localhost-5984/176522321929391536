@@ -1,0 +1,17 @@
+POST /_replicate
+accept-encoding: gzip, deflate
+accept: application/json
+content-type: application/json
+authorization: Basic YWRtaW46bm9uZQ==
+body: {\"source\":\"https://public:none@corpusdev.example.org/new_gamify_corpus\",\"target\":{\"url\":\"http://admin:none@localhost:5984/new_gamify_corpus\"},\"create_target\":true}
+
+HTTP/1.1 200 OK
+cache-control: must-revalidate
+content-length: 442
+content-type: application/json
+date: Mon, 08 Dec 2025 19:46:59 GMT
+server: CouchDB/3.5.1 (Erlang OTP/26)
+x-couch-request-id: 26a72e1612
+x-couchdb-body-time: 0
+
+{"ok":true,"session_id":"8cefc5f8d993691c2d9918015a070aff","source_last_seq":8,"replication_id_version":4,"history":[{"session_id":"8cefc5f8d993691c2d9918015a070aff","start_time":"Mon, 08 Dec 2025 19:46:53 GMT","end_time":"Mon, 08 Dec 2025 19:46:59 GMT","start_last_seq":0,"end_last_seq":8,"recorded_seq":8,"missing_checked":9,"missing_found":9,"docs_read":9,"docs_written":9,"doc_write_failures":0,"bulk_get_docs":0,"bulk_get_attempts":1}]}

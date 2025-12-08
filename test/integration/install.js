@@ -216,34 +216,6 @@ describe('install', () => {
           }, JSON.stringify(res.body));
         });
     });
-
-    it('should replicate the prototype couchapp', () => {
-      const dbnameToReplicate = 'prototype';
-
-      return supertest(destination)
-        .post('/_replicate')
-        .set('cookie', adminSessionCookie)
-        .set('Accept', 'application/json')
-        .send({
-          source: `${source}/${dbnameToReplicate}`,
-          target: {
-            url: `${destination}/${dbnameToReplicate}`,
-          },
-          create_target: true,
-        })
-        .then((res) => {
-          debug('res.body prototype', res.body);
-          expect(res.body.ok).to.equal(true);
-
-          return supertest(destination)
-            .get(`/${dbnameToReplicate}/_design/prototype`)
-            .set('Accept', 'application/json');
-        })
-        .then((res) => {
-          debug('res.body prototype couchapp', res.body);
-          expect(res.body.couchapp.name).to.contain(' Prototype (has the most features of the apps)', JSON.stringify(res.body));
-        });
-    });
   });
 
   describe('new_corpus_activity_feed', () => {
@@ -372,6 +344,96 @@ describe('install', () => {
     });
   });
 
+  describe('new_gamify_corpus', () => {
+    it('should replicate new_gamify_corpus', () => {
+      const dbnameToReplicate = 'new_gamify_corpus';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body new_gamify_corpus', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_gamify_corpus after', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+        });
+    });
+  });
+
+  describe('new_learnx_corpus', () => {
+    it('should replicate new_learnx_corpus', () => {
+      const dbnameToReplicate = 'new_learnx_corpus';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body new_learnx_corpus', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_learnx_corpus after', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+        });
+    });
+  });
+
+  describe('new_wordcloud_corpus', () => {
+    it('should replicate new_wordcloud_corpus', () => {
+      const dbnameToReplicate = 'new_wordcloud_corpus';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body new_wordcloud_corpus', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_wordcloud_corpus after', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+        });
+    });
+  });
+
   describe('new_lexicon', () => {
     it('should replicate new_lexicon', () => {
       const dbnameToReplicate = 'new_lexicon';
@@ -400,6 +462,75 @@ describe('install', () => {
           expect(res.body).to.deep.equal({
             rows: [],
           }, JSON.stringify(res.body));
+        });
+    });
+  });
+
+  describe('new_export', () => {
+    it('should replicate new_export', () => {
+      const dbnameToReplicate = 'new_export';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          debug('res.body new_export', res.body);
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get('/_all_dbs')
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body new_export after ', res.body);
+          expect(res.body).includes(dbnameToReplicate);
+        });
+    });
+  });
+
+  describe('online prototype', () => {
+    /**
+     * note: unable to login and use the prototype because it is not using https in the docker container
+     * and the app expects and requires https
+     */
+    it('should replicate prototype', () => {
+      const dbnameToReplicate = 'prototype';
+
+      return supertest(destination)
+        .post('/_replicate')
+        .set('cookie', adminSessionCookie)
+        .set('Accept', 'application/json')
+        .send({
+          source: `${source}/${dbnameToReplicate}`,
+          target: {
+            url: `${destination}/${dbnameToReplicate}`,
+          },
+          create_target: true,
+        })
+        .then((res) => {
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(destination)
+            .get(`/${dbnameToReplicate}/_design/prototype`)
+            .set('Accept', 'application/json');
+        })
+        .then((res) => {
+          debug('res.body prototype after ', res.body);
+          expect(res.body.couchapp && res.body.couchapp.name).to.contain('Prototype (has the most features of the apps)', JSON.stringify(res.body));
+
+          return supertest(destination)
+            .get(`/${dbnameToReplicate}/_design/prototype/user.html`);
+        })
+        .then((res) => {
+          debug('res.body prototype after ', res.body);
+          expect(res.status).to.equal(200);
         });
     });
   });
