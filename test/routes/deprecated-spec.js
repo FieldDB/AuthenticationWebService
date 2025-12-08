@@ -1590,7 +1590,8 @@ describe('/ deprecated', () => {
             expect(res.body.total_rows).to.equal(1, JSON.stringify(res.body));
           } else {
             debug('syncDetails', JSON.stringify(res.body));
-            // FIXME roles for the offline corpora are not being updated on the user due to a conflict when saving the user
+            // FIXME roles for the offline corpora are not being updated on the user
+            // due to a conflict when saving the user
             expect(res.status).to.be.oneOf([403], JSON.stringify(res.body));
           }
         });
