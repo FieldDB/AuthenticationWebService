@@ -72,6 +72,7 @@ authWebService.use(bunyan({
 }));
 authWebService.use((req, res, next) => {
   if (req.headers && req.headers['x-request-id']) {
+    // eslint-disable-next-line no-param-reassign
     req.id = req.headers['x-request-id'];
   }
   next();
@@ -93,11 +94,13 @@ authWebService.use(bodyParser.urlencoded({
  * we are still serving a user interface for the api sandbox in the public folder
  */
 authWebService.use(express.static(path.join(__dirname, 'public')));
-authWebService.options('*', (req, res) => {
+authWebService.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     debug('responding to OPTIONS request');
     res.send(204);
+    return;
   }
+  next();
 });
 
 /**

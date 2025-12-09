@@ -22,8 +22,9 @@ module.exports = defineConfig([
 
     rules: {
       "global-require": "error",
+      "indent": ["error", 2],
       "no-console": "error",
-      "no-param-reassign": "error",
+      "no-param-reassign": ["error", { "props": true, "ignorePropertyModificationsFor": ["acc"] }],
       "no-plusplus": "error",
       "no-underscore-dangle": "error",
       "no-unused-vars": "error",
@@ -39,6 +40,8 @@ module.exports = defineConfig([
           ignoreTemplateLiterals: true,
         },
       ],
+      "no-trailing-spaces": "error",
+      "semi": ["error", "always"],
     },
   },
   globalIgnores(["**/public", "lib/About.js", "lib/FieldDB.js"]),

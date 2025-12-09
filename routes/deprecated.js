@@ -190,6 +190,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    */
   app.post('/corpusteam', (req, res, next) => {
     const returndata = {};
+    // eslint-disable-next-line no-param-reassign
     req.body.dbname = req.body.dbname || req.body.pouchname;
     userFunctions.fetchCorpusPermissions({
       req,
@@ -247,12 +248,14 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
             add: req.body.roles,
           }];
         }
+        // eslint-disable-next-line no-param-reassign
         req.body.users = users;
       }
       const defaultConnection = Connection.defaultConnection(req.body.serverCode);
       let { connection } = req.body;
       if (!connection) {
         connection = defaultConnection;
+        // eslint-disable-next-line no-param-reassign
         req.body.dbname = req.body.dbname || req.body.pouchname;
         if (req.body.dbname) {
           connection.dbname = req.body.dbname;
@@ -267,6 +270,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
       if (req.body.dbname && connection.dbname === 'default') {
         connection.dbname = req.body.dbname;
       }
+      // eslint-disable-next-line no-param-reassign
       req.body.connection = connection;
       debug(req.body.connection);
       if (!req.body.connection || !req.body.connection.dbname || req.body.connection.dbname === 'default') {
@@ -361,6 +365,7 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         // TODO use next(err)
         throw new Error('ending the request');
       }
+      // eslint-disable-next-line no-param-reassign
       req.body.appbrand = req.body.appbrand || req.body.brand || req.body.serverCode || req.body.serverLabel;
       debug(` Creating a corpus withbranding ${req.body.appbrand}`);
 
@@ -427,7 +432,9 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
    */
   app.post('/updateroles', (req, res, next) => {
     /* convert spreadhseet data into data which the addroletouser api can read */
+    // eslint-disable-next-line no-param-reassign
     req.body.userRoleInfo = req.body.userRoleInfo || {};
+    // eslint-disable-next-line no-param-reassign
     req.body.userRoleInfo.dbname = req.body.userRoleInfo.dbname || req.body.userRoleInfo.pouchname;
     const roles = [];
     if (!req.body.roles && req.body.userRoleInfo) {
@@ -439,10 +446,13 @@ const addDeprecatedRoutes = function addDeprecatedRoutes(app) {
         // }
       });
     }
+    // eslint-disable-next-line no-param-reassign
     req.body.roles = req.body.roles || roles;
     debug(`${new Date()} updateroles is DEPRECATED, using the addroletouser route to process this request`, roles);
+    // eslint-disable-next-line no-param-reassign
     req.body.userToAddToRole = req.body.userToAddToRole || req.body.userRoleInfo.usernameToModify;
     if (req.body.userRoleInfo.dbname) {
+      // eslint-disable-next-line no-param-reassign
       req.body.dbname = req.body.userRoleInfo.dbname;
     }
     debug(`${new Date()} requester ${req.body.username}  userToAddToRole ${req.body.userToAddToRole} on ${req.body.dbname}`);
