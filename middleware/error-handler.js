@@ -99,6 +99,7 @@ function errorHandler(err, req, res, next) {
   } else {
     data.message = err.message;
   }
+  // eslint-disable-next-line no-param-reassign
   req.log.fields.err = {
     stack: err.stack, message: err.message,
   };

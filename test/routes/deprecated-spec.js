@@ -551,6 +551,7 @@ describe('/ deprecated', () => {
           });
       })
       .then((res) => {
+        // eslint-disable-next-line no-param-reassign
         delete res.body.stack;
         expect(res.body).to.deep.equal({
           message: 'Internal server error',
@@ -886,6 +887,7 @@ describe('/ deprecated', () => {
             });
         })
         .then((res) => {
+          // eslint-disable-next-line no-param-reassign
           delete res.body.stack;
           expect(res.body).to.deep.equal({
             message: 'User testuser5 found but didnt have permission on jenkins-firstcorpus',

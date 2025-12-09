@@ -72,6 +72,7 @@ authWebService.use(bunyan({
 }));
 authWebService.use((req, res, next) => {
   if (req.headers && req.headers['x-request-id']) {
+    // eslint-disable-next-line no-param-reassign
     req.id = req.headers['x-request-id'];
   }
   next();
