@@ -10,7 +10,14 @@ const originalLocalhosts = replay._localhosts;
 // eslint-disable-next-line no-underscore-dangle
 debug('replay localhosts', replay._localhosts);
 
-let destination = 'https://admin:none@localhost:6984';
+// FIXME: unable to use replication on https
+/*
+ application: mochiweb, "Accept failed error", "{error,
+     {tls_alert,
+         {certificate_unknown,
+             \"TLS server: In state wait_finished received CLIENT ALERT: Fatal - Certificate Unknown\\n\"}}}"
+ */
+let destination = 'http://admin:none@localhost:5984';
 if (!destination) {
   destination = url.parse(config.usersDbConnection.url);
   destination.auth = `${config.couchKeys.username}:${config.couchKeys.password}`;
