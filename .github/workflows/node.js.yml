@@ -31,7 +31,7 @@ jobs:
 
     - name: Create local config for tests
       run: |
-        echo 'module.exports = { usersDbConnection: { url: "http://localhost:5984" }};' > config/local.js
+        echo 'module.exports = { usersDbConnection: { url: "https://localhost:6984" }};' > config/local.js
 
     - name: Run Integration tests
       run: DEBUG=replay* npm run coverage || echo 'Test run failed replay no longer is working with latest nano which uses node fetch'

@@ -3,6 +3,7 @@ FROM couchdb:3.5.1
 WORKDIR /
 
 COPY etc/* /opt/couchdb/etc/
+COPY config/ssl_debug.* /opt/couchdb/etc/
 
 RUN set +x; \
   curl -X PUT http://admin:none@127.0.0.1:5984/_users; \

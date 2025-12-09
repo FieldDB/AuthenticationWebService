@@ -64,7 +64,7 @@
     "docker:build": "docker build -t fielddb-auth .",
     "docker:test": "echo 'module.exports = { usersDbConnection: { url: \"http://localhost:5984\" } };' > config/local.js && docker compose up -d && sleep 3 && docker compose logs && npm run setup && npm run test:deprecated",
     "docker:test:no-cache": "echo 'module.exports = { usersDbConnection: { url: \"http://localhost:5984\" } };' > config/local.js && docker compose build --no-cache && docker compose up -d && sleep 15 && docker compose logs && npm run setup && npm run test:deprecated",
-    "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL NODE_TLS_REJECT_UNAUTHORIZED=0 nyc npm test",
+    "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL nyc npm test",
     "lint": "eslint ",
     "lint:ci": "eslint .",
     "setup": "REPLAY=bloody SOURCE_URL=${SOURCE_URL:-https://public:none@corpusdev.example.org} mocha --timeout 20000 test/integration/install.js",
