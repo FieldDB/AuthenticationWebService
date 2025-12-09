@@ -98,7 +98,7 @@ authWebService.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     debug('responding to OPTIONS request');
     res.send(204);
-    return
+    return;
   }
   next();
 });

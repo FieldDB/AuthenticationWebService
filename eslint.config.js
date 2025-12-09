@@ -41,6 +41,7 @@ module.exports = defineConfig([
         },
       ],
       "no-trailing-spaces": "error",
+      "semi": ["error", "always"],
     },
   },
   globalIgnores(["**/public", "lib/About.js", "lib/FieldDB.js"]),
