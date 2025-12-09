@@ -71,7 +71,7 @@
     "start": "node ./bin/www.js",
     "test": "SOURCE_URL=${SOURCE_URL:-https://public:none@corpusdev.example.org} NODE_ENV=test NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --timeout 100000 --recursive test",
     "test:debug": "node-debug _mocha test/integration/oauth.js",
-    "test:deprecated": "DEBUG=${DEBUG:-lib:user} REPLAY=bloody mocha --timeout 25000 test/routes/deprecated-spec.js",
+    "test:deprecated": "DEBUG=${DEBUG:-lib:user} REPLAY=bloody nyc mocha --timeout 25000 test/routes/deprecated-spec.js",
     "test:fielddb": "NODE_ENV=localhost jasmine-node node_modules/fielddb/tests",
     "test:production": "ls config/production.js",
     "watch": "nodemon ./bin/www.js"

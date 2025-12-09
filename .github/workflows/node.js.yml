@@ -49,12 +49,13 @@ jobs:
         DEBUG: 'none'
 
     - name: Run E2E tests
-      run: REPLAY=bloody npm run coverage
+      run: REPLAY=bloody npm run test:deprecated
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
         DEBUG: 'none'
 
     - name: Coveralls
+      if: success() || failure()
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
