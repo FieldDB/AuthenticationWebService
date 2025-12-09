@@ -10,7 +10,7 @@ const originalLocalhosts = replay._localhosts;
 // eslint-disable-next-line no-underscore-dangle
 debug('replay localhosts', replay._localhosts);
 
-let destination = 'http://admin:none@localhost:5984';
+let destination = 'https://admin:none@localhost:6984';
 if (!destination) {
   destination = url.parse(config.usersDbConnection.url);
   destination.auth = `${config.couchKeys.username}:${config.couchKeys.password}`;
