@@ -74,6 +74,7 @@
     "test:deprecated": "DEBUG=${DEBUG:-lib:user} REPLAY=bloody NODE_TLS_REJECT_UNAUTHORIZED=0 nyc mocha --timeout 25000 test/routes/deprecated-spec.js",
     "test:fielddb": "NODE_ENV=localhost jasmine-node node_modules/fielddb/tests",
     "test:production": "ls config/production.js",
+    "test:ui": "git clone https://github.com/FieldDB/FieldDB.git && cd FieldDB/test-e2e && npm install && npx playwright install firefox chromium && BASE_URL='https://localhost:6984' BASE_PATH='/prototype/_design/prototype' npm run test",
     "watch": "nodemon ./bin/www.js"
   },
   "license": "Apache-2.0"
