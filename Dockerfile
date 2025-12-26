@@ -11,6 +11,7 @@ RUN ls -alt; \
 
 ENV DEBUG="*,-express*"
 ENV NODE_ENV=beta
+ENV NODE_OPTIONS="--dns-result-order=ipv4first"
 
 EXPOSE 3183
 

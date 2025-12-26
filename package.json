@@ -62,8 +62,8 @@
   },
   "scripts": {
     "docker:build": "docker build -t fielddb-auth .",
-    "docker:test": "echo 'module.exports = { usersDbConnection: { url: \"http://localhost:5984\" } };' > config/local.js && docker compose up -d && sleep 3 && docker compose logs && npm run setup && npm run test:deprecated",
-    "docker:test:no-cache": "echo 'module.exports = { usersDbConnection: { url: \"http://localhost:5984\" } };' > config/local.js && docker compose build --no-cache && docker compose up -d && sleep 15 && docker compose logs && npm run setup && npm run test:deprecated",
+    "test:integration": "echo 'module.exports = { usersDbConnection: { url: \"http://localhost:5984\" } };' > config/local.js && docker compose up -d && sleep 3 && docker compose logs && npm run setup && URL=https://localhost:3183 npm run test:deprecated",
+    "docker:test:no-cache": "echo 'module.exports = { usersDbConnection: { url: \"http://couchdb:5984\" } };' > config/local.js && docker compose build --no-cache && docker compose up -d && sleep 15 && docker compose logs && npm run setup && URL=https://localhost:3183 npm run test:deprecated",
     "coverage": "NODE_ENV=test BUNYAN_LOG_LEVEL=FATAL nyc npm test",
     "lint": "eslint ",
     "lint:ci": "eslint .",
