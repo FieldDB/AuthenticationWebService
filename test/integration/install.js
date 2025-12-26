@@ -531,8 +531,9 @@ describe('install', () => {
             .set('cookie', adminSessionCookie)
             .set('Accept', 'application/json')
             .send({
-              "members":{"roles":[]},
-              "admins":{"roles":["_admin"]}
+              // The couchapp is public but only admins can write to it
+              members: { roles: [] },
+              admins: { roles: ["_admin"] },
             });
         })
         .then((res) => {
