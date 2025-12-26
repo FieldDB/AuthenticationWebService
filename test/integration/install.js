@@ -18,6 +18,8 @@ debug('replay localhosts', replay._localhosts);
              \"TLS server: In state wait_finished received CLIENT ALERT: Fatal - Certificate Unknown\\n\"}}}"
  */
 let destination = 'http://admin:none@localhost:5984';
+const couchUrl = destination.replace('admin:none@', '');
+
 if (!destination) {
   destination = url.parse(config.usersDbConnection.url);
   destination.auth = `${config.couchKeys.username}:${config.couchKeys.password}`;
@@ -525,6 +527,18 @@ describe('install', () => {
           expect(res.body.ok).to.equal(true);
 
           return supertest(destination)
+            .put(`/${dbnameToReplicate}/_security`)
+            .set('cookie', adminSessionCookie)
+            .set('Accept', 'application/json')
+            .send({
+              "members":{"roles":[]},
+              "admins":{"roles":["_admin"]}
+            })
+        })
+        .then((res) => {
+          expect(res.body.ok).to.equal(true);
+
+          return supertest(couchUrl)
             .get(`/${dbnameToReplicate}/_design/prototype`)
             .set('Accept', 'application/json');
         })
@@ -532,11 +546,18 @@ describe('install', () => {
           debug('res.body prototype after ', res.body);
           expect(res.body.couchapp && res.body.couchapp.name).to.contain('Prototype (has the most features of the apps)', JSON.stringify(res.body));
 
-          return supertest(destination)
+          return supertest(couchUrl)
             .get(`/${dbnameToReplicate}/_design/prototype/user.html`);
         })
         .then((res) => {
           debug('res.body prototype after ', res.body);
+          expect(res.status).to.equal(200);
+
+          return supertest(couchUrl)
+            .get(`/${dbnameToReplicate}/_design/prototype/app/app.css`);
+        })
+        .then((res) => {
+          debug('attachments prototype after ', res.body);
           expect(res.status).to.equal(200);
         });
     });
