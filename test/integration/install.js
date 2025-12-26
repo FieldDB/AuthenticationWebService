@@ -533,7 +533,7 @@ describe('install', () => {
             .send({
               "members":{"roles":[]},
               "admins":{"roles":["_admin"]}
-            })
+            });
         })
         .then((res) => {
           expect(res.body.ok).to.equal(true);
