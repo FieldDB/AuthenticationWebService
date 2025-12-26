@@ -1,4 +1,4 @@
-GET /prototype/_design/prototype/user.html
+GET /prototypedev/_design/prototype/user.html
 accept-encoding: gzip, deflate
 authorization: Basic YWRtaW46bm9uZQ==
 

@@ -1,4 +1,4 @@
-GET /prototype/_design/prototype
+GET /prototypedev/_design/prototype
 accept-encoding: gzip, deflate
 accept: application/json
 authorization: Basic YWRtaW46bm9uZQ==
