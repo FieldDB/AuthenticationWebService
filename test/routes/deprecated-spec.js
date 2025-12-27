@@ -24,7 +24,7 @@ describe('/ deprecated', () => {
     // eslint-disable-next-line no-underscore-dangle
     debug('before replay localhosts', replay._localhosts);
 
-    return supertest(config.usersDbConnection.url)
+    return supertest(config.usersDbConnection.url.replace('://couchdb', '://localhost'))
       .get('/')
       .set('Accept', 'application/json')
       .then((res) => {

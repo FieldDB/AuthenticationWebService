@@ -17,7 +17,7 @@ services:
     environment:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=none
-  app:
+  auth_app:
     depends_on:
       - couchdb
     build:

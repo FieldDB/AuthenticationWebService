@@ -510,7 +510,7 @@ describe('install', () => {
      * and the app expects and requires https
      */
     it('should replicate prototype', () => {
-      const dbnameToReplicate = 'prototype';
+      const dbnameToReplicate = 'prototypedev';
 
       return supertest(destination)
         .post('/_replicate')
