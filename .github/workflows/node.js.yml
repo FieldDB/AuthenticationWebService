@@ -62,6 +62,7 @@ jobs:
 
     - name: Run UI tests
       run: npm run test:ui
+      timeout-minutes: 5
       env:
         BASE_URL: https://localhost:6984
         BASE_PATH: /prototype/_design/prototype

@@ -142,3 +142,4 @@ node_modules
 .DS_Store
 ~*
 *.swp
+FieldDB
