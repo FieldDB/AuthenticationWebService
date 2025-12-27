@@ -10,6 +10,20 @@ on:
     branches: [ main ]
 
 jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - name: Run Integration tests
+      run: DEBUG=replay* npm run coverage
+      #  FIXME 'Test run failed replay no longer is working with latest nano which uses node fetch'
+
   deploy:
     runs-on: ubuntu-latest
     strategy:
@@ -49,8 +63,8 @@ jobs:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
         DEBUG: 'none'
 
-    - name: Show docker compose logs after running tests
-      if: success() || failure()
+    - name: Show app logs after running tests
+      if: failure()
       run: docker compose logs --no-color --timestamps | grep -v "couchdb" || true
 
     - name: Create local config for tests to use the couchdb outside the container
@@ -61,7 +75,7 @@ jobs:
       run: npm run test:deprecated:coverage
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
-        DEBUG: 'test:deprecated'
+        DEBUG: 'none' # 'test:deprecated'
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v5
@@ -76,33 +90,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  integration-tests:
-    runs-on: ubuntu-latest
-    needs: [deploy]
-    steps:
-    - uses: actions/checkout@v6
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - name: Run Integration tests
-      run: DEBUG=replay* npm run coverage || echo 'Test run failed replay no longer is working with latest nano which uses node fetch'
-
-  ui-tests:
-    runs-on: ubuntu-latest
-    needs: [deploy]
-    steps:
-    - uses: actions/checkout@v6
-      with:
-        sparse-checkout: |
-          package.json
-    - name: Use Node.js 25.x
-      uses: actions/setup-node@v6
-      with:
-        node-version: 25.x
-        cache: 'npm'
     - name: Run UI tests
       run: npm run test:ui
       timeout-minutes: 5
