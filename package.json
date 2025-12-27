@@ -71,10 +71,10 @@
     "start": "node ./bin/www.js",
     "test": "SOURCE_URL=${SOURCE_URL:-https://public:none@corpusdev.example.org} NODE_ENV=test NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --timeout 100000 --recursive test",
     "test:debug": "node-debug _mocha test/integration/oauth.js",
-    "test:deprecated": "DEBUG=${DEBUG:-lib:user} REPLAY=bloody NODE_TLS_REJECT_UNAUTHORIZED=0 URL=https://localhost:3183 mocha --timeout 25000 test/routes/deprecated-spec.js",
+    "test:deprecated": "DEBUG=${DEBUG:-lib:user} REPLAY=bloody NODE_TLS_REJECT_UNAUTHORIZED=0 nyc mocha --timeout 25000 test/routes/deprecated-spec.js",
     "test:fielddb": "NODE_ENV=localhost jasmine-node node_modules/fielddb/tests",
     "test:production": "ls config/production.js",
-    "test:ui": "git clone https://github.com/FieldDB/FieldDB.git; cd FieldDB/test-e2e && npm install && npx playwright install chromium && BASE_URL=${BASE_URL:-https://localhost:6984} BASE_PATH=${BASE_PATH:-/prototypedev/_design/prototype} DEBUG=${DEBUG:-none} npm run test -- --retries=0 --project=Chromium register",
+    "test:ui": "git clone --filter=blob:none --no-checkout https://github.com/FieldDB/FieldDB.git; cd FieldDB; git sparse-checkout set test-e2e; git checkout HEAD; cd test-e2e && npm install && npx playwright install chromium && BASE_URL=${BASE_URL:-https://localhost:6984} BASE_PATH=${BASE_PATH:-/prototypedev/_design/prototype} DEBUG=${DEBUG:-none} npm run test -- --retries=0 --project=Chromium register",
     "watch": "nodemon ./bin/www.js"
   },
   "license": "Apache-2.0"
