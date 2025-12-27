@@ -63,7 +63,8 @@ jobs:
     - name: Run UI tests
       run: npm run test:ui
       env:
-        BASE_URL: https://localhost:6984/prototype/_design/prototype
+        BASE_URL: https://localhost:6984
+        BASE_PATH: /prototype/_design/prototype
 
     - name: Upload Playwright report and traces for trace.playwright.dev
       uses: actions/upload-artifact@v5
