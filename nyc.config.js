@@ -10,5 +10,5 @@ module.exports = {
   functions: 65,
   lines: 76,
   statements: 76,
-  reporter: ['text', 'lcov'],
+  reporter: ['html', 'text', 'lcov'],
 };

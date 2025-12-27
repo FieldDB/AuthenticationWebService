@@ -36,6 +36,14 @@ jobs:
     - name: Run Integration tests
       run: DEBUG=replay* npm run coverage || echo 'Test run failed replay no longer is working with latest nano which uses node fetch'
 
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v5
+      if: success() || failure()
+      with:
+        name: coverage
+        path: coverage/
+        retention-days: 3
+
     - name: Start docker compose services
       run: docker compose up -d && sleep 5
 
@@ -53,6 +61,10 @@ jobs:
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
         DEBUG: 'none'
+
+    - name: Show docker compose logs
+      if: success() || failure()
+      run: docker compose logs --no-color --timestamps || true
 
     - name: Coveralls
       if: success() || failure()
