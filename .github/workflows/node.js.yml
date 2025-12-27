@@ -92,8 +92,8 @@ jobs:
     steps:
     - uses: actions/checkout@v6
       with:
-      sparse-checkout: |
-        package.json
+        sparse-checkout: |
+          package.json
     - name: Use Node.js 24.x
       uses: actions/setup-node@v6
       with:
