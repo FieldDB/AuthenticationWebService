@@ -44,7 +44,7 @@ jobs:
         DEBUG: 'none'
 
     - name: Run E2E tests against the container app
-      run: DEBUG=test:deprecated npm run test:deprecated:e2e || echo 'Test run failed when trying to use the deployed auth app'
+      run: DEBUG=test:deprecated npm run test:deprecated:e2e
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
         DEBUG: 'none'
@@ -73,7 +73,7 @@ jobs:
       run: npm run test:deprecated:coverage
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
-        DEBUG: 'lib:corpus'
+        DEBUG: 'test:deprecated'
     - name: Upload coverage report
       uses: actions/upload-artifact@v5
       if: success() || failure()
