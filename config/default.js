@@ -3,6 +3,7 @@ const path = require('path');
 const { Connection } = require('fielddb/api/corpus/Connection');
 
 let deployTarget = process.env.NODE_ENV || 'localhost';
+const PORT = process.env.PORT || process.env.HTTPS_PORT || null;
 // backward compatible
 if (deployTarget === 'test') {
   deployTarget = 'beta';
@@ -36,7 +37,7 @@ module.exports = {
   httpsOptions: {
     key: fs.readFileSync(path.join(__dirname, '/fielddb_debug.key'), 'utf8'),
     cert: fs.readFileSync(path.join(__dirname, '/fielddb_debug.crt'), 'utf8'),
-    port: '3183',
+    port: PORT || '3183',
     protocol: 'https://',
   },
   url: 'https://localhost:3183',

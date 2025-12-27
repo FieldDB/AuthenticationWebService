@@ -44,5 +44,5 @@ module.exports = defineConfig([
       "semi": ["error", "always"],
     },
   },
-  globalIgnores(["**/public", "lib/About.js", "lib/FieldDB.js"]),
+  globalIgnores(["**/public", "lib/About.js", "lib/FieldDB.js", "FieldDB"]),
 ]);
