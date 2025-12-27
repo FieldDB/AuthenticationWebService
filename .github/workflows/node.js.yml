@@ -71,3 +71,18 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run UI tests
+      run: npm run test:ui
+      timeout-minutes: 5
+      env:
+        BASE_URL: https://localhost:6984
+        BASE_PATH: /prototype/_design/prototype
+
+    - name: Upload Playwright report and traces for trace.playwright.dev
+      uses: actions/upload-artifact@v5
+      if: ${{ !cancelled() }} # Upload even if the previous step failed
+      with:
+        name: test-results # Name of the artifact
+        path: FieldDB/test-e2e/test-results/ # Path to the directory containing reports and traces
+        retention-days: 30
