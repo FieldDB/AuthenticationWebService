@@ -63,6 +63,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: npm ci
     - name: Create local config for tests to use the couchdb from the container
       run: |
         echo 'module.exports = { usersDbConnection: { url: "http://localhost:5984" }};' > config/local.js
@@ -110,6 +111,6 @@ jobs:
       uses: actions/upload-artifact@v5
       if: ${{ !cancelled() }} # Upload even if the previous step failed
       with:
-        name: test-results # Name of the artifact
+        name: ui-test-results # Name of the artifact
         path: FieldDB/test-e2e/test-results/ # Path to the directory containing reports and traces
         retention-days: 30
