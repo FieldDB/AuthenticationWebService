@@ -10,7 +10,7 @@ RUN ls -alt; \
   ls config/local.js || echo " config/local.js is required to be able to run the tests against deployed couchdb"
 
 ENV DEBUG="*,-express*"
-ENV NODE_ENV=localhost
+ENV NODE_ENV=local
 
 EXPOSE 3183
 

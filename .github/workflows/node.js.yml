@@ -44,7 +44,7 @@ jobs:
         DEBUG: 'none'
 
     - name: Run E2E tests against the container app
-      run: REPLAY=bloody URL=https://localhost:3183 npm run test:deprecated || echo 'Test run failed when trying to use the deployed auth app'
+      run: npm run test:deprecated:e2e || echo 'Test run failed when trying to use the deployed auth app'
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
         DEBUG: 'none'
@@ -69,7 +69,7 @@ jobs:
     - name: Run Integration tests
       run: DEBUG=replay* npm run coverage || echo 'Test run failed replay no longer is working with latest nano which uses node fetch'
     - name: Run integration tests using the app with local couchdb
-      run: REPLAY=bloody npm run test:deprecated
+      run: npm run test:deprecated:coverage
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
         DEBUG: 'none'
@@ -92,7 +92,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
       with:
-      sparse-checkout:: |
+      sparse-checkout: |
         package.json
     - name: Use Node.js 24.x
       uses: actions/setup-node@v6
@@ -104,7 +104,7 @@ jobs:
       timeout-minutes: 5
       env:
         BASE_URL: https://localhost:6984
-        BASE_PATH: /prototype/_design/prototype
+        BASE_PATH: /prototypedev/_design/prototype
 
     - name: Upload Playwright report and traces for trace.playwright.dev
       uses: actions/upload-artifact@v5
