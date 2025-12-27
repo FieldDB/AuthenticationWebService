@@ -7,10 +7,10 @@ COPY . .
 RUN NODE_ENV=production npm ci
 
 RUN ls -alt; \
-  ls config/local.js || echo " config/local.js is required to be able to run the tests against deployed couchdb"
+  ls config/localhost.js || echo " config/localhost.js is required to be able to run the tests against deployed couchdb"
 
 ENV DEBUG="*,-express*"
-ENV NODE_ENV=local
+ENV NODE_ENV=localhost
 
 EXPOSE 3183
 

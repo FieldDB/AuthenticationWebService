@@ -8,7 +8,7 @@ const bunyan = require('express-bunyan-logger');
  * $ NODE_ENV=production        # uses config/production.js
  * $ NODE_ENV=test              # uses config/test.js
  * $ NODE_ENV=development       # uses config/development.js
- * $ NODE_ENV=local             # uses config/local.js
+ * $ NODE_ENV=localhost         # uses config/localhost.js
  * $ NODE_ENV=yoursecretconfig  # uses config/yoursecretconfig.js
  */
 const config = require('config');

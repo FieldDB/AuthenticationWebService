@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [24.x]
+        node-version: [25.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -29,7 +29,7 @@ jobs:
 
     - name: Create local config for the app to connect to couchdb service in the container
       run: |
-        echo 'module.exports = { usersDbConnection: { url: "http://couchdb:5984" }};' > config/local.js
+        echo 'module.exports = { usersDbConnection: { url: "http://couchdb:5984" }};' > config/localhost.js
 
     - name: Start docker compose services
       run: docker compose up -d && sleep 5
@@ -44,14 +44,14 @@ jobs:
         DEBUG: 'none'
 
     - name: Run E2E tests against the container app
-      run: npm run test:deprecated:e2e || echo 'Test run failed when trying to use the deployed auth app'
+      run: DEBUG=test:deprecated npm run test:deprecated:e2e || echo 'Test run failed when trying to use the deployed auth app'
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
         DEBUG: 'none'
 
     - name: Show docker compose logs
       if: success() || failure()
-      run: docker compose logs --no-color --timestamps || true
+      run: docker compose logs --no-color --timestamps | grep -v "couchdb" || true
 
   integration-tests:
     runs-on: ubuntu-latest
@@ -66,14 +66,14 @@ jobs:
     - run: npm ci
     - name: Create local config for tests to use the couchdb from the container
       run: |
-        echo 'module.exports = { usersDbConnection: { url: "http://localhost:5984" }};' > config/local.js
+        echo 'module.exports = { usersDbConnection: { url: "http://localhost:5984" }};' > config/localhost.js
     - name: Run Integration tests
       run: DEBUG=replay* npm run coverage || echo 'Test run failed replay no longer is working with latest nano which uses node fetch'
     - name: Run integration tests using the app with local couchdb
       run: npm run test:deprecated:coverage
       env:
         SOURCE_URL: ${{ secrets.SOURCE_URL }}
-        DEBUG: 'none'
+        DEBUG: 'lib:corpus'
     - name: Upload coverage report
       uses: actions/upload-artifact@v5
       if: success() || failure()
@@ -95,10 +95,10 @@ jobs:
       with:
         sparse-checkout: |
           package.json
-    - name: Use Node.js 24.x
+    - name: Use Node.js 25.x
       uses: actions/setup-node@v6
       with:
-        node-version: 24.x
+        node-version: 25.x
         cache: 'npm'
     - name: Run UI tests
       run: npm run test:ui
