@@ -78,7 +78,7 @@ jobs:
         DEBUG: 'none' # 'test:deprecated'
 
     - name: Upload coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: success() || failure()
       with:
         name: coverage
@@ -98,7 +98,7 @@ jobs:
         BASE_PATH: /prototypedev/_design/prototype
 
     - name: Upload Playwright report and traces for trace.playwright.dev
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: ${{ !cancelled() }} # Upload even if the previous step failed
       with:
         name: ui-test-results # Name of the artifact
