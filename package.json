@@ -34,7 +34,7 @@
     "fielddb": "^5.168.15-rc0",
     "md5": "^2.3.0",
     "nano": "^11.0.3",
-    "nodemailer": "^7.0.11",
+    "nodemailer": "^8.0.0",
     "serve-favicon": "^2.5.1",
     "uuid": "^13.0.0"
   },
