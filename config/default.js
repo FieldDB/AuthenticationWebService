@@ -42,7 +42,7 @@ module.exports = {
   },
   url: 'https://localhost:3183',
   usersDbConnection: {
-    url: 'http://localhost:5984',
+    url: process.env.COUCHDB_URL || 'http://localhost:5984',
     dbname: 'theuserscouch',
   },
   couchKeys: {
