@@ -26,4 +26,4 @@ services:
     ports:
       - 3183:3183
     environment:
-      - FOO=too
+      - COUCHDB_URL=http://couchdb:5984
